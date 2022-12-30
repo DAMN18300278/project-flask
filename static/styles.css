@@ -1,24 +1,41 @@
+@font-face {
+    font-family: Amiko;
+    src: url('Amiko-Regular.ttf');
+    font-weight: 100;
+}
+
 html {
     font-size: 53%;
 }
 
 body{
-    font-size: 16px;
-    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
-    background-color: greenyellow;
-}
-
-.container{
+    font-size: 15px;
+    font-family: Amiko;
+    background-color: rgb(255, 255, 255);
     text-align: center;
 }
 
-.container h1{
-    font-size: 3.8rem;
-    color: darkslategray;
+h1{
+    font-weight: 100;
+}
+
+.container{
+    margin-top: 20%;
+    height: 500px;
+    font-size: 25px;
 }
 
 .container img{
-    width: 80rem;
-    height: 60rem;
+    border-width: 30px;
+    border-top-color: black;
+    padding: 10px;
+    border-radius: 50px;
+    width: 28%;
+    height: fit-content;
 }
+
+.container img{
+    width: 30%;
+}
+
 
