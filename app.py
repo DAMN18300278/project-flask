@@ -1,7 +1,6 @@
 from flask import Flask
 from flask import render_template
 from flask import Response
-from PIL import Image
 import mediapipe as mp
 import cv2
 
