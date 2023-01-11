@@ -77,11 +77,12 @@ def connection():
     return pymysql.connect(host='localhost',
                                 user='root',
                                 password='',
-                                db='Diegomedel$decore')
+                                db='diegomedel$decore')
+#--------------------------------------------------------#
 
 @app.route("/")
 def index():
-    return render_template("login.html")
+    return render_template("formularioUsuario.html")
 
 @app.route("/guardarDato", methods=["POST"])
 def insertar():
