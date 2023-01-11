@@ -1,10 +1,29 @@
 from flask import Flask
 from flask import render_template
 from flask import Response
+from flask import request
+from flask import redirect
+from flask_mail import Mail, Message
 import mediapipe as mp
 import cv2
+import pymysql
 
 app = Flask(__name__)
+
+#Email variables
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+app.config['MAIL_PORT'] = 465
+app.config['MAIL_USERNAME'] = 'd.i.e.g.o.nambo123@gmail.com'
+app.config['MAIL_PASSWORD'] = 'wrxbqljyszwesklc'
+app.config['MAIL_USE_TLS'] = False
+app.config['MAIL_USE_SSL'] = True
+
+mail = Mail(app)
+# msg = Message('Este es tu codigo de confirmacion', sender='d.i.e.g.o.nambo123@gmail.com', recipients=['a18300278@ceti.mx'])
+# msg.body = "Hola esta es una prueba de enviar un correo de confirmacion a traves de flask"
+# mail.send(msg)
+
+#Mediapipe variables
 mpFaceMesh = mp.solutions.face_mesh
 mpDrawing = mp.solutions.drawing_utils
 cap = cv2.VideoCapture(0)
@@ -53,14 +72,33 @@ def generate():
                 continue
             yield(b'--frame\r\n' b'Content-Type: image\jpeg\r\n\r\n' + bytearray(encodedImage) + b'\r\n')
 
+#mysql variables
+def connection():
+    return pymysql.connect(host='localhost',
+                                user='root',
+                                password='',
+                                db='Diegomedel$decore')
+
 @app.route("/")
 def index():
     return render_template("login.html")
 
+@app.route("/guardarDato", methods=["POST"])
+def insertar():
+    conexion = connection()
+    valor = request.form["valor"]
+
+    with conexion.cursor() as cursor:
+        cursor.execute("INSERT INTO temp VALUES (%s)", (valor))
+
+    conexion.commit()
+    conexion.close()
+
+    return redirect("/")
+
 @app.route("/videoFeed")
 def videoFeed():
-    return Response(generate(), 
-        mimetype="multipart/x-mixed-replace; boundary=frame")
+    return Response(generate(), mimetype="multipart/x-mixed-replace; boundary=frame")
 
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port="3000")

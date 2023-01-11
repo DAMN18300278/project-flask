@@ -34,17 +34,16 @@ h1{
     box-shadow: rgba(100, 100, 111, 0.5) 0px 17px 39px 0px;
 }
 
-.container img{
-    border-width: 30px;
-    border-top-color: black;
-    padding: 10px;
-    border-radius: 50px;
-    width: 28%;
-    height: fit-content;
-}    
+@media (min-width: 765px) {
+    .container svg{
+        width: 15%;
+    }
+}
 
-.container img{
-    width: 40%;
+@media (min-width: 1150px){
+    .container{
+        margin-top: 8%;
+    }
 }
 
 .to-left{
