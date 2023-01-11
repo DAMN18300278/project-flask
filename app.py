@@ -3,12 +3,14 @@ from flask import render_template
 from flask import Response
 from flask import request
 from flask import redirect
+from flask import flash
 from flask_mail import Mail, Message
 import mediapipe as mp
 import cv2
 import pymysql
 
 app = Flask(__name__)
+app.secret_key = "ab"
 
 #Email variables
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'
@@ -82,7 +84,7 @@ def connection():
 
 @app.route("/")
 def index():
-    return render_template("formularioUsuario.html")
+    return render_template("login.html")
 
 @app.route("/guardarDato", methods=["POST"])
 def insertar():
@@ -97,6 +99,10 @@ def insertar():
 
     return redirect("/")
 
+@app.route("/register")
+def registrar():
+    return render_template("register.html")
+    
 @app.route("/videoFeed")
 def videoFeed():
     return Response(generate(), mimetype="multipart/x-mixed-replace; boundary=frame")

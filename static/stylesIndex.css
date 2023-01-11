@@ -105,6 +105,11 @@ h1{
     animation-name: devanish1;
 }
 
+.vanish2{
+    animation-duration: 0.2s;
+    animation-name: devanish1;
+}
+
 @keyframes devanish1{
     from{
         opacity: 0%;
