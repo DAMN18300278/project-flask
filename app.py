@@ -99,6 +99,20 @@ def insertar():
 
     return redirect("/")
 
+@app.route("/guardarUsuario", methods=["POST"])
+def guardarUsuario():
+    conexion = connection()
+    correo = request.form["correo"]
+    contraseña = request.form["contraseña"]
+
+    with conexion.cursor() as cursor:
+        cursor.execute("INSERT INTO cuenta VALUES ('', 2, %s, %s)", (correo, contraseña))
+    
+    conexion.commit()
+    conexion.close()
+
+    return redirect("/")
+
 @app.route("/register")
 def registrar():
     return render_template("register.html")
