@@ -86,19 +86,6 @@ def connection():
 def index():
     return render_template("login.html")
 
-@app.route("/guardarDato", methods=["POST"])
-def insertar():
-    conexion = connection()
-    valor = request.form["valor"]
-
-    with conexion.cursor() as cursor:
-        cursor.execute("INSERT INTO temp VALUES (%s)", (valor))
-
-    conexion.commit()
-    conexion.close()
-
-    return redirect("/")
-
 @app.route("/guardarUsuario", methods=["POST"])
 def guardarUsuario():
     conexion = connection()
