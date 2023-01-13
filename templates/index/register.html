@@ -1,4 +1,4 @@
-{% extends "indexMaster.html" %}
+{% extends "index/indexMaster.html" %}
 {% block head %}
     {{ super() }}
 {% endblock %}
@@ -14,18 +14,27 @@
         </svg>
     </div>
 
-    <form action="" method="post" class="input-group input-group-lg d-flex justify-content-between flex-column">
+    <form action="/guardarUsuario" id="form" method="post" class="input-group input-group-lg d-flex justify-content-between flex-column">
         <div class="input-group">
-            <input type="text" class="form-control mb-4 to-left" placeholder="Correo">
+            <input type="text" id="correo" class="form-control mt-2 to-left" placeholder="Correo" name="correo">
         </div>
         <div class="input-group">
-            <input type="text" class="form-control mt-4 to-right" placeholder="Contraseña">
+            <input type="text" id="contraseña" class="form-control mt-5 to-right" placeholder="Contraseña" name="contraseña">
         </div>
-    </form>
+        <div class="input-group">
+            <input type="text" id="contraseñaC" class="form-control mt-5 to-left" placeholder="Confirmar contraseña">
+        </div>
+    </form> 
 
-    <div class="d-flex flex-column" style="margin-bottom: 3rem;">
-        <a href="#" class="link-success mb-5 vanish1" style="font-size: 12px; animation-duration: 3s;">Recuperar contraseña</a>
-        <a href="#" class="btn btn-success vanish1" style="font-size: 18px; border-radius: 10px; height: 36px; margin-bottom: 5rem; animation-duration: 4s;">Login</a>
-        <a href="/register" class="link-success vanish1" style="font-size: 15px; animation-duration: 5s;">Registrarse</a>
+    <button name="Registrar" onclick="button()" class="btn btn-success vanish1 mt-5" style="font-size: 18px; border-radius: 10px; height: 36px; animation-duration: 4s;">Registrarme</button>
+{% endblock %}
+
+{% block alert %}
+    <div class="position-absolute w-100 h-100 vanish2" id="alerta" style="z-index: 2; display: none; background-color: rgba(0, 0, 0, 0.368); top: 0;" onclick="index()">
+        <div class="position-absolute text-center p-4 container" style="width: 60%; height: fit-content; background-color: white; top: 10%; left: 20%; ">
+            <p class="display-4" id="tituloMsg"></p>
+
+            <p style="font-size: 12px;" id="msg"></p>
+        </div>
     </div>
 {% endblock %}

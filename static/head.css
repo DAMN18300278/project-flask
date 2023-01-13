@@ -1,0 +1,15 @@
+@font-face {
+    font-family: Amiko;
+    src: url('Amiko-Regular.ttf');
+    font-weight: 100;
+}
+
+html {
+    font-size: 53%;
+}
+
+body{
+    font-size: 15px;
+    font-family: Amiko;
+    text-align: center;
+}

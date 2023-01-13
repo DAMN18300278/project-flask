@@ -1,4 +1,4 @@
-{% extends "indexMaster.html" %}
+{% extends "index/indexMaster.html" %}
 {% block head %}
     {{ super() }}
 {% endblock %}
@@ -14,68 +14,26 @@
         </svg>
     </div>
 
-    <form action="/guardarUsuario" id="form" method="post" class="input-group input-group-lg d-flex justify-content-between flex-column">
+    <form action="/login" id="form" method="post" class="input-group input-group-lg d-flex justify-content-between flex-column">
         <div class="input-group">
-            <input type="text" id="correo" class="form-control mt-2 to-left" placeholder="Correo" name="correo">
+            <input type="text" class="form-control mb-4 to-left" placeholder="Correo" name="correo">
         </div>
         <div class="input-group">
-            <input type="text" id="contraseña" class="form-control mt-5 to-right" placeholder="Contraseña" name="contraseña">
+            <input type="text" class="form-control mt-4 to-right" placeholder="Contraseña" name="contraseña">
         </div>
-        <div class="input-group">
-            <input type="text" id="contraseñaC" class="form-control mt-5 to-left" placeholder="Confirmar contraseña">
-        </div>
-    </form> 
+    </form>
 
-    <button name="Registrar" onclick="button()" class="btn btn-success vanish1 mt-5" style="font-size: 18px; border-radius: 10px; height: 36px; animation-duration: 4s;">Registrarme</button>
+    <div class="d-flex flex-column" style="margin-bottom: 3rem;">
+        <a href="#" class="link-success mb-5 vanish1" style="font-size: 12px; animation-duration: 3s;">Recuperar contraseña</a>
+        <a onclick="login()" class="btn btn-success vanish1" style="margin-bottom: 5rem; animation-duration: 4s;">Login</a>
+        <a href="/register" class="link-success vanish1" style="font-size: 15px; animation-duration: 5s;">Registrarse</a>
+    </div>
 
-    <script type="text/javascript">
-        correo = document.getElementById("correo")
-        contraseña = document.getElementById("contraseña")
-        contraseñaC = document.getElementById("contraseñaC")
-        alerta = document.getElementById("alerta")
-        msg = document.getElementById("msg")
-        titulo = document.getElementById("tituloMsg")
+    <script>
+        form = document.getElementById("form")
 
-        function button() {
-            let correoEnc = correo.value
-            var posAt
-
-            if(correoEnc.indexOf('@') > 4){
-                posAt = correoEnc.indexOf('@') - 4
-            }else{
-                titulo.textContent = "Correo invalido"
-                msg.textContent = "Este no es un correo valido"
-            }
-
-            correoEnc = correoEnc.replace(correoEnc.substr(4, posAt), '*'.repeat(posAt))
-
-            if(contraseña.value == contraseñaC.value && posAt != null && contraseña.value != ""){
-                titulo.textContent = "Confirmar contraseña"
-                msg.textContent = "Confirme su cuenta ingresando al link enviado al correo " + correoEnc
-            }else{
-                titulo.textContent = "Contraseña invalida"
-                msg.textContent = "Debe de ingresar una contraseña"
-            }
-
-            alerta.style.display = "block"
-        }
-    
-        function index() {
-            if(titulo.textContent == "Confirmar contraseña"){
-                document.getElementById("form").submit()
-            }else{
-                alerta.style.display = "none"
-            }
+        function login(){
+            form.submit();
         }
     </script>
-{% endblock %}
-
-{% block alert %}
-    <div class="position-absolute w-100 h-100 vanish2" id="alerta" style="z-index: 2; display: none; background-color: rgba(0, 0, 0, 0.368); top: 0;" onclick="index()">
-        <div class="position-absolute text-center p-4 container" style="width: 60%; height: fit-content; background-color: white; top: 10%; left: 20%; ">
-            <p class="display-4" id="tituloMsg"></p>
-
-            <p style="font-size: 12px;" id="msg"></p>
-        </div>
-    </div>
 {% endblock %}

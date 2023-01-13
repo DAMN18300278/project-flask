@@ -1,0 +1,20 @@
+{% extends "usuarios/usuariosMaster.html" %}
+{% block head %}
+    {{ super() }}
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <p class="to-left" style="animation-duration: 2s;">FORMULARIO</p>
+
+        <form class="input-group input-group-lg align-items-center flex-column to-left" style="animation-duration: 2.5s;" action="/guardarDato" method="post">
+            <div class="form-outline mb-5">
+                <input type="text" class="form-control" placeholder="Nombre" name="nombre" id="nombre">
+            </div>
+            
+            <input type="color" name="color" id="color" value="#fdddca" class="input-color mb-5 form-control-color">
+            
+            <button type="submit" class="btn btn-success w-50" style="font-size: 18px; border-radius: 10px; height: 36px; ">submit</button>
+        </form>
+    </div>
+{% endblock %}

@@ -84,7 +84,7 @@ def connection():
 
 @app.route("/")
 def index():
-    return render_template("login.html")
+    return render_template("index/login.html")
 
 @app.route("/guardarUsuario", methods=["POST"])
 def guardarUsuario():
@@ -102,7 +102,44 @@ def guardarUsuario():
 
 @app.route("/register")
 def registrar():
-    return render_template("register.html")
+    return render_template("index/register.html")
+
+@app.route("/login", methods=["POST"])
+def login():
+    conexion = connection()
+    correo = request.form["correo"]
+    contraseña = request.form["contraseña"]
+    
+    with conexion.cursor() as cursor:
+        cursor.execute("SELECT * FROM cuenta WHERE Correo = %s", (correo))
+        rows = cursor.fetchall()
+        for row in rows:
+            idCuenta = row[0]
+            rol = row[1]
+            contraseñaC = row[3]
+    
+    conexion.close()
+
+    if 'rows' not in vars():
+        flash("Correo inexistente")
+        return redirect("/")
+
+    if contraseña != contraseñaC:
+        flash("Contraseña incorrecta")
+        return redirect("/")
+
+    if rol == 1:
+        return redirect("/empleados")
+    else:
+        return redirect("/formulario")
+
+@app.route("/formulario")
+def formulario():
+    return render_template("usuarios/formulario.html")
+
+@app.route("/empleados")
+def empleados():
+    return render_template("usuarios/formularioo.html")
     
 @app.route("/videoFeed")
 def videoFeed():
