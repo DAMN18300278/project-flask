@@ -1,12 +1,24 @@
 body{
     background-color: #ffffff;
+    font-size: 15px;
 }
 
 .container{
     margin-top: 5%;
     height: 100%;
-    width: 83%;
+    width: 95%;
     font-size: 35px;
     background-color: white;
     padding: 2rem;
+}
+
+#nombre::placeholder{
+    text-align: left;
+}
+
+.colores-ojos{
+    width: 5.5rem;
+    height: 5.5rem;
+    border: 3px solid rgb(43, 43, 43);
+    border-radius: 50%;
 }

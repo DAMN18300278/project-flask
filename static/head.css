@@ -12,4 +12,6 @@ body{
     font-size: 15px;
     font-family: Amiko;
     text-align: center;
+    height: 100%;
+    width: 100%;
 }

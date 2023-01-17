@@ -118,8 +118,6 @@ def login():
             rol = row[1]
             contraseñaC = row[3]
     
-    conexion.close()
-
     if 'rows' not in vars():
         flash("Correo inexistente")
         return redirect("/")
@@ -131,7 +129,20 @@ def login():
     if rol == 1:
         return redirect("/empleados")
     else:
-        return redirect("/formulario")
+        with conexion.cursor() as cursor:
+            cursor.execute("SELECT * FROM usuarios WHERE Id_Usuario = %s", (idCuenta))
+            usuario = cursor.fetchone()
+        
+        conexion.close()
+
+        if usuario[1] is None:
+            return redirect("/formulario")
+        else:
+            return redirect("/usuarios")
+    
+@app.route("/usuarios")
+def usuarios():
+    return render_template("usuarios/usuariosMaster.html")
 
 @app.route("/formulario")
 def formulario():
@@ -139,7 +150,7 @@ def formulario():
 
 @app.route("/empleados")
 def empleados():
-    return render_template("usuarios/formularioo.html")
+    return render_template("empleados/empleadosMaster.html")
     
 @app.route("/videoFeed")
 def videoFeed():

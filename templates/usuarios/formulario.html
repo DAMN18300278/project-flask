@@ -4,17 +4,103 @@
 {% endblock %}
 
 {% block content %}
-    <div class="container">
-        <p class="to-left" style="animation-duration: 2s;">FORMULARIO</p>
+    <div class="position-absolute w-100 h-100" id="alertaOjos" style="z-index: 2; display: none; background-color: rgba(0, 0, 0, 0.152); top: 0;">
+        <div class="to-left position-absolute justify-content-center align-items-center d-flex" style="top: 30%; animation-duration: 0.7s;">
+            <div class="text-center p-4" style="width: 80%; height: fit-content; background-color: white; border-radius: 10px;">
+                <p class="display-4">Color de ojos</p>
+                <div class="h-50" style="display: grid; grid-template-columns: repeat(3, 1fr);">
+                    <div class="d-flex justify-content-center mb-4 mt-2">
+                        <div class="colores-ojos" style="background-color: #202020;" onclick="colorOjos(1)"></div>
+                    </div>
+                    <div class="d-flex justify-content-center mb-4 mt-2">
+                        <div class="colores-ojos" style="background-color: #563330;" onclick="colorOjos(2)"></div>
+                    </div>
+                    <div class="d-flex justify-content-center mb-4 mt-2">
+                        <div class="colores-ojos" style="background-color: #aaa24e;" onclick="colorOjos(3)"></div>
+                    </div>
+                    <div class="d-flex justify-content-center mb-4 mt-2">
+                        <div class="colores-ojos" style="background-color: #9ca194;" onclick="colorOjos(4)"></div>
+                    </div>
+                    <div class="d-flex justify-content-center mb-4 mt-2">
+                        <div class="colores-ojos" style="background-color: #abc6d0;" onclick="colorOjos(5)"></div>
+                    </div>
+                    <div class="d-flex justify-content-center mb-4 mt-2">
+                        <div class="colores-ojos" style="background-color: #31684c;" onclick="colorOjos(6)"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="position-absolute w-100 h-100" id="alertaPiel" style="z-index: 2; display: none; background-color: rgba(0, 0, 0, 0.152); top: 0;" onclick="index()">
+        <div class="to-left position-absolute justify-content-center align-items-center d-flex" style="top: 30%; animation-duration: 0.7s;">
+            <div class="text-center p-4" style="width: 80%; height: fit-content; background-color: white; border-radius: 10px;">
+                <p class="display-4">Tipo de piel</p>
+            </div>
+        </div>
+    </div>
 
-        <form class="input-group input-group-lg align-items-center flex-column to-left" style="animation-duration: 2.5s;" action="/guardarDato" method="post">
-            <div class="form-outline mb-5">
-                <input type="text" class="form-control" placeholder="Nombre" name="nombre" id="nombre">
+    <div class="container position-absolute align-items-center" style="top: 0; bottom: 0; left: 0; right: 0;">
+        <p class="to-left">FORMULARIO</p>
+
+        <form action="/guardarDato" class="d-flex flex-column justify-content-between" method="post" style="font-size: 18px; height: 85%;">
+            <div>
+                <div class="form-group d-flex flex-row mb-3 align-items-center to-left" style="animation-delay: 0.4s;">
+                    <label for="nombre" class="col-form-label w-25" style="margin-right: 5%;">Nombre:</label>
+                    <div style="flex: auto;">
+                        <input type="text" class="form-control" placeholder="Inserte su nombre completo..." name="nombre" id="nombre">
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <div class="form-group d-flex flex-row mb-5 align-items-center to-left" style="animation-delay: 0.6s;">
+                    <label for="nombre" class="col-form-label w-25" style="margin-right: 5%; padding-top: 2.5em;">Edad:</label>
+                    <div class="range-slider" style="flex: auto;">
+                        <span class="rs-mark" id="rs-mark"></span>
+                        <input type="range" class="rs-line" min="0" max="99" value="18" name="edad" id="edad">
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <div class="to-left mb-5" style="animation-delay: 0.8s;">
+                    <button class="btn btn-outline-secondary w-75" onclick="selectEyes()" type="button">Color de ojos</button>
+                    <input type="text" id="colorOjos" name="colorOjos" style="display: none;">
+                </div>
+            </div>
+
+            <div>
+                <div class="to-left mb-5" style="animation-delay: 1s;">
+                    <button class="btn btn-outline-secondary w-75" onclick="selectSkin()" type="button">Tipo de piel</button>
+                    <input type="text" id="tipoPiel" name="tipoPiel" style="display: none;">
+                </div>
             </div>
             
-            <input type="color" name="color" id="color" value="#fdddca" class="input-color mb-5 form-control-color">
+            <div>
+                <div class="form-group d-flex flex-row mb-5 align-items-center to-left" style="animation-delay: 1.2s;">
+                    <label for="colorPiel" class="col-form-label w-50" style="margin-right: 5%;">Color de piel:</label>
+                    <div style="flex: auto; margin-left: 10px;">
+                        <input type="color" name="colorPiel" id="colorPiel" value="#fdddca" class="input-color">
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <div class="form-group d-flex flex-row mb-5 align-items-center to-left" style="animation-delay: 1.4s;">
+                    <label for="colorPiel" class="col-form-label w-50" style="margin-right: 5%;">Color de piel:</label>
+                    <div style="flex: auto; margin-left: 10px;">
+                        <input type="color" name="colorPiel" id="colorPiel" value="#fdddca" class="input-color">
+                    </div>
+                </div>
+            </div>
             
-            <button type="submit" class="btn btn-success w-50" style="font-size: 18px; border-radius: 10px; height: 36px; ">submit</button>
+            <div>
+                <div class="to-left" style="animation-delay: 1.6s;">
+                    <button type="submit" class="btn btn-success w-50">Guardar</button>
+                </div>
+            </div>
         </form>
     </div>
+
+    <script src="{{ url_for('static', filename='formulario.js') }}"></script>
 {% endblock %}
