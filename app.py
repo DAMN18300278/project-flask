@@ -18,7 +18,9 @@ app.config['MAIL_PORT'] = 465
 app.config['MAIL_USERNAME'] = 'd.i.e.g.o.nambo123@gmail.com'
 app.config['MAIL_PASSWORD'] = 'wrxbqljyszwesklc'
 app.config['MAIL_USE_TLS'] = False
-app.config['MAIL_USE_SSL'] = True
+app.config['MAIL_USE_SSL'] = True 
+
+
 
 mail = Mail(app)
 # msg = Message('Este es tu codigo de confirmacion', sender='d.i.e.g.o.nambo123@gmail.com', recipients=['a18300278@ceti.mx'])
