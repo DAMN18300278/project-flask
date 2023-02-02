@@ -4,8 +4,16 @@
 {% endblock %}
 
 {% block content %}
+    <form action="/guardarDatosUsuario" method="post">
     <div class="position-absolute w-100 h-100" id="alertaOjos" style="z-index: 2; display: none; background-color: rgba(0, 0, 0, 0.152); top: 0;">
-        <div class="to-left position-absolute justify-content-center align-items-center d-flex" style="top: 30%; animation-duration: 0.7s;">
+        <div class="to-left position-relative justify-content-center align-items-center d-flex" style="top: 30%; animation-duration: 0.7s;">
+            <div>
+                <svg class="position-absolute" width="30" height="30" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round" style="top: 10; right: 12%;" onclick="document.getElementById('alertaOjos').style.display = 'none'">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                    <circle cx="12" cy="12" r="9" />
+                    <path d="M10 10l4 4m0 -4l-4 4" />
+                </svg>
+            </div>
             <div class="text-center p-4" style="width: 80%; height: fit-content; background-color: white; border-radius: 10px;">
                 <p class="display-4">Color de ojos</p>
                 <div class="h-50" style="display: grid; grid-template-columns: repeat(3, 1fr);">
@@ -31,10 +39,155 @@
             </div>
         </div>
     </div>
-    <div class="position-absolute w-100 h-100" id="alertaPiel" style="z-index: 2; display: none; background-color: rgba(0, 0, 0, 0.152); top: 0;" onclick="index()">
-        <div class="to-left position-absolute justify-content-center align-items-center d-flex" style="top: 30%; animation-duration: 0.7s;">
-            <div class="text-center p-4" style="width: 80%; height: fit-content; background-color: white; border-radius: 10px;">
+
+    <div class="position-absolute w-100 h-100" id="alertaPiel" style="z-index: 2; display: none; background-color: rgba(0, 0, 0, 0.152); top: 0; bottom: 0; left: 0; right: 0;">
+        <div class="to-left position-relative justify-content-center align-items-center d-flex" style="top: 30%; animation-duration: 0.7s;">
+            <div>
+                <svg width="30" height="30" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round" class="position-absolute" style="right: 22%; top: 10;" onclick="document.getElementById('alertaPiel').style.display = 'none'">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                    <circle cx="12" cy="12" r="9" />
+                    <path d="M10 10l4 4m0 -4l-4 4" />
+                </svg>
+            </div>
+            <div class="text-center p-4" style="width: 60%; height: fit-content; background-color: white; border-radius: 10px;">
                 <p class="display-4">Tipo de piel</p>
+                <div class="w-50 d-inline-block" style="font-size: larger;">
+                    <div class="form-check" onclick="textoPiel('Normal')">
+                        <input class="form-check-input" type="radio" name="tipoPiel" id="normal" checked value="1">
+                        <label class="form-check-label" for="normal">Normal</label>
+                    </div>
+                    <div class="form-check" onclick="textoPiel('Seca')">
+                        <input class="form-check-input" type="radio" name="tipoPiel" id="seca" value="2">
+                        <label class="form-check-label" for="seca">Seca</label>
+                    </div>
+                    <div class="form-check" onclick="textoPiel('Grasa')">
+                        <input class="form-check-input" type="radio" name="tipoPiel" id="grasa" value="3">
+                        <label class="form-check-label" for="grasa">Grasa</label>
+                    </div>
+                    <div class="form-check" onclick="textoPiel('Mixta')">
+                        <input class="form-check-input" type="radio" name="tipoPiel" id="mixta" value="4">
+                        <label class="form-check-label" for="mixta">Mixta</label>
+                    </div>
+                    <div class="form-check" onclick="textoPiel('Acné')">
+                        <input class="form-check-input" type="radio" name="tipoPiel" id="acne" value="5">
+                        <label class="form-check-label" for="acne">Acné</label>
+                    </div>
+                    <div class="form-check" onclick="textoPiel('Sensible')">
+                        <input class="form-check-input" type="radio" name="tipoPiel" id="sensible" value="6">
+                        <label class="form-check-label" for="sensible">Sensible</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="position-absolute w-100 h-100" id="alertaColorPiel" style="z-index: 2; display: none; background-color: rgba(0, 0, 0, 0.152); top: 0; bottom: 0; left: 0; right: 0;">
+        <div class="to-left position-relative justify-content-center align-items-center d-flex" style="top: 30%; animation-duration: 0.7s;">
+            <div>
+                <svg width="30" height="30" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round" class="position-absolute" style="right: 8%; top: 10;" onclick="document.getElementById('alertaColorPiel').style.display = 'none'">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                    <circle cx="12" cy="12" r="9" />
+                    <path d="M10 10l4 4m0 -4l-4 4" />
+                </svg>
+            </div>
+            <div class="text-center p-4" style="width: 90%; height: fit-content; background-color: white; border-radius: 10px;">
+                <p class="display-4">Tono de piel</p>
+                <div class="h-50" style="display: grid; grid-template-columns: repeat(6, 1fr);">
+                    <div class="d-flex justify-content-center mb-4 mt-2">
+                        <div class="colores-piel" style="background-color: #ead8c4;" onclick="colorPiel('#ead8c4')"></div>
+                    </div>
+                    <div class="d-flex justify-content-center mb-4 mt-2">
+                        <div class="colores-piel" style="background-color: #edd8c5;" onclick="colorPiel('#edd8c5')"></div>
+                    </div>
+                    <div class="d-flex justify-content-center mb-4 mt-2">
+                        <div class="colores-piel" style="background-color: #eed7c7;" onclick="colorPiel('#eed7c7')"></div>
+                    </div>
+                    <div class="d-flex justify-content-center mb-4 mt-2">
+                        <div class="colores-piel" style="background-color: #f0d6c9;" onclick="colorPiel('#f0d6c9')"></div>
+                    </div>
+                    <div class="d-flex justify-content-center mb-4 mt-2">
+                        <div class="colores-piel" style="background-color: #f2d6cb;" onclick="colorPiel('#f2d6cb')"></div>
+                    </div>
+                    <div class="d-flex justify-content-center mb-4 mt-2">
+                        <div class="colores-piel" style="background-color: #f5d4cd;" onclick="colorPiel('#f5d4cd')"></div>
+                    </div>
+
+                    <div class="d-flex justify-content-center mb-4 mt-2">
+                        <div class="colores-piel" style="background-color: #d2b897;" onclick="colorPiel('#d2b897')"></div>
+                    </div>
+                    <div class="d-flex justify-content-center mb-4 mt-2">
+                        <div class="colores-piel" style="background-color: #d5b699;" onclick="colorPiel('#d5b699')"></div>
+                    </div>
+                    <div class="d-flex justify-content-center mb-4 mt-2">
+                        <div class="colores-piel" style="background-color: #d9b59b;" onclick="colorPiel('#d9b59b')"></div>
+                    </div>
+                    <div class="d-flex justify-content-center mb-4 mt-2">
+                        <div class="colores-piel" style="background-color: #dcb39f;" onclick="colorPiel('#dcb39f')"></div>
+                    </div>
+                    <div class="d-flex justify-content-center mb-4 mt-2">
+                        <div class="colores-piel" style="background-color: #e9c3b6;" onclick="colorPiel('#e9c3b6')"></div>
+                    </div>
+                    <div class="d-flex justify-content-center mb-4 mt-2">
+                        <div class="colores-piel" style="background-color: #eac2ba;" onclick="colorPiel('#eac2ba')"></div>
+                    </div>
+
+                    <div class="d-flex justify-content-center mb-4 mt-2">
+                        <div class="colores-piel" style="background-color: #b4976f;" onclick="colorPiel('#b4976f')"></div>
+                    </div>
+                    <div class="d-flex justify-content-center mb-4 mt-2">
+                        <div class="colores-piel" style="background-color: #b89470;" onclick="colorPiel('#b89470')"></div>
+                    </div>
+                    <div class="d-flex justify-content-center mb-4 mt-2">
+                        <div class="colores-piel" style="background-color: #bd9174;" onclick="colorPiel('#bd9174')"></div>
+                    </div>
+                    <div class="d-flex justify-content-center mb-4 mt-2">
+                        <div class="colores-piel" style="background-color: #ac8063;" onclick="colorPiel('#cfa28b')"></div>
+                    </div>
+                    <div class="d-flex justify-content-center mb-4 mt-2"> 
+                        <div class="colores-piel" style="background-color: #9a7153;" onclick="colorPiel('#c38f7a')"></div>
+                    </div>
+                    <div class="d-flex justify-content-center mb-4 mt-2">
+                        <div class="colores-piel" style="background-color: #9d6f55;" onclick="colorPiel('#c68d82')"></div>
+                    </div>
+                    
+                    <div class="d-flex justify-content-center mb-4 mt-2">
+                        <div class="colores-piel" style="background-color: #80643d;" onclick="colorPiel('#80643d')"></div>
+                    </div>
+                    <div class="d-flex justify-content-center mb-4 mt-2">
+                        <div class="colores-piel" style="background-color: #836241;" onclick="colorPiel('#836241')"></div>
+                    </div>
+                    <div class="d-flex justify-content-center mb-4 mt-2">
+                        <div class="colores-piel" style="background-color: #876043;" onclick="colorPiel('#876043')"></div>
+                    </div>
+                    <div class="d-flex justify-content-center mb-4 mt-2">
+                        <div class="colores-piel" style="background-color: #8b5f46;" onclick="colorPiel('#8b5f46')"></div>
+                    </div>
+                    <div class="d-flex justify-content-center mb-4 mt-2">
+                        <div class="colores-piel" style="background-color: #8d5c4b;" onclick="colorPiel('#8d5c4b')"></div>
+                    </div>
+                    <div class="d-flex justify-content-center mb-4 mt-2">
+                        <div class="colores-piel" style="background-color: #905c4f;" onclick="colorPiel('#905c4f')"></div>
+                    </div>
+
+                    <div class="d-flex justify-content-center mb-4 mt-2">
+                        <div class="colores-piel" style="background-color: #6d5533;" onclick="colorPiel('#6d5533')"></div>
+                    </div>
+                    <div class="d-flex justify-content-center mb-4 mt-2">
+                        <div class="colores-piel" style="background-color: #715235;" onclick="colorPiel('#715235')"></div>
+                    </div>
+                    <div class="d-flex justify-content-center mb-4 mt-2">
+                        <div class="colores-piel" style="background-color: #745036;" onclick="colorPiel('#745036')"></div>
+                    </div>
+                    <div class="d-flex justify-content-center mb-4 mt-2">
+                        <div class="colores-piel" style="background-color: #754f38;" onclick="colorPiel('#754f38')"></div>
+                    </div>
+                    <div class="d-flex justify-content-center mb-4 mt-2">
+                        <div class="colores-piel" style="background-color: #784d3d;" onclick="colorPiel('#784d3d')"></div>
+                    </div>
+                    <div class="d-flex justify-content-center mb-4 mt-2">
+                        <div class="colores-piel" style="background-color: #7b4b41;" onclick="colorPiel('#7b4b41')"></div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -42,7 +195,7 @@
     <div class="container position-absolute align-items-center" style="top: 0; bottom: 0; left: 0; right: 0;">
         <p class="to-left">FORMULARIO</p>
 
-        <form action="/guardarDato" class="d-flex flex-column justify-content-between" method="post" style="font-size: 18px; height: 85%;">
+        <div class="d-flex flex-column justify-content-between" style="font-size: 18px; height: 85%;">
             <div>
                 <div class="form-group d-flex flex-row mb-3 align-items-center to-left" style="animation-delay: 0.4s;">
                     <label for="nombre" class="col-form-label w-25" style="margin-right: 5%;">Nombre:</label>
@@ -64,43 +217,44 @@
 
             <div>
                 <div class="to-left mb-5" style="animation-delay: 0.8s;">
-                    <button class="btn btn-outline-secondary w-75" onclick="selectEyes()" type="button">Color de ojos</button>
+                    <button class="btn btn-outline-secondary w-75" id="btnColorOjos" onclick="selectEyes()" type="button" style="transition: ease all 1s;">Color de ojos</button>
                     <input type="text" id="colorOjos" name="colorOjos" style="display: none;">
                 </div>
             </div>
 
             <div>
                 <div class="to-left mb-5" style="animation-delay: 1s;">
-                    <button class="btn btn-outline-secondary w-75" onclick="selectSkin()" type="button">Tipo de piel</button>
-                    <input type="text" id="tipoPiel" name="tipoPiel" style="display: none;">
+                    <button class="btn btn-outline-secondary w-75" onclick="selectSkin()" id="btnTipoPiel" type="button">Tipo de piel</button>
                 </div>
             </div>
             
             <div>
                 <div class="form-group d-flex flex-row mb-5 align-items-center to-left" style="animation-delay: 1.2s;">
-                    <label for="colorPiel" class="col-form-label w-50" style="margin-right: 5%;">Color de piel:</label>
-                    <div style="flex: auto; margin-left: 10px;">
-                        <input type="color" name="colorPiel" id="colorPiel" value="#fdddca" class="input-color">
+                    <label for="colorPiel" class="col-form-label w-50" style="margin-right: 5%;">Tono de piel:</label>
+                    <div style="flex: auto; margin-left: 10px;" onclick="document.getElementById('alertaColorPiel').style.display = 'block'">
+                        <div id="divColorPiel" class="input-color" style="background-color: #fdddca;"></div>
+                        <input type="text" name="colorPiel" id="inputColorPiel" value="#fdddca" style="display: none;">
                     </div>
                 </div>
             </div>
 
             <div>
                 <div class="form-group d-flex flex-row mb-5 align-items-center to-left" style="animation-delay: 1.4s;">
-                    <label for="colorPiel" class="col-form-label w-50" style="margin-right: 5%;">Color de piel:</label>
+                    <label for="colorPiel" class="col-form-label w-50" style="margin-right: 5%;">Color de cabello:</label>
                     <div style="flex: auto; margin-left: 10px;">
-                        <input type="color" name="colorPiel" id="colorPiel" value="#fdddca" class="input-color">
+                        <input type="color" name="colorCabello" id="inputColorCabello" value="#633a34" class="input-color">
                     </div>
                 </div>
             </div>
             
             <div>
                 <div class="to-left" style="animation-delay: 1.6s;">
-                    <button type="submit" class="btn btn-success w-50">Guardar</button>
+                    <button type="submit" class="btn btn-success w-75">Guardar</button>
                 </div>
             </div>
-        </form>
+        </div>
     </div>
+    </form>
 
     <script src="{{ url_for('static', filename='formulario.js') }}"></script>
 {% endblock %}

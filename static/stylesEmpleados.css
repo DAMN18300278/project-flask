@@ -1,0 +1,15 @@
+body{
+    background-color: #ffffff;
+    font-size: 15px;
+}
+
+.container{
+    width: 70%;
+    font-size: 35px;
+    padding: 2rem;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
