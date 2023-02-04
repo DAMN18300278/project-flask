@@ -4,7 +4,7 @@ body{
 }
 
 .container{
-    width: 70%;
+    width: 100%;
     font-size: 35px;
     padding: 2rem;
     position: absolute;
@@ -12,4 +12,9 @@ body{
     bottom: 0;
     left: 0;
     right: 0;
+}
+
+.btn{
+    font-size: 22px;
+    height: 40px;
 }

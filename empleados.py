@@ -10,17 +10,20 @@ def connection():
                                 password='',
                                 db='diegomedel$decore')
 
-@empleados.route("/administradores")
-def indexAdmin():
+def asignarNombre(idEmpleado):
     conexion = connection()
 
     with conexion.cursor() as cursor:
-        cursor.execute("SELECT Nombre_Empleado FROM empleado WHERE Id_Empleado = %s", session['id_administrador'])
+        cursor.execute("SELECT Nombre_Empleado FROM empleado WHERE Id_Empleado = %s", idEmpleado)
         rows = cursor.fetchall()
         
         for row in rows:
-            flash(f'{row[0]}')
-            
+            nombre = row[0]  
+        flash(nombre[:(nombre.index(' '))])
+
+@empleados.route("/administradores")
+def indexAdmin():
+    asignarNombre(session['id_administrador'])
     return render_template("empleados/indexAdmin.html")
 
 @empleados.route("/administradores/delete")
@@ -30,12 +33,15 @@ def delAdmin():
 
 @empleados.route("/caja")
 def indexCaja():
+    asignarNombre(session['id_encargadoCaja'])
     return render_template("empleados/indexCaja.html")
 
 @empleados.route("/supervisores")
 def indexSupervisor():
+    asignarNombre(session['id_supervisor'])
     return render_template("empleados/indexSupervisores.html")
 
 @empleados.route("/inventario")
 def indexInv():
+    asignarNombre(session['id_inventario'])
     return render_template("empleados/indexAlmacen.html")
