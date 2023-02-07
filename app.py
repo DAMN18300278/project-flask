@@ -1,7 +1,19 @@
+
+from flask import Flask
+from flask import render_template
+from flask import Response
+from flask import request
+from flask import redirect
+from flask import flash
+from flask import url_for
+from flask_mail import Mail, Message
+from itsdangerous import URLSafeTimedSerializer, SignatureExpired
+
 from flask import render_template, Response, request, redirect, flash, session, Flask
 from flask_mail import Mail, Message
 from empleados import empleados
 from usuarios import usuarios
+
 import mediapipe as mp
 import cv2
 import pymysql
@@ -14,15 +26,16 @@ app.register_blueprint(usuarios)
 #Email variables
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'
 app.config['MAIL_PORT'] = 465
-app.config['MAIL_USERNAME'] = 'd.i.e.g.o.nambo123@gmail.com'
-app.config['MAIL_PASSWORD'] = 'wrxbqljyszwesklc'
+app.config['MAIL_USERNAME'] = 'decore.makeup@gmail.com'
+app.config['MAIL_PASSWORD'] = 'xnuetwrrzayzvvvy'
 app.config['MAIL_USE_TLS'] = False
-app.config['MAIL_USE_SSL'] = True
+app.config['MAIL_USE_SSL'] = True 
+
+
 
 mail = Mail(app)
-# msg = Message('Este es tu codigo de confirmacion', sender='d.i.e.g.o.nambo123@gmail.com', recipients=['a18300278@ceti.mx'])
-# msg.body = "Hola esta es una prueba de enviar un correo de confirmacion a traves de flask"
-# mail.send(msg)
+#Este valor es como la contraseña del token
+s = URLSafeTimedSerializer('decore')
 
 #Mediapipe variables
 mpFaceMesh = mp.solutions.face_mesh
@@ -78,7 +91,7 @@ def connection():
     return pymysql.connect(host='localhost',
                                 user='root',
                                 password='',
-                                db='diegomedel$decore')
+                                db='decore')
 #--------------------------------------------------------#
 
 @app.route("/")
@@ -99,9 +112,104 @@ def guardarUsuario():
 
     return redirect("/")
 
+
+@app.route('/cambiarcontra', methods=["POST"])
+def cambiarcontra():
+    if request.method == "POST":
+        conexion = connection()
+        correo = request.form["correo"]
+        contraseña = request.form["contraseña"]
+
+        with conexion.cursor() as cursor:
+            cursor.execute("UPDATE cuenta SET Contraseña = (%s) WHERE Correo = (%s)", (contraseña,correo))
+
+        conexion.commit()
+        conexion.close()
+
+        return redirect("/")
+
+@app.route("/recover")
+def recover():
+    return render_template("index/recover.html")
+
 @app.route("/register")
 def registrar():
     return render_template("index/register.html")
+
+@app.route("/send_correo", methods=['GET','POST'])
+def send_correo():
+    if request.method == "POST":
+        email = request.form['correorecover']
+        contraseña = request.form['contraseña']
+        estado = 'Inactivo'
+
+        conexion = connection()
+        with conexion.cursor() as cursor:
+            cursor.execute("INSERT INTO cuenta VALUES ('', 2, %s, %s,%s)", (email, contraseña,estado))
+        conexion.commit()
+        conexion.close()
+
+        token = s.dumps(email, salt='email-confirm')
+        subject = 'Confirmacion de Cuenta Decore'
+        
+        # en el sender hay que poner un correo de decore
+        message = Message(subject,sender="decore.makeup@gmail.com", recipients=[email])
+        
+        link = url_for('confirm',token=token, _external=True)
+
+        message.body = 'Porfavor ingresa al siguiente link para confirmar la creacion de tu cuenta {}'.format(link)
+
+        mail.send(message)
+
+        success = "Correo enviado"
+        return redirect("/")
+
+#correocon es para recuperar la contraseña
+@app.route("/send_correocon", methods=['GET','POST'])
+def send_correocon():
+    if request.method == "POST":
+        email = request.form['correorecover']
+        
+        conexion = connection()
+
+
+        token = s.dumps(email, salt='email-confirm')
+        subject = 'Cambio de contraseña Decore'
+        
+        # en el sender hay que poner un correo de decore
+        message = Message(subject,sender="decore.makeup@gmail.com", recipients=[email])
+        
+        link = url_for('confirmrecover',token=token, _external=True)
+
+        message.body = 'Porfavor ingresa al siguiente link para confirmar el cambio de contraseña en su cuenta {}'.format(link)
+
+        mail.send(message)
+
+        success = "Correo enviado"
+        return redirect("/")
+
+@app.route('/confirm/<token>')
+def confirm(token):
+    try:
+        email = s.loads(token, salt='email-confirm', max_age=120)
+        conexion = connection()
+        with conexion.cursor() as cursor:
+            cursor.execute("UPDATE cuenta SET estado = 'Activo' WHERE Correo = (%s)", (email))
+        conexion.commit()
+        conexion.close()
+    except SignatureExpired:
+        return '<h1>The token is expired!</h1>'
+    return '<h1>The Token Works!</h1>'
+
+@app.route('/confirmrecover/<token>')
+def confirmrecover(token):
+    try:
+        email = s.loads(token, salt='email-confirm', max_age = 120)
+              
+    except SignatureExpired:
+        return '<h1>The link is expired!</h1>'
+    return render_template("index/cambiarcontrasena.html", correo =email)
+
 
 @app.route("/login", methods=["POST"])
 def login():

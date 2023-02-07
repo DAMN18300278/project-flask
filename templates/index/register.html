@@ -14,7 +14,7 @@
         </svg>
     </div>
 
-    <form action="/guardarUsuario" id="form" method="post" class="input-group input-group-lg d-flex justify-content-between flex-column">
+    <form action="{{url_for('send_correo')}}" id="form" method="post" class="input-group input-group-lg d-flex justify-content-between flex-column">
         <div class="input-group">
             <input type="text" id="correo" class="form-control mt-2 to-left" placeholder="Correo" name="correo">
         </div>
