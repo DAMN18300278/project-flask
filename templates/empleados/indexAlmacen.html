@@ -1,0 +1,21 @@
+{% extends "empleados/empleadosMaster.html" %}
+{% block head %}
+    {{ super() }}
+{% endblock %}
+
+{% block content %}
+    <div class="container d-flex justify-content-center align-items-center">
+        <div>
+            <div class="vanish1">
+                <p class="text-center">BIENVENIDO</p>
+                {% with user = get_flashed_messages() %}
+                <p style="font-size: 25px; font-weight: lighter; margin-bottom: 12%;">{{ user[0]|upper }}</p>
+                {% endwith %}
+            </div>
+            <div class="w-75 d-inline">
+                <a class="btn btn-success mt-5 to-right w-75 position-relative">Ordenes de pago</a>
+                <a class="btn btn-success mt-5 to-left w-75 position-relative" style="margin-bottom: 30%;">Empleados</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}

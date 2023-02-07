@@ -18,9 +18,9 @@
     {% if error %}
     <div class="position-absolute w-100 h-100 vanish2" id="alerta" style="z-index: 2; display: none; background-color: rgba(0, 0, 0, 0.368); top: 0;" onclick="index()">
         <div class="position-absolute text-center p-4 container" style="width: 60%; height: fit-content; background-color: white; top: 10%; left: 20%; ">
-            <p class="display-4" id="tituloMsg"></p>
+            <p class="display-4" id="tituloMsg">Datos incorrectos</p>
 
-            <p style="font-size: 12px;" id="msg"></p>
+            <p style="font-size: 12px;" id="msg">{{ error }}</p>
         </div>
     </div>
     {% endif %}

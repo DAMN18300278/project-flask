@@ -1,3 +1,4 @@
+
 from flask import Flask
 from flask import render_template
 from flask import Response
@@ -7,12 +8,20 @@ from flask import flash
 from flask import url_for
 from flask_mail import Mail, Message
 from itsdangerous import URLSafeTimedSerializer, SignatureExpired
+
+from flask import render_template, Response, request, redirect, flash, session, Flask
+from flask_mail import Mail, Message
+from empleados import empleados
+from usuarios import usuarios
+
 import mediapipe as mp
 import cv2
 import pymysql
 
 app = Flask(__name__)
 app.secret_key = "ab"
+app.register_blueprint(empleados)
+app.register_blueprint(usuarios)
 
 #Email variables
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'
@@ -212,7 +221,7 @@ def login():
         cursor.execute("SELECT * FROM cuenta WHERE Correo = %s", (correo))
         rows = cursor.fetchall()
         for row in rows:
-            idCuenta = row[0]
+            session['id_usuario'] = row[0]
             rol = row[1]
             contraseñaC = row[3]
     
@@ -220,39 +229,92 @@ def login():
         flash("Correo inexistente")
         return redirect("/")
 
-    if contraseña != contraseñaC:
-        flash("Contraseña incorrecta")
+    if 'contraseñaC' in vars():
+        if contraseña != contraseñaC:
+            flash("Contraseña incorrecta")
+            return redirect("/")
+    else:
         return redirect("/")
 
     if rol == 1:
-        return redirect("/empleados")
+        with conexion.cursor() as cursor:
+            cursor.execute("SELECT Tipo_Empleado FROM empleado WHERE Id_Empleado = %s", (session['id_usuario']))
+            rows = cursor.fetchall()
+            for row in rows:
+                tempId = session['id_usuario']
+                session.clear()
+
+                if row[0] == 1:
+                    session['id_encargadoCaja'] = tempId
+                    return redirect("/caja")
+                elif row[0] == 2:
+                    session['id_supervisor'] = tempId
+                    return redirect("/supervisores")
+                elif row[0] == 3:
+                    session['id_administrador'] = tempId
+                    return redirect("/administradores")
+                elif row[0] == 4:
+                    session['id_inventario'] = tempId
+                    return redirect("/inventario")
     else:
         with conexion.cursor() as cursor:
-            cursor.execute("SELECT * FROM usuarios WHERE Id_Usuario = %s", (idCuenta))
+            cursor.execute("SELECT * FROM usuarios WHERE Id_Usuario = %s", (session['id_usuario']))
             usuario = cursor.fetchone()
         
         conexion.close()
 
-        if usuario[1] is None:
+        if usuario is None:
             return redirect("/formulario")
         else:
+            if usuario[1] is None:
+                return redirect("/formulario")
             return redirect("/usuarios")
-    
-@app.route("/usuarios")
-def usuarios():
-    return render_template("usuarios/usuariosMaster.html")
 
 @app.route("/formulario")
 def formulario():
+    if not 'id_usuario' in session: return redirect("/")
     return render_template("usuarios/formulario.html")
 
-@app.route("/empleados")
-def empleados():
-    return render_template("empleados/empleadosMaster.html")
+@app.route("/guardarDatosUsuario", methods=["POST"])
+def guardarDatosUsuario():
+    conexion = connection()
+    nombre = request.form["nombre"]
+    edad = request.form["edad"]
+    colorOjos = request.form["colorOjos"]
+    tipoPiel = request.form["tipoPiel"]
+    colorPiel = request.form["colorPiel"]
+    colorCabello = request.form["colorCabello"]
+
+    with conexion.cursor() as cursor:
+        cursor.execute("INSERT INTO usuarios VALUES(%s, %s, %s, %s, %s, %s, %s, 2)", (session['id_usuario'], nombre, edad, colorOjos, tipoPiel, colorPiel, colorCabello))
+
+    conexion.commit()
+    conexion.close()
+
+    return redirect("/usuarios")
     
 @app.route("/videoFeed")
 def videoFeed():
     return Response(generate(), mimetype="multipart/x-mixed-replace; boundary=frame")
+
+@app.before_request
+def before_request():
+    ruta = request.path
+
+    if not 'id_usuario' in session and '/usuarios' in ruta:
+        return redirect("/")
+
+    if not 'id_administrador' in session and '/administradores' in ruta:
+        return redirect("/")
+
+    if not 'id_encargadoCaja' in session and '/caja' in ruta:
+        return redirect("/")
+
+    if not 'id_supervisor' in session and '/supervisores' in ruta:
+        return redirect("/")
+
+    if not 'id_inventario' in session and '/inventario' in ruta:
+        return redirect("/")
 
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port="3000")
