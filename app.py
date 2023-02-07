@@ -91,27 +91,12 @@ def connection():
     return pymysql.connect(host='localhost',
                                 user='root',
                                 password='',
-                                db='decore')
+                                db='diegomedel$decore')
 #--------------------------------------------------------#
 
 @app.route("/")
 def index():
     return render_template("index/login.html")
-
-@app.route("/guardarUsuario", methods=["POST"])
-def guardarUsuario():
-    conexion = connection()
-    correo = request.form["correo"]
-    contraseña = request.form["contraseña"]
-
-    with conexion.cursor() as cursor:
-        cursor.execute("INSERT INTO cuenta VALUES ('', 2, %s, %s)", (correo, contraseña))
-    
-    conexion.commit()
-    conexion.close()
-
-    return redirect("/")
-
 
 @app.route('/cambiarcontra', methods=["POST"])
 def cambiarcontra():
@@ -139,7 +124,7 @@ def registrar():
 @app.route("/send_correo", methods=['GET','POST'])
 def send_correo():
     if request.method == "POST":
-        email = request.form['correorecover']
+        email = request.form['correo']
         contraseña = request.form['contraseña']
         estado = 'Inactivo'
 
@@ -165,7 +150,7 @@ def send_correo():
         return redirect("/")
 
 #correocon es para recuperar la contraseña
-@app.route("/send_correocon", methods=['GET','POST'])
+@app.route("/send_correocon", methods=['POST'])
 def send_correocon():
     if request.method == "POST":
         email = request.form['correorecover']
