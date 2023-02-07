@@ -17,8 +17,8 @@ app.secret_key = "ab"
 #Email variables
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'
 app.config['MAIL_PORT'] = 465
-app.config['MAIL_USERNAME'] = 'lpipeavila1@gmail.com'
-app.config['MAIL_PASSWORD'] = 'sxtxzekzghwwcven'
+app.config['MAIL_USERNAME'] = 'decore.makeup@gmail.com'
+app.config['MAIL_PASSWORD'] = 'xnuetwrrzayzvvvy'
 app.config['MAIL_USE_TLS'] = False
 app.config['MAIL_USE_SSL'] = True 
 
@@ -103,6 +103,26 @@ def guardarUsuario():
 
     return redirect("/")
 
+
+@app.route('/cambiarcontra', methods=["POST"])
+def cambiarcontra():
+    if request.method == "POST":
+        conexion = connection()
+        correo = request.form["correo"]
+        contraseña = request.form["contraseña"]
+
+        with conexion.cursor() as cursor:
+            cursor.execute("UPDATE cuenta SET Contraseña = (%s) WHERE Correo = (%s)", (contraseña,correo))
+
+        conexion.commit()
+        conexion.close()
+
+        return redirect("/")
+
+@app.route("/recover")
+def recover():
+    return render_template("index/recover.html")
+
 @app.route("/register")
 def registrar():
     return render_template("index/register.html")
@@ -110,7 +130,7 @@ def registrar():
 @app.route("/send_correo", methods=['GET','POST'])
 def send_correo():
     if request.method == "POST":
-        email = request.form['correo']
+        email = request.form['correorecover']
         contraseña = request.form['contraseña']
         estado = 'Inactivo'
 
@@ -124,7 +144,7 @@ def send_correo():
         subject = 'Confirmacion de Cuenta Decore'
         
         # en el sender hay que poner un correo de decore
-        message = Message(subject,sender="lpipeavila1@gmail.com", recipients=[email])
+        message = Message(subject,sender="decore.makeup@gmail.com", recipients=[email])
         
         link = url_for('confirm',token=token, _external=True)
 
@@ -133,12 +153,36 @@ def send_correo():
         mail.send(message)
 
         success = "Correo enviado"
-        return render_template("index/result.html", success=success)
+        return redirect("/")
+
+#correocon es para recuperar la contraseña
+@app.route("/send_correocon", methods=['GET','POST'])
+def send_correocon():
+    if request.method == "POST":
+        email = request.form['correorecover']
+        
+        conexion = connection()
+
+
+        token = s.dumps(email, salt='email-confirm')
+        subject = 'Cambio de contraseña Decore'
+        
+        # en el sender hay que poner un correo de decore
+        message = Message(subject,sender="decore.makeup@gmail.com", recipients=[email])
+        
+        link = url_for('confirmrecover',token=token, _external=True)
+
+        message.body = 'Porfavor ingresa al siguiente link para confirmar el cambio de contraseña en su cuenta {}'.format(link)
+
+        mail.send(message)
+
+        success = "Correo enviado"
+        return redirect("/")
 
 @app.route('/confirm/<token>')
 def confirm(token):
     try:
-        email = s.loads(token, salt='email-confirm', max_age=60)
+        email = s.loads(token, salt='email-confirm', max_age=120)
         conexion = connection()
         with conexion.cursor() as cursor:
             cursor.execute("UPDATE cuenta SET estado = 'Activo' WHERE Correo = (%s)", (email))
@@ -147,6 +191,15 @@ def confirm(token):
     except SignatureExpired:
         return '<h1>The token is expired!</h1>'
     return '<h1>The Token Works!</h1>'
+
+@app.route('/confirmrecover/<token>')
+def confirmrecover(token):
+    try:
+        email = s.loads(token, salt='email-confirm', max_age = 120)
+              
+    except SignatureExpired:
+        return '<h1>The link is expired!</h1>'
+    return render_template("index/cambiarcontrasena.html", correo =email)
 
 
 @app.route("/login", methods=["POST"])
