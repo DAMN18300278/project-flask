@@ -1,10 +1,10 @@
-{% extends "index/indexMaster.html" %}
+{% extends "index/indexMaster.jinja" %}
 {% block head %}
     {{ super() }}
 {% endblock %}
 
 {% block content %}
-    <p class="display-1 to-right">BIENVENIDO</p>
+    <p class="display-1 to-right">Recuperar Contraseña</p>
 
     <div class="vanish1">
         <svg class="path mb-5" width="50%" viewBox="0 0 1280 1280">
@@ -14,26 +14,15 @@
         </svg>
     </div>
 
-    <form action="/login" id="form" method="post" class="input-group input-group-lg d-flex justify-content-between flex-column">
+    <form action="{{url_for('send_correocon')}}" id="formrecover" method="post" class="input-group input-group-lg d-flex justify-content-between flex-column">
         <div class="input-group">
-            <input type="text" class="form-control mb-4 to-left" placeholder="Correo" name="correo">
+            <input type="text" id="correorecover" class="form-control mt-2 to-left" placeholder="Correo" name="correorecover">
         </div>
-        <div class="input-group">
-            <input type="text" class="form-control mt-4 to-right" placeholder="Contraseña" name="contraseña">
-        </div>
-    </form>
+        <br>
+        <p style="font-size: 12px;" id="msg"></p>
+       
+    </form> 
 
-    <div class="d-flex flex-column" style="margin-bottom: 1rem;">
-        <a href="/recover" class="link-success mb-5 vanish1" style="font-size: 12px; animation-duration: 3s;">Recuperar contraseña</a>
-        <a onclick="login()" class="btn btn-success vanish1" style="font-size: 18px; border-radius: 10px; height: 36px; animation-duration: 4s; margin-bottom: 5rem;">Login</a>
-        <a href="/register" class="link-success vanish1" style="font-size: 15px; animation-duration: 5s;">Registrarse</a>
-    </div>
-
-    <script>
-        form = document.getElementById("form")
-
-        function login(){
-            form.submit();
-        }
-    </script>
+    <button name="Recuperar" onclick="button_recover()" class="btn btn-success vanish1 mt-5" style="font-size: 18px; border-radius: 10px; height: 36px; animation-duration: 4s;">Enviar correo</button>
+   
 {% endblock %}
