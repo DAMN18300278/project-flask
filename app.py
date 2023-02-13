@@ -1,4 +1,3 @@
-
 from flask import Flask
 from flask import render_template
 from flask import Response
@@ -290,6 +289,7 @@ def before_request():
         return redirect("/")
 
     if not 'id_administrador' in session and '/administradores' in ruta:
+        print("True")
         return redirect("/")
 
     if not 'id_encargadoCaja' in session and '/caja' in ruta:
