@@ -269,7 +269,7 @@ def guardarDatosUsuario():
 def videoFeed():
     return Response(generate(), mimetype="multipart/x-mixed-replace; boundary=frame")
 
-@app.before_request
+#@app.before_request
 def before_request():
     ruta = request.path
 

@@ -11,7 +11,7 @@ h1{
 
 @keyframes vLeft {
     from{
-        left: 30%;
+        left: 100%;
         width: 300%;
         opacity: 0%;
     }    
