@@ -24,7 +24,7 @@ def asignarNombre(idEmpleado):
 @empleados.route("/administradores")
 def indexAdmin():
     asignarNombre(session['id_administrador'])
-    return render_template("empleados/indexAdmin.html")
+    return render_template("empleados/indexAdmin.jinja")
 
 @empleados.route("/administradores/delete")
 def delAdmin():
@@ -34,14 +34,14 @@ def delAdmin():
 @empleados.route("/caja")
 def indexCaja():
     asignarNombre(session['id_encargadoCaja'])
-    return render_template("empleados/indexCaja.html")
+    return render_template("empleados/indexCaja.jinja")
 
 @empleados.route("/supervisores")
 def indexSupervisor():
     asignarNombre(session['id_supervisor'])
-    return render_template("empleados/indexSupervisores.html")
+    return render_template("empleados/indexSupervisores.jinja")
 
 @empleados.route("/inventario")
 def indexInv():
     asignarNombre(session['id_inventario'])
-    return render_template("empleados/indexAlmacen.html")
+    return render_template("empleados/indexAlmacen.jinja")

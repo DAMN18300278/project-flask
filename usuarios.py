@@ -5,7 +5,7 @@ usuarios = flask.Blueprint('usuarios', __name__)
 
 @usuarios.route("/usuarios")
 def index():
-    return render_template("empleados/empleadosMaster.html")
+    return render_template("usuarios/landing.jinja")
 
 @usuarios.route("/usuarios/delete")
 def delete():

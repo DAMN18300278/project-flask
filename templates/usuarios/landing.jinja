@@ -1,0 +1,11 @@
+{% extends "usuarios/usuariosMaster.jinja" %}
+{% block head %}
+    {{ super() }}
+{% endblock %}
+
+{% block content %}
+    {% include "usuarios/nav.jinja" %}
+    <div class="container h-auto to-left">
+        <p class="w-100" style="text-align: left;">Productos populares</p>
+    </div>
+{% endblock %}
