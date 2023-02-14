@@ -26,7 +26,9 @@ def indexAdmin():
     asignarNombre(session['id_administrador'])
     return render_template("empleados/indexAdmin.jinja")
 
-
+@empleados.route("/administradores/inventario")
+def invAdmin():
+    return render_template("empleados/inventario.jinja")
 
 @empleados.route("/administradores/delete")
 def delAdmin():
