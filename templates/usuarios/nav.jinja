@@ -1,0 +1,22 @@
+{% block nav %}
+    <nav class="navbar to-left navbar-light border-bottom border-dark p-2" style="font-size: 25px;">
+        <a href="/usuarios" class="navbar-brand mx-3" style="font-size:x-large;">DECÒRE</a>
+        <a class="nav-link" id="link" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="height:38px;">
+            <script src="https://cdn.lordicon.com/ritcuqlt.js"></script>
+            <lord-icon
+                src="{{ url_for('static', filename='icons/infoIcon.json') }}"
+                trigger="click"
+                style="width:30px;height:30px">
+            </lord-icon>
+        </a>
+    </nav>
+
+    <div class="horizontal-menu vanish1" style="animation-duration: 1s;">
+        <a class="horizontal-menu-hover" style="border-bottom-left-radius: 10px; border-top-left-radius: 10px;">Inicio</a>
+        <a class="horizontal-menu-unset" style="border-left: none">Ojos</a>
+        <a class="horizontal-menu-unset">Labios</a>
+        <a class="horizontal-menu-unset">Piel</a>
+        <a class="horizontal-menu-unset">Skincare</a>
+        <a class="horizontal-menu-unset" style="border-top-right-radius: 10px; border-bottom-right-radius: 10px;">Accesorios</a>
+    </div>
+{% endblock %}

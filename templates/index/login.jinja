@@ -1,11 +1,11 @@
-{% extends "index/indexMaster.html" %}
+{% extends "index/indexMaster.jinja" %}
 {% block head %}
     {{ super() }}
 {% endblock %}
 
 {% block content %}
-    <p class="display-1 to-right">Ingresa la nueva contraseña</p>
-    <h1>{{correorecover}}</h1>
+    <p class="display-1 to-right">BIENVENIDO</p>
+
     <div class="vanish1">
         <svg class="path mb-5" width="50%" viewBox="0 0 1280 1280">
             <g transform="translate(0,1280) scale(0.1,-0.1)" fill="#000000" stroke="none">
@@ -14,20 +14,26 @@
         </svg>
     </div>
 
-    <form action="/cambiarcontra" id="formcambiarcontra" method="post" class="input-group input-group-lg d-flex justify-content-between flex-column">
-        <input type="hidden" name="correo" id="correo" value="{{correo}}">
+    <form action="/login" id="form" method="post" class="input-group input-group-lg d-flex justify-content-between flex-column">
         <div class="input-group">
-            <input type="text" id="contraseña" class="form-control mt-2 to-left" placeholder="contraseña" name="contraseña">
-            <p size="4" id="errorcontra1"></p>
+            <input type="text" class="form-control mb-4 to-left" placeholder="Correo" name="correo">
         </div>
         <div class="input-group">
-            <input type="text" id="contraseñaC" class="form-control mt-5 to-right" placeholder="Confirmar Contraseña" name="contraseñaC">
-            <p id="errorcontra2"></p>
+            <input type="text" class="form-control mt-4 to-right" placeholder="Contraseña" name="contraseña">
         </div>
-        
-    </form> 
-    <button onclick="button_cambiarcontra()" name="Cambiarcontra"  class="btn btn-success vanish1 mt-5" style="font-size: 18px; border-radius: 10px; height: 36px; animation-duration: 4s;">Cambiar contraseña</button>
-    
-    
-   
+    </form>
+
+    <div class="d-flex flex-column" style="margin-bottom: 1rem;">
+        <a href="/recover" class="link-success mb-5 vanish1" style="font-size: 12px; animation-duration: 3s;">Recuperar contraseña</a>
+        <a onclick="login()" class="btn btn-success vanish1" style="font-size: 18px; border-radius: 10px; height: 36px; animation-duration: 4s; margin-bottom: 5rem;">Login</a>
+        <a href="/register" class="link-success vanish1" style="font-size: 15px; animation-duration: 5s;">Registrarse</a>
+    </div>
+
+    <script>
+        form = document.getElementById("form")
+
+        function login(){
+            form.submit();
+        }
+    </script>
 {% endblock %}

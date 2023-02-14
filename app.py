@@ -1,18 +1,9 @@
-from flask import Flask
-from flask import render_template
-from flask import Response
-from flask import request
-from flask import redirect
-from flask import flash
-from flask import url_for
-from flask_mail import Mail, Message
-from itsdangerous import URLSafeTimedSerializer, SignatureExpired
 
-from flask import render_template, Response, request, redirect, flash, session, Flask
+from itsdangerous import URLSafeTimedSerializer, SignatureExpired
+from flask import render_template, Response, request, redirect, flash, session, Flask, url_for
 from flask_mail import Mail, Message
 from empleados import empleados
 from usuarios import usuarios
-
 import mediapipe as mp
 import cv2
 import pymysql
@@ -29,8 +20,6 @@ app.config['MAIL_USERNAME'] = 'decore.makeup@gmail.com'
 app.config['MAIL_PASSWORD'] = 'xnuetwrrzayzvvvy'
 app.config['MAIL_USE_TLS'] = False
 app.config['MAIL_USE_SSL'] = True 
-
-
 
 mail = Mail(app)
 #Este valor es como la contraseña del token
@@ -95,7 +84,7 @@ def connection():
 
 @app.route("/")
 def index():
-    return render_template("index/login.html")
+    return render_template("index/login.jinja")
 
 @app.route('/cambiarcontra', methods=["POST"])
 def cambiarcontra():
@@ -114,11 +103,11 @@ def cambiarcontra():
 
 @app.route("/recover")
 def recover():
-    return render_template("index/recover.html")
+    return render_template("index/recover.jinja")
 
 @app.route("/register")
 def registrar():
-    return render_template("index/register.html")
+    return render_template("index/register.jinja")
 
 @app.route("/send_correo", methods=['GET','POST'])
 def send_correo():
@@ -192,7 +181,7 @@ def confirmrecover(token):
               
     except SignatureExpired:
         return '<h1>The link is expired!</h1>'
-    return render_template("index/cambiarcontrasena.html", correo =email)
+    return render_template("index/cambiarcontrasena.jinja", correo =email)
 
 
 @app.route("/login", methods=["POST"])
@@ -257,7 +246,7 @@ def login():
 @app.route("/formulario")
 def formulario():
     if not 'id_usuario' in session: return redirect("/")
-    return render_template("usuarios/formulario.html")
+    return render_template("usuarios/formulario.jinja")
 
 @app.route("/guardarDatosUsuario", methods=["POST"])
 def guardarDatosUsuario():
@@ -281,11 +270,12 @@ def guardarDatosUsuario():
 def videoFeed():
     return Response(generate(), mimetype="multipart/x-mixed-replace; boundary=frame")
 
-@app.before_request
+#@app.before_request
 def before_request():
     ruta = request.path
 
     if not 'id_usuario' in session and '/usuarios' in ruta:
+        print(f"{ruta}  {session['id_usuario']}")
         return redirect("/")
 
     if not 'id_administrador' in session and '/administradores' in ruta:

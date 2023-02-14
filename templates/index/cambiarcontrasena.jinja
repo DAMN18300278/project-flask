@@ -1,11 +1,11 @@
-{% extends "index/indexMaster.html" %}
+{% extends "index/indexMaster.jinja" %}
 {% block head %}
     {{ super() }}
 {% endblock %}
 
 {% block content %}
-    <p class="display-1 to-right">Recuperar Contraseña</p>
-
+    <p class="display-1 to-right">Ingresa la nueva contraseña</p>
+    <h1>{{correorecover}}</h1>
     <div class="vanish1">
         <svg class="path mb-5" width="50%" viewBox="0 0 1280 1280">
             <g transform="translate(0,1280) scale(0.1,-0.1)" fill="#000000" stroke="none">
@@ -14,15 +14,17 @@
         </svg>
     </div>
 
-    <form action="{{url_for('send_correocon')}}" id="formrecover" method="post" class="input-group input-group-lg d-flex justify-content-between flex-column">
+    <form action="/cambiarcontra" id="formcambiarcontra" method="post" class="input-group input-group-lg d-flex justify-content-between flex-column">
+        <input type="hidden" name="correo" id="correo" value="{{correo}}">
         <div class="input-group">
-            <input type="text" id="correorecover" class="form-control mt-2 to-left" placeholder="Correo" name="correorecover">
+            <input type="text" id="contraseña" class="form-control mt-2 to-left" placeholder="contraseña" name="contraseña">
+            <p size="4" id="errorcontra1"></p>
         </div>
-        <br>
-        <p style="font-size: 12px;" id="msg"></p>
-       
+        <div class="input-group">
+            <input type="text" id="contraseñaC" class="form-control mt-5 to-right" placeholder="Confirmar Contraseña" name="contraseñaC">
+            <p id="errorcontra2"></p>
+        </div>
+        
     </form> 
-
-    <button name="Recuperar" onclick="button_recover()" class="btn btn-success vanish1 mt-5" style="font-size: 18px; border-radius: 10px; height: 36px; animation-duration: 4s;">Enviar correo de recuperación</button>
-   
+    <button onclick="button_cambiarcontra()" name="Cambiarcontra"  class="btn btn-success vanish1 mt-5" style="font-size: 18px; border-radius: 10px; height: 36px; animation-duration: 4s;">Cambiar contraseña</button>
 {% endblock %}

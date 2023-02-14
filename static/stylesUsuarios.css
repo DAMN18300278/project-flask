@@ -4,6 +4,13 @@ body{
 }
 
 .container{
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    font-size: 23px;
+}
+
+.container-forms{
     margin-top: 5%;
     height: 100%;
     width: 95%;
@@ -26,4 +33,51 @@ body{
     width: 95%;
     height: 4rem;
     border: none;
+}
+
+.horizontal-menu{
+    text-align: left;
+    width: 100%;
+    overflow-x: scroll;
+    border-right: none;
+    display: flex;
+    flex-wrap: nowrap;
+    border-bottom: 1px #000 solid;
+}
+
+.horizontal-menu::after{
+    background-color: #e8ffde;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.horizontal-menu::-webkit-scrollbar{
+    width: 0px;
+    height: 0px;
+    background-color: #00000000;
+}
+
+.horizontal-menu-unset{
+    background-color: #e8ffde;
+    padding-left: 2em;
+    padding-right: 2em;
+    border: none;
+    text-decoration: none;
+    color: #000;
+    border-left: 1px #000 solid;
+    border-right: 1px #000 solid;
+}
+
+.horizontal-menu-hover{
+    color: #000;
+    text-decoration: none;
+    padding-left: 2em;
+    padding-right: 2em;
+    border: 1px #000 solid;
+    border-radius: 10px;
+    background-color: #a3ff9b;
+}
+
+a:hover{
+    color: #000;
 }

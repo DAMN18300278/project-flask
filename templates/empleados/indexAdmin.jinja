@@ -1,4 +1,4 @@
-{% extends "empleados/empleadosMaster.html" %}
+{% extends "empleados/empleadosMaster.jinja" %}
 {% block head %}
     {{ super() }}
 {% endblock %}
@@ -13,8 +13,9 @@
                 {% endwith %}
             </div>
             <div class="w-75 d-inline">
-                <a class="btn btn-success mt-5 to-right w-75 position-relative">Ordenes de pago</a>
-                <a class="btn btn-success mt-5 to-left w-75 position-relative" style="margin-bottom: 30%;">Empleados</a>
+                <a href="/administradores/index" class="btn btn-success mt-5 to-left w-75 position-relative">Inventario</a>
+                <a class="btn btn-success mt-5 to-right w-75 position-relative">Empleados</a>
+                <a class="btn btn-success mt-5 to-left w-75 position-relative" style="margin-bottom: 30%;">Ordenes de pago</a>
             </div>
         </div>
     </div>

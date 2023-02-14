@@ -24,13 +24,9 @@ def asignarNombre(idEmpleado):
 @empleados.route("/administradores")
 def indexAdmin():
     asignarNombre(session['id_administrador'])
-    return render_template("empleados/indexAdmin.html")
+    return render_template("empleados/indexAdmin.jinja")
 
-@empleados.route("/administradores/inventario")
-def InvAdmin():
-    flash("administrador")
-    
-    return render_template("empleados/indexAdmin.html")
+
 
 @empleados.route("/administradores/delete")
 def delAdmin():
@@ -40,22 +36,14 @@ def delAdmin():
 @empleados.route("/caja")
 def indexCaja():
     asignarNombre(session['id_encargadoCaja'])
-    return render_template("empleados/indexCaja.html")
+    return render_template("empleados/indexCaja.jinja")
 
 @empleados.route("/supervisores")
 def indexSupervisor():
     asignarNombre(session['id_supervisor'])
-    return render_template("empleados/indexSupervisores.html")
+    return render_template("empleados/indexSupervisores.jinja")
 
 @empleados.route("/inventario")
 def indexInv():
     asignarNombre(session['id_inventario'])
-    return render_template("empleados/indexAlmacen.html")
-
-@empleados.route("/mostrarempelados")
-def mostEmp():
-    conexion = connection()
-    with conexion.cursor() as cursor:
-        cursor.execute("Select empleado.Id_Empleado, empleado.Nombre_Empleado, tipo_empleado.Tipo from empleado INNER JOIN tipo_empleado ON empleado.Id_Empleado = tipo_empleado.Id_Tipo")
-        resultado = cursor.fetchall()
-        return render_template("/EmpleadosList.html", resultado = resultado)
+    return render_template("empleados/indexAlmacen.jinja")
