@@ -14,6 +14,71 @@ body{
     right: 0;
 }
 
+.buscador{
+    display: flex;
+    flex-direction: column;
+    box-shadow: 8px 8px 5px 0px ;
+    width: 100%;
+    border-radius: 30px;
+
+    
+}
+
+table{
+    border-spacing: 0;
+    margin-top: 1rem;
+}
+thead{
+
+    
+}
+th{
+    padding: 10px;
+
+}
+
+td{
+    padding: 10px;
+    text-align: center;
+    border-bottom: 1px solid #dfdfdf;
+}
+
+.icons{
+    font-size: 20px;
+    margin-left: 10px;
+
+}
+
+.table_header{
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 20px 50px 0;
+
+}
+
+button{
+    outline: none;
+    border: none;
+    background-color: #6236ff;
+    color: #ffffff;
+    padding: 10px 30px;
+    border-radius: 20px;
+    text-transform: uppercase;
+    text-align: center;
+    
+}
+
+.cuerpo{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    min-height: 100vh;
+    background-color: #eef4fd;
+}
+
 .btn{
     font-size: 22px;
     height: 40px;
