@@ -1,0 +1,36 @@
+{% block content %}
+    <div>
+        <div>
+            <button>volver</button>
+            <h2>Productos</h2>
+        </div>
+        <div>
+            <input type="search" placeholder="buscar">
+        </div>    
+        <table>
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Nombre</th>
+                    <th>Puesto</th>
+                    <th>Editar</th>
+                    <th>Borrar</th>
+                </tr>
+            </thead>
+        </table>
+        <tbody>
+        {%for row in resultados%}
+        <tr>
+            <td>{{row["Id_Empleado"]}}</td>
+            <td>{{row["Nombre_Empleado"]}}</td>
+            <td>{{row["Tipo_Empleado"]}}</td>
+            <td>editar</td>
+            <td>borrar</td>
+        </tr>
+        {% end for%}
+        </tbody>
+        <div>
+            <button>Añadir</button>
+        </div>
+    </div>
+{% endblock %}
