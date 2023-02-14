@@ -270,12 +270,12 @@ def guardarDatosUsuario():
 def videoFeed():
     return Response(generate(), mimetype="multipart/x-mixed-replace; boundary=frame")
 
-#@app.before_request
+@app.before_request
 def before_request():
     ruta = request.path
 
+    print(f"{ruta}  {session}")
     if not 'id_usuario' in session and '/usuarios' in ruta:
-        print(f"{ruta}  {session['id_usuario']}")
         return redirect("/")
 
     if not 'id_administrador' in session and '/administradores' in ruta:
@@ -288,7 +288,7 @@ def before_request():
     if not 'id_supervisor' in session and '/supervisores' in ruta:
         return redirect("/")
 
-    if not 'id_inventario' in session and '/inventario' in ruta:
+    if not 'id_inventario' in session and '/eInventario' in ruta:
         return redirect("/")
 
 if __name__ == "__main__":
