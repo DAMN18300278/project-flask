@@ -7,14 +7,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Decòre</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="{{ url_for('static', filename= 'head.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename= 'styles.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename= 'stylesEmpleados.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename= 'css/head.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename= 'css/styles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename= 'css/stylesEmpleados.css') }}">
     {% endblock %}
 </head>
 <body>
     {% block content %}{% endblock %}
 </body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
-<script src="{{ url_for('static', filename = 'empleados.js') }}"></script>
+<script src="{{ url_for('static', filename = 'js/empleados.js') }}"></script>
 </html>

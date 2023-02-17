@@ -45,8 +45,7 @@ body{
     text-align: left;
     width: 100%;
     overflow-x: scroll;
-    display: flex;
-    flex-wrap: nowrap;
+    white-space: nowrap;
     background-color: #e8ffde;
     border-radius: 10px;
     box-shadow: rgba(0, 0, 0, 0.2) 0px 15px 20px -5px;
