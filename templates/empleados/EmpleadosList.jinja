@@ -14,7 +14,7 @@
         <div class="row align-items-center">
             <span class="col-2"></span>
             <div class="col-8 "> <input  type="search" style="width: 270px;" placeholder="buscar"></div>
-            <div class="col-1"><script src="https://cdn.lordicon.com/ritcuqlt.js"></script>
+            <div class="col-1">
                 <lord-icon
                      src="https://cdn.lordicon.com/rlizirgt.json"
                     trigger="click"
@@ -40,22 +40,21 @@
             <td>{{row[1]}}</td>
             <td>{{row[2]}}</td>
             <td>
-            
-            <script src="https://cdn.lordicon.com/ritcuqlt.js"></script>
-                        <lord-icon
-                            src="https://cdn.lordicon.com/wloilxuq.json"
-                            trigger="click"
-                            style="width:26px;height:26px">
-                       </lord-icon>
+            <a href="{{ url_for('administardores/empleados/editar', id=row[0]) }}"> 
+                    <lord-icon
+                        src="https://cdn.lordicon.com/wloilxuq.json"
+                        trigger="click"
+                        style="width:26px;height:26px">
+                    </lord-icon>
+            </a>
+                        
 
             </td>
             <td>
-            
-            <script src="https://cdn.lordicon.com/ritcuqlt.js"></script>
                         <lord-icon
                             src="https://cdn.lordicon.com/jmkrnisz.json"
                             trigger="click"
-                            style="width:26px;height:26px">
+                            style="width:26px;height:26px" onclick="">
                         </lord-icon> 
                         
             </td>
