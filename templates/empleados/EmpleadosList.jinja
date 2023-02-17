@@ -1,11 +1,27 @@
+{% extends "empleados/empleadosMaster.jinja" %}
+{% block head %}
+    {{ super() }}
+{% endblock %}
+
 {% block content %}
-    <div>
-        <div>
-            <button>volver</button>
+    <div class="buscador">
+        <div class="table_header"> 
+            <tr>
+            <button style="height: 30px; width:60px; font-size: 9px;">volver</button>
             <h2>Productos</h2>
+
+            </tr>
+            
         </div>
-        <div>
+        <div >
             <input type="search" placeholder="buscar">
+            <script src="https://cdn.lordicon.com/ritcuqlt.js"></script>
+            <lord-icon
+                src="https://cdn.lordicon.com/rlizirgt.json"
+                trigger="click"
+                style="width:35px;height:35px; "
+                >
+                            </lord-icon>
         </div>    
         <table>
             <thead>
@@ -21,15 +37,33 @@
         <tbody>
         {%for row in resultados%}
         <tr>
-            <td>{{row["Id_Empleado"]}}</td>
-            <td>{{row["Nombre_Empleado"]}}</td>
-            <td>{{row["Tipo_Empleado"]}}</td>
-            <td>editar</td>
-            <td>borrar</td>
+            <td>{{row["empleado.Id_Empleado"]}}</td>
+            <td>{{row["empleado.Nombre_Empleado"]}}</td>
+            <td>{{row["tipo_empleado.Tipo"]}}</td>
+            <td>
+            Editar
+            {# <script src="https://cdn.lordicon.com/ritcuqlt.js"></script>
+                        <lord-icon
+                            src="https://cdn.lordicon.com/wloilxuq.json"
+                            trigger="click"
+                            style="width:25px;height:25px">
+                       </lord-icon> #}
+
+            </td>
+            <td>
+            Borrar
+            {# <script src="https://cdn.lordicon.com/ritcuqlt.js"></script>
+                        <lord-icon
+                            src="https://cdn.lordicon.com/jmkrnisz.json"
+                            trigger="click"
+                            style="width:25px;height:25px">
+                        </lord-icon> #}
+                        
+            </td>
         </tr>
-        {% end for%}
+        {% endfor%}
         </tbody>
-        <div>
+        <div >
             <button>Añadir</button>
         </div>
     </div>
