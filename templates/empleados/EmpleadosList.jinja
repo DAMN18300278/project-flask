@@ -4,27 +4,27 @@
 {% endblock %}
 
 {% block content %}
-    <div class="buscador">
-        <div class="table_header"> 
-            <tr>
-            <button style="height: 30px; width:60px; font-size: 9px;">volver</button>
-            <h2>Productos</h2>
-
-            </tr>
+    <div >
+        <div class="row align-items-start"> 
+            <div class="col-2"><button >volver</button></div>
             
+            <div class="col-8"><h2>Productos     </h2></div>
+            <span class="col-2"> </span>
         </div>
-        <div >
-            <input type="search" placeholder="buscar">
-            <script src="https://cdn.lordicon.com/ritcuqlt.js"></script>
-            <lord-icon
-                src="https://cdn.lordicon.com/rlizirgt.json"
-                trigger="click"
-                style="width:35px;height:35px; "
-                >
-                            </lord-icon>
-        </div>    
-        <table>
-            <thead>
+        <div class="row align-items-center">
+            <span class="col-2"></span>
+            <div class="col-8 "> <input  type="search" style="width: 270px;" placeholder="buscar"></div>
+            <div class="col-1"><script src="https://cdn.lordicon.com/ritcuqlt.js"></script>
+                <lord-icon
+                     src="https://cdn.lordicon.com/rlizirgt.json"
+                    trigger="click"
+                     style="width:26px;height:26px; ">
+                </lord-icon></div>
+            
+        </div>   
+        <div class="table table-hover containerEmp">
+        <table >
+            <thead style="padding: 5px;">
                 <tr>
                     <th>Id</th>
                     <th>Nombre</th>
@@ -33,36 +33,38 @@
                     <th>Borrar</th>
                 </tr>
             </thead>
-        </table>
-        <tbody>
+            <tbody>
         {%for row in resultados%}
         <tr>
             <td>{{row[0]}}</td>
             <td>{{row[1]}}</td>
             <td>{{row[2]}}</td>
             <td>
-            Editar
-            {# <script src="https://cdn.lordicon.com/ritcuqlt.js"></script>
+            
+            <script src="https://cdn.lordicon.com/ritcuqlt.js"></script>
                         <lord-icon
                             src="https://cdn.lordicon.com/wloilxuq.json"
                             trigger="click"
-                            style="width:25px;height:25px">
-                       </lord-icon> #}
+                            style="width:26px;height:26px">
+                       </lord-icon>
 
             </td>
             <td>
-            Borrar
-            {# <script src="https://cdn.lordicon.com/ritcuqlt.js"></script>
+            
+            <script src="https://cdn.lordicon.com/ritcuqlt.js"></script>
                         <lord-icon
                             src="https://cdn.lordicon.com/jmkrnisz.json"
                             trigger="click"
-                            style="width:25px;height:25px">
-                        </lord-icon> #}
+                            style="width:26px;height:26px">
+                        </lord-icon> 
                         
             </td>
         </tr>
         {% endfor%}
         </tbody>
+        </table>
+        </div> 
+        
         <div >
             <button>Añadir</button>
         </div>
