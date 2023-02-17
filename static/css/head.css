@@ -1,6 +1,6 @@
 @font-face {
     font-family: Amiko;
-    src: url_for('static', filename='fonts/Amiko-Regular.ttf');
+    src: url('../fonts/Amiko-Regular.ttf');
     font-weight: 100;
 }
 
