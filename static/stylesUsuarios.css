@@ -35,14 +35,21 @@ body{
     border: none;
 }
 
+.navbar{
+    border-bottom: 2px #bebebeb1 solid;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+
 .horizontal-menu{
     text-align: left;
     width: 100%;
     overflow-x: scroll;
-    border-right: none;
     display: flex;
     flex-wrap: nowrap;
-    border-bottom: 1px #000 solid;
+    background-color: #e8ffde;
+    border-radius: 10px;
+    box-shadow: rgba(0, 0, 0, 0.2) 0px 15px 20px -5px;
 }
 
 .horizontal-menu::after{
@@ -64,8 +71,6 @@ body{
     border: none;
     text-decoration: none;
     color: #000;
-    border-left: 1px #000 solid;
-    border-right: 1px #000 solid;
 }
 
 .horizontal-menu-hover{
@@ -73,11 +78,18 @@ body{
     text-decoration: none;
     padding-left: 2em;
     padding-right: 2em;
-    border: 1px #000 solid;
     border-radius: 10px;
     background-color: #a3ff9b;
+    margin-left: 1em;
+    margin-right: 1.6em;
+    /* box-shadow: rgba(100, 100, 111, 0.7) 0px 7px 35px 0px; */
+    box-shadow: rgba(17, 17, 26, 0.1) 0px 4px 16px, rgba(17, 17, 26, 0.1) 0px 8px 24px, rgba(17, 17, 26, 0.1) 0px 16px 56px;    
 }
 
 a:hover{
     color: #000;
+}
+
+.horizontal-menu > a{
+    transition: ease all 0.3s;
 }
