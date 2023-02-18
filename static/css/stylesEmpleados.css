@@ -1,0 +1,46 @@
+body {
+    background-color: #ffffff;
+    font-size: 15px;
+}
+
+.container {
+    width: 100%;
+    font-size: 35px;
+    padding: 2rem;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
+.containerEmp {
+    padding: 2rem;
+}
+
+.icons {
+    font-size: 20px;
+    margin-left: 10px;
+}
+
+.cuerpo {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    min-height: 100vh;
+    background-color: #eef4fd;
+}
+
+.btn {
+    font-size: 22px;
+    height: 40px;
+}
+
+table,
+td,
+th {
+    font-size: 12px;
+    padding: 1rem;
+}
