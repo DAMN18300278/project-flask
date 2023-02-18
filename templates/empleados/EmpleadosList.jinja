@@ -13,8 +13,8 @@
         </div>
         <div class="row align-items-center">
             <span class="col-2"></span>
-            <div class="col-8 "> <input  type="search" style="width: 270px;" placeholder="buscar"></div>
-            <div class="col-1">
+            <div class="col-8 "> <input  type="search"  placeholder="buscar"></div>
+            <div class="col-2 text-left" style="float: left;">
                 <lord-icon
                      src="https://cdn.lordicon.com/rlizirgt.json"
                     trigger="click"
@@ -22,7 +22,7 @@
                 </lord-icon></div>
             
         </div>   
-        <div class="table table-hover containerEmp">
+        <div class="table table-hover containerEmp ">
         <table >
             <thead style="padding: 5px;">
                 <tr>
@@ -40,22 +40,25 @@
             <td>{{row[1]}}</td>
             <td>{{row[2]}}</td>
             <td>
-            <a href="{{ url_for('administradores/editarEmpleados', id=row[0]) }}"> 
+            <a href="editarEmpleados/{{row[0]}}"> 
                     <lord-icon
                         src="https://cdn.lordicon.com/wloilxuq.json"
                         trigger="click"
                         style="width:26px;height:26px">
-                    </lord-icon>
-            </a> 
+                    </lord-icon> 
+                </a>
                         
 
             </td>
-            <td>
-                        <lord-icon
+            <td> 
+            <a href="BorrarEmpleados/{{row[0]}}">
+                <lord-icon
                             src="https://cdn.lordicon.com/jmkrnisz.json"
                             trigger="click"
                             style="width:26px;height:26px" onclick="">
-                        </lord-icon> 
+                    </lord-icon> 
+            </a>
+                        
                         
             </td>
         </tr>

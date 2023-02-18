@@ -2,3 +2,50 @@
 {% block head %}
     {{ super() }}
 {% endblock %}
+
+{% block content %}
+<div>
+    <form>
+    <div class="mb-3">
+    <label class="form-label"> Informacion Empleado</label>
+    </div>
+  <div class="mb-3">
+    <label for="EmpNombre" class="form-label">Nombre</label>
+    <input type="text" class="form-control" id="EmpNombre" >
+      </div>
+  <div class="mb-3">
+    <label for="EmpEmail" class="form-label">Correo</label>
+    <input type="email" class="form-control" id="EmpEmail">
+  </div>
+  <div class="mb-3">
+    <label for="EmpPassword" class="form-label">Contraseña</label>
+    <input type="password" class="form-control" id="EmpPassword" >
+  </div>
+  <div class="mb-3">
+    <label for="EmpNomina" class="form-label">Password</label>
+    <input type="text" class="form-control" id="EmpNomina">
+  </div>
+  <div class="mb-3">
+    <label for="EmpDireccion" class="form-label">Direccion</label>
+    <input type="text" class="form-control" id="EmpDireccion" >
+    
+  </div>
+  <div class="mb-3">
+    <label for="EmpTelefono" class="form-label">Password</label>
+    <input type="tel" class="form-control" id="EmpTelefono">
+  </div>
+  <div class="mb-3 form-check">
+    <label for="lista" class="form-label">Selecciona el Puesto:</label>
+    <select id="lista" name="lista">
+    <option value="">Elige una opción...</option>
+    <option value="3">Administrador</option>
+    <option value="2">Supervisor</option>
+    <option value="1">Encargado Caja</option>
+    <option value="4">Encargado Almacen</option>
+    </select>
+  </div>
+  <button type="submit" class="btn btn-primary">Submit</button>
+ </form>
+</div>
+
+{% endblock %}
