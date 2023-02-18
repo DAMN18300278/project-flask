@@ -39,14 +39,14 @@ def EmpAdmin():
     
     return render_template("empleados/EmpleadosList.jinja", resultados = resultado)
 
-@empleados.route("/administradores/empleados/editar/<id>", methods=['POST', 'GET'])
-def editar(id):
+@empleados.route('/administradores/editarEmpleados/<id>', methods=['POST', 'GET'])
+def empleados_Edit(id):
     #cur = mysql.connection.cursor()
     #cur.execute('SELECT * FROM usuarios WHERE id = %s', (id,))
     #data = cur.fetchall()
     #cur.close()
-    print(edit)
-    return render_template('empleados/EmpEdit.jinja', usuario=id)
+    print(id)
+    return render_template("empleados/EmpEdit.jinja", usuario=id)
 
 @empleados.route("/administradores/OrdenesPago")
 def PagosAdmin():
