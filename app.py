@@ -6,7 +6,9 @@ from empleados import empleados
 from usuarios import usuarios
 import mediapipe as mp
 import cv2
-import pymysql
+from flask_mysqldb import MySQL
+import aiomysql
+import asyncio
 
 app = Flask(__name__)
 app.secret_key = "ab"
@@ -20,6 +22,17 @@ app.config['MAIL_USERNAME'] = 'decore.makeup@gmail.com'
 app.config['MAIL_PASSWORD'] = 'xnuetwrrzayzvvvy'
 app.config['MAIL_USE_TLS'] = False
 app.config['MAIL_USE_SSL'] = True 
+
+#mysql-variables----------------------------------#
+app.config['MYSQL_HOST'] = 'localhost'
+app.config['MYSQL_USER'] = 'root'
+app.config['MYSQL_PASSWORD'] = ''
+app.config['MYSQL_DB'] = 'diegomedel$decore'
+app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
+
+mysql = MySQL(app)
+
+#--------------------------------------------------#
 
 mail = Mail(app)
 #Este valor es como la contraseña del token
@@ -74,14 +87,6 @@ def generate():
                 continue
             yield(b'--frame\r\n' b'Content-Type: image\jpeg\r\n\r\n' + bytearray(encodedImage) + b'\r\n')
 
-#mysql variables
-def connection():
-    return pymysql.connect(host='localhost',
-                                user='root',
-                                password='',
-                                db='diegomedel$decore')
-#--------------------------------------------------------#
-
 @app.route("/")
 def index():
     return render_template("index/login.jinja")
@@ -89,15 +94,13 @@ def index():
 @app.route('/cambiarcontra', methods=["POST"])
 def cambiarcontra():
     if request.method == "POST":
-        conexion = connection()
         correo = request.form["correo"]
         contraseña = request.form["contraseña"]
 
-        with conexion.cursor() as cursor:
+        with mysql.connection.cursor() as cursor:
             cursor.execute("UPDATE cuenta SET Contraseña = (%s) WHERE Correo = (%s)", (contraseña,correo))
 
-        conexion.commit()
-        conexion.close()
+        mysql.connection.commit()
 
         return redirect("/")
 
@@ -116,11 +119,9 @@ def send_correo():
         contraseña = request.form['contraseña']
         estado = 'Inactivo'
 
-        conexion = connection()
-        with conexion.cursor() as cursor:
+        with mysql.connect.cursor() as cursor:
             cursor.execute("INSERT INTO cuenta VALUES ('', 2, %s, %s,%s)", (email, contraseña,estado))
-        conexion.commit()
-        conexion.close()
+        mysql.connect.commit()
 
         token = s.dumps(email, salt='email-confirm')
         subject = 'Confirmacion de Cuenta Decore'
@@ -142,9 +143,6 @@ def send_correo():
 def send_correocon():
     if request.method == "POST":
         email = request.form['correorecover']
-        
-        conexion = connection()
-
 
         token = s.dumps(email, salt='email-confirm')
         subject = 'Cambio de contraseña Decore'
@@ -165,11 +163,9 @@ def send_correocon():
 def confirm(token):
     try:
         email = s.loads(token, salt='email-confirm', max_age=120)
-        conexion = connection()
-        with conexion.cursor() as cursor:
-            cursor.execute("UPDATE cuenta SET estado = 'Activo' WHERE Correo = (%s)", (email))
-        conexion.commit()
-        conexion.close()
+        with mysql.connection.cursor() as cursor:
+            cursor.execute("UPDATE cuenta SET estado = 'Activo' WHERE Correo = (%s)", (email,))
+        mysql.connection.commit()
     except SignatureExpired:
         return '<h1>The token is expired!</h1>'
     return '<h1>The Token Works!</h1>'
@@ -183,20 +179,18 @@ def confirmrecover(token):
         return '<h1>The link is expired!</h1>'
     return render_template("index/cambiarcontrasena.jinja", correo =email)
 
-
 @app.route("/login", methods=["POST"])
 def login():
-    conexion = connection()
+    cursor = mysql.connect.cursor()
     correo = request.form["correo"]
     contraseña = request.form["contraseña"]
     
-    with conexion.cursor() as cursor:
-        cursor.execute("SELECT * FROM cuenta WHERE Correo = %s", (correo))
-        rows = cursor.fetchall()
-        for row in rows:
-            session['id_usuario'] = row[0]
-            rol = row[1]
-            contraseñaC = row[3]
+    cursor.execute("SELECT * FROM cuenta WHERE Correo = %s", (correo,))
+    rows = cursor.fetchall()
+    for row in rows:
+        session['id_usuario'] = row['Id_cuenta']
+        rol = row['Rol']
+        contraseñaC = row['Contraseña']
     
     if 'rows' not in vars():
         flash("Correo inexistente")
@@ -210,36 +204,33 @@ def login():
         return redirect("/")
 
     if rol == 1:
-        with conexion.cursor() as cursor:
-            cursor.execute("SELECT Tipo_Empleado FROM empleado WHERE Id_Empleado = %s", (session['id_usuario']))
-            rows = cursor.fetchall()
-            for row in rows:
-                tempId = session['id_usuario']
-                session.clear()
+        cursor.execute("SELECT Tipo_Empleado FROM empleado WHERE Id_Empleado = %s", (session['id_usuario'],))
+        rows = cursor.fetchall()
+        for row in rows:
+            tempId = session['id_usuario']
+            session.clear()
 
-                if row[0] == 1:
-                    session['id_encargadoCaja'] = tempId
-                    return redirect("/caja")
-                elif row[0] == 2:
-                    session['id_supervisor'] = tempId
-                    return redirect("/supervisores")
-                elif row[0] == 3:
-                    session['id_administrador'] = tempId
-                    return redirect("/administradores")
-                elif row[0] == 4:
-                    session['id_inventario'] = tempId
-                    return redirect("/inventario")
+            if row['Id_Empleado'] == 1:
+                session['id_encargadoCaja'] = tempId
+                return redirect("/caja")
+            elif row['Id_Empleado'] == 2:
+                session['id_supervisor'] = tempId
+                return redirect("/supervisores")
+            elif row['Id_Empleado'] == 3:
+                session['id_administrador'] = tempId
+                return redirect("/administradores")
+            elif row['Id_Empleado'] == 4:
+                session['id_inventario'] = tempId
+                return redirect("/inventario")
     else:
-        with conexion.cursor() as cursor:
-            cursor.execute("SELECT * FROM usuarios WHERE Id_Usuario = %s", (session['id_usuario']))
+        with mysql.connect.cursor() as cursor:
+            cursor.execute("SELECT * FROM usuarios WHERE Id_Usuario = %s", (session['id_usuario'],))
             usuario = cursor.fetchone()
-        
-        conexion.close()
 
         if usuario is None:
             return redirect("/formulario")
         else:
-            if usuario[1] is None:
+            if usuario['Nombre'] is None:
                 return redirect("/formulario")
             return redirect("/usuarios")
 
@@ -250,7 +241,6 @@ def formulario():
 
 @app.route("/guardarDatosUsuario", methods=["POST"])
 def guardarDatosUsuario():
-    conexion = connection()
     nombre = request.form["nombre"]
     edad = request.form["edad"]
     colorOjos = request.form["colorOjos"]
@@ -258,11 +248,10 @@ def guardarDatosUsuario():
     colorPiel = request.form["colorPiel"]
     colorCabello = request.form["colorCabello"]
 
-    with conexion.cursor() as cursor:
+    with mysql.connect.cursor() as cursor:
         cursor.execute("INSERT INTO usuarios VALUES(%s, %s, %s, %s, %s, %s, %s, 2)", (session['id_usuario'], nombre, edad, colorOjos, tipoPiel, colorPiel, colorCabello))
 
-    conexion.commit()
-    conexion.close()
+    mysql.connect.commit()
 
     return redirect("/usuarios")
     
