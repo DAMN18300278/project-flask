@@ -3,11 +3,22 @@ body{
     font-size: 15px;
 }
 
+:root{
+    --bs-primary: #F3F1F5;
+    --bs-secondary: #F0D9FF;
+    --bs-success: #BFA2DB;
+    --bs-info: #E5B8F4;
+    --bs-warning: #2D033B;
+    --bs-danger: #810CA8;
+}
+
 .container{
     position: absolute;
     height: 100%;
     width: 100%;
     font-size: 23px;
+    white-space: nowrap;
+    overflow-y: hidden;
 }
 
 .container-forms{
@@ -46,13 +57,13 @@ body{
     width: 100%;
     overflow-x: scroll;
     white-space: nowrap;
-    background-color: #e8ffde;
+    background-color: var(--bs-secondary);
     border-radius: 10px;
     box-shadow: rgba(0, 0, 0, 0.2) 0px 15px 20px -5px;
 }
 
 .horizontal-menu::after{
-    background-color: #e8ffde;
+    background-color: var(--bs-secondary);
     padding-left: 10px;
     padding-right: 10px;
 }
@@ -64,7 +75,7 @@ body{
 }
 
 .horizontal-menu-unset{
-    background-color: #e8ffde;
+    background-color: var(--bs-secondary);
     padding-left: 2em;
     padding-right: 2em;
     border: none;
@@ -78,7 +89,7 @@ body{
     padding-left: 2em;
     padding-right: 2em;
     border-radius: 10px;
-    background-color: #a3ff9b;
+    background-color: var(--bs-success);
     margin-left: 1em;
     margin-right: 1.6em;
     /* box-shadow: rgba(100, 100, 111, 0.7) 0px 7px 35px 0px; */
@@ -91,4 +102,20 @@ a:hover{
 
 .horizontal-menu > a{
     transition: ease all 0.3s;
+}
+
+.snap-container{
+    height: fit-content;
+    width: 100%;
+    display: flex;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+}
+
+.snap-section{
+    scroll-snap-align: start;
+    width: 100%;
+    height: calc(100vh - var(--scrollbar-height));
+    min-width: 100vw;
 }

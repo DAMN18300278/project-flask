@@ -34,3 +34,17 @@ function horizontalMenuChange(element) {
             break;
     }
 }
+
+function _calculateScrollbarHeight() {
+    document.documentElement.style.setProperty(
+      "--scrollbar-height",
+      window.innerWidth - document.documentElement.clientWidth + "px"
+    );
+  }
+  
+  // recalculate on dom load
+  document.addEventListener("DOMContentLoaded", _calculateScrollbarHeight, false);
+  // recalculate on load (assets loaded as well)
+  window.addEventListener("load", _calculateScrollbarHeight);
+  // recalculate on resize
+  window.addEventListener("resize", _calculateScrollbarHeight, false);

@@ -1,24 +1,21 @@
-import flask
-import pymysql
-from flask import render_template, session, redirect, flash
+from flask_mysqldb import MySQL
+from flask import render_template, session, redirect, flash, Blueprint
 
-empleados = flask.Blueprint('empleados', __name__)
+empleados = Blueprint('empleados', __name__)
+mysql = MySQL()
 
-def connection():
-    return pymysql.connect(host='localhost',
-                                user='root',
-                                password='',
-                                db='diegomedel$decore')
+@empleados.record_once
+def on_load(state):
+    app = state.app
+    mysql.init_app(app)
 
 def asignarNombre(idEmpleado):
-    conexion = connection()
-
-    with conexion.cursor() as cursor:
-        cursor.execute("SELECT Nombre_Empleado FROM empleado WHERE Id_Empleado = %s", idEmpleado)
+    with mysql.connect.cursor() as cursor:
+        cursor.execute('SELECT Nombre_Empleado FROM empleado WHERE Id_Empleado = %s', (idEmpleado,))
         rows = cursor.fetchall()
         
         for row in rows:
-            nombre = row[0]  
+            nombre = row['Nombre_Empleado']  
         flash(nombre[:(nombre.index(' '))])
 
 @empleados.route("/administradores")
@@ -32,8 +29,7 @@ def invAdmin():
 
 @empleados.route("/administradores/EmpleadosList")
 def EmpAdmin():
-    conexion = connection()
-    with conexion.cursor() as cursor:
+    with mysql.connect.cursor() as cursor:
         cursor.execute("SELECT empleado.Id_Empleado, empleado.Nombre_Empleado, tipo_empleado.Tipo FROM empleado INNER JOIN tipo_empleado ON empleado.Tipo_Empleado = tipo_empleado.Id_Tipo")
         resultado = cursor.fetchall()
 
