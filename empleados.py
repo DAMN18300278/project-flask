@@ -37,13 +37,17 @@ def EmpAdmin():
 
 @empleados.route('/administradores/editarEmpleados/<id>', methods=['POST', 'GET'])
 def Admin_empleados_Edit(id):
+    conexion = connection()
+    with conexion.cursor() as cursor:
+        cursor.execute("SELECT empleado.Nombre_Empleado, cuenta.Correo, cuenta.Contraseña ,empleado.RFC, empleado.Direccion, empleado.RFC, empleado.Tipo_Empleado FROM empleado INNER JOIN cuenta ON cuenta.Id_cuenta = empleado.Id_Empleado WHERE cuenta.Id_cuenta = %s", id)
+        rows = cursor.fetchall()
     #cur = mysql.connection.cursor()
     #cur.execute('SELECT * FROM usuarios WHERE id = %s', (id,))
     #data = cur.fetchall()
     #cur.close()
-    # print(id)
-    id=1
-    return render_template("empleados/EmpEdit.jinja", usuario=id)
+    print(rows)
+    
+    return render_template("empleados/EmpEdit.jinja", empleado=rows)
 
 @empleados.route('/administradores/BorrarEmpleados/<id>')
 def Admin_empleados_Delete(id):
