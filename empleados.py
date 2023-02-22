@@ -1,5 +1,6 @@
 from flask_mysqldb import MySQL
 from flask import render_template, session, redirect, flash, Blueprint
+from flask import request
 
 empleados = Blueprint('empleados', __name__)
 mysql = MySQL()
@@ -37,6 +38,7 @@ def EmpAdmin():
 @empleados.route('/administradores/editarEmpleados/<id>', methods=['POST', 'GET'])
 def Admin_empleados_Edit(id):
     with mysql.connect.cursor() as cursor:
+
         cursor.execute("SELECT empleado.Nombre_Empleado, cuenta.Correo, cuenta.Contraseña ,empleado.RFC, empleado.Direccion, empleado.RFC, empleado.Tipo_Empleado FROM empleado INNER JOIN cuenta ON cuenta.Id_cuenta = empleado.Id_Empleado WHERE cuenta.Id_cuenta = %s", id)
         resultado = cursor.fetchone()
     
@@ -51,6 +53,20 @@ def Admin_empleados_Delete(id):
 @empleados.route("/administradores/OrdenesPago")
 def PagosAdmin():
     return render_template("empleados/OrdenesPago.jinja")
+
+@empleados.route("/administradores/GuardarEmp/<id>", methods=['POST','GET'])
+def GuardarEmp(id):
+    
+    nombre = request.form['EmpNombre']
+    email = request.form['EmpEmail']
+    password = request.form['EmpPassword']
+    rfc = request.form['EmpRFC']
+    direccion = request.form['EmpDireccion']
+    tipo = request.form['listaTipo']
+    with mysql.connect.cursor() as cursor:
+        cursor.execute("UPDATE cuenta SET Correo = %s , Contraseña = %s WHERE Id_cuenta = %s", (email, password ,id))
+        
+    return redirect("/administradores/EmpleadosList")
 
 @empleados.route("/administradores/delete")
 def delAdmin():
