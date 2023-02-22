@@ -7,7 +7,7 @@
 
 
 <div>
-    <form action="/administradores/GuardarEmp/{{row['Id_Empleado']}}" method="post" class="to-left position-absolute p-5 d-flex flex-column justify-content-center align-items-center h-100" style="top: 0; bottom: 0; left: 0; right: 0;">
+    <form action="/administradores/GuardarEmp/{{empleado[7]}}" method="post" class="to-left position-absolute p-5 d-flex flex-column justify-content-center align-items-center h-100" style="top: 0; bottom: 0; left: 0; right: 0;">
 
       <div class="mb-3">
         <p>Informacion Empleado</p>
@@ -15,38 +15,38 @@
       <div class="d-flex flex-column justify-content-between align-items-center h-100 w-100">
         <div class="mb-3 w-100 form-group d-flex align-items-center flex-column">
           <label for="EmpNombre" class="form-label w-100">Nombre</label>
-          <input type="text" class="form-control" id="EmpNombre" value="{{empleado[0]}}">
+          <input type="text" class="form-control" id="EmpNombre" name="EmpNombre" value="{{empleado[0]}}">
         </div>
 
         <div class="mb-3 w-100 form-group d-flex align-items-center flex-column">
           <label for="EmpEmail" class="form-label">Correo</label>
-          <input type="email" class="form-control" id="EmpEmail" value="{{empleado[1]}}">
+          <input type="email" class="form-control" id="EmpEmail" name="EmpEmail" value="{{empleado[1]}}">
         </div>
 
         <div class="mb-3 w-100 form-group d-flex align-items-center flex-column">
           <label for="EmpPassword" class="form-label">Contraseña</label>
-          <input type="password" class="form-control" id="EmpPassword" value="{{empleado[2]}}">
+          <input type="password" class="form-control" id="EmpPassword" name="EmpPassword" value="{{empleado[2]}}">
         </div>
 
         <div class="mb-3 w-100 form-group d-flex align-items-center flex-column">
           <label for="EmpRFC" class="form-label">RFC</label>
-          <input type="text" class="form-control" id="EmpRFC" value="{{empleado[3]}}">
+          <input type="text" class="form-control" id="EmpRFC" name="EmpRFC" value="{{empleado[3]}}">
         </div>
 
         <div class="mb-3 w-100 form-group d-flex align-items-center flex-column">
           <label for="EmpDireccion" class="form-label">Direccion</label>
-          <input type="text" class="form-control" id="EmpDireccion" value="{{empleado[4]}}">
+          <input type="text" class="form-control" id="EmpDireccion" name="EmpDireccion" value="{{empleado[4]}}">
         </div>
 
         <div class="mb-3 w-100 form-group d-flex align-items-center flex-column">
           <label for="EmpTelefono" class="form-label">Telefono</label>
-          <input type="tel" class="form-control" id="EmpTelefono" value="{{empleado[5]}}">
+          <input type="tel" class="form-control" id="EmpTelefono" name="EmpTelefono" value="{{empleado[5]}}">
         </div>
 
         <div class="mb-3 w-100 form-group d-flex align-items-center flex-column">
-          <label for="lista" class="form-label">Puesto</label>
-          <select id="lista" name="lista" class="form-control form-control-lg h-25">
-            <option selected disabled value="{{empleado[6]}}">{{empleado[6]}}</option>
+          <label for="ListaTipo" class="form-label">Puesto</label>
+          <select id="ListaTipo" name="ListaTipo" class="form-control form-control-lg h-25">
+            <option selected value="{{empleado[6]}}">{{empleado[6]}}</option>
             <option value="" disabled>Elige una opción...</option>
             <option value="3">Administrador</option>
             <option value="2">Supervisor</option>
@@ -58,7 +58,6 @@
       </div>
 
     </form>
-    {% endfor%}
 </div>
 
 {% endblock %}

@@ -36,11 +36,11 @@
             <tbody>
         {%for row in resultados%}
         <tr>
-            <td>{{row["Id_Empleado"]}}</td>
-            <td>{{row["Nombre_Empleado"]}}</td>
-            <td>{{row["Tipo"]}}</td>
+            <td>{{row[0]}}</td>
+            <td>{{row[1]}}</td>
+            <td>{{row[2]}}</td>
             <td>
-            <a href="editarEmpleados/{{row['Id_Empleado']}}"> 
+            <a href="editarEmpleados/{{row[0]}}"> 
                     <lord-icon
                         src="https://cdn.lordicon.com/wloilxuq.json"
                         trigger="click"
@@ -51,7 +51,7 @@
 
             </td>
             <td> 
-            <a href="BorrarEmpleados/{{row['Id_Empleado']}}">
+            <a href="BorrarEmpleados/{{row[0]}}">
                 <lord-icon
                             src="https://cdn.lordicon.com/jmkrnisz.json"
                             trigger="click"

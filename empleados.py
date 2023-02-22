@@ -30,7 +30,7 @@ def invAdmin():
 @empleados.route("/administradores/EmpleadosList")
 def EmpAdmin():
     with mysql.connect.cursor() as cursor:
-        cursor.execute("SELECT empleado.Id_Empleado, empleado.Nombre_Empleado, `tipo empleado`.Tipo FROM empleado INNER JOIN `tipo empleado` ON empleado.Tipo_Empleado = `tipo empleado`.Id_Tipo")
+        cursor.execute("SELECT empleado.Id_Empleado, empleado.Nombre_Empleado, tipo_empleado.Tipo FROM empleado INNER JOIN tipo_empleado ON empleado.Tipo_Empleado = tipo_empleado.Id_Tipo")
         resultado = cursor.fetchall()
 
     return render_template("empleados/EmpleadosList.jinja", resultados = resultado)
@@ -38,10 +38,8 @@ def EmpAdmin():
 @empleados.route('/administradores/editarEmpleados/<id>', methods=['POST', 'GET'])
 def Admin_empleados_Edit(id):
     with mysql.connect.cursor() as cursor:
-
-        cursor.execute("SELECT empleado.Nombre_Empleado, cuenta.Correo, cuenta.Contraseña ,empleado.RFC, empleado.Direccion, empleado.RFC, empleado.Tipo_Empleado FROM empleado INNER JOIN cuenta ON cuenta.Id_cuenta = empleado.Id_Empleado WHERE cuenta.Id_cuenta = %s", id)
+        cursor.execute("SELECT empleado.Nombre_Empleado, cuenta.Correo, cuenta.Contraseña ,empleado.RFC, empleado.Direccion, empleado.RFC, empleado.Tipo_Empleado, empleado.Id_Empleado FROM empleado INNER JOIN cuenta ON cuenta.Id_cuenta = empleado.Id_Empleado WHERE cuenta.Id_cuenta = %s", id)
         resultado = cursor.fetchone()
-    
     print(resultado)
     return render_template("empleados/EmpEdit.jinja", empleado = resultado)
 
@@ -54,18 +52,20 @@ def Admin_empleados_Delete(id):
 def PagosAdmin():
     return render_template("empleados/OrdenesPago.jinja")
 
-@empleados.route("/administradores/GuardarEmp/<id>", methods=['POST','GET'])
+@empleados.route("/administradores/GuardarEmp/<int:id>", methods=['POST','GET'])
 def GuardarEmp(id):
     
     nombre = request.form['EmpNombre']
     email = request.form['EmpEmail']
     password = request.form['EmpPassword']
+    tel = request.form['EmpTelefono']
     rfc = request.form['EmpRFC']
     direccion = request.form['EmpDireccion']
-    tipo = request.form['listaTipo']
-    with mysql.connect.cursor() as cursor:
-        cursor.execute("UPDATE cuenta SET Correo = %s , Contraseña = %s WHERE Id_cuenta = %s", (email, password ,id))
-        
+    tipo = request.form['ListaTipo']
+    with mysql.connection.cursor() as cursor:
+        cursor.execute("UPDATE cuenta SET Correo = %s, Contraseña = %s WHERE Id_cuenta = %s", (email, password, id))
+        cursor.execute("UPDATE empleado SET RFC = %s, Nombre_Empleado = %s, Telefono = %s, Direccion = %s, Tipo_Empleado = %s WHERE Id_cuenta = %s",(rfc, nombre, tel, direccion, tipo))
+        mysql.connection.commit()
     return redirect("/administradores/EmpleadosList")
 
 @empleados.route("/administradores/delete")
