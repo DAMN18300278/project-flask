@@ -24,13 +24,11 @@ app.config['MAIL_USE_TLS'] = False
 app.config['MAIL_USE_SSL'] = True 
 
 #mysql-variables----------------------------------#
+mysql = MySQL(app)
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
 app.config['MYSQL_PASSWORD'] = ''
 app.config['MYSQL_DB'] = 'diegomedel$decore'
-app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
-
-mysql = MySQL(app)
 
 #--------------------------------------------------#
 
@@ -119,9 +117,9 @@ def send_correo():
         contraseña = request.form['contraseña']
         estado = 'Inactivo'
 
-        with mysql.connect.cursor() as cursor:
+        with mysql.connection.cursor() as cursor:
             cursor.execute("INSERT INTO cuenta VALUES ('', 2, %s, %s,%s)", (email, contraseña,estado))
-        mysql.connect.commit()
+        mysql.connection.commit()
 
         token = s.dumps(email, salt='email-confirm')
         subject = 'Confirmacion de Cuenta Decore'
@@ -181,16 +179,16 @@ def confirmrecover(token):
 
 @app.route("/login", methods=["POST"])
 def login():
-    cursor = mysql.connect.cursor()
+    cursor = mysql.connection.cursor()
     correo = request.form["correo"]
     contraseña = request.form["contraseña"]
     
     cursor.execute("SELECT * FROM cuenta WHERE Correo = %s", (correo,))
-    rows = cursor.fetchall()
-    for row in rows:
-        session['id_usuario'] = row['Id_cuenta']
-        rol = row['Rol']
-        contraseñaC = row['Contraseña']
+    rows = cursor.fetchone()
+        
+    session['id_usuario'] = rows[0]
+    rol = rows[1]
+    contraseñaC = rows[3]
     
     if 'rows' not in vars():
         flash("Correo inexistente")
@@ -205,32 +203,32 @@ def login():
 
     if rol == 1:
         cursor.execute("SELECT Tipo_Empleado FROM empleado WHERE Id_Empleado = %s", (session['id_usuario'],))
-        rows = cursor.fetchall()
-        for row in rows:
-            tempId = session['id_usuario']
-            session.clear()
+        rows = cursor.fetchone()
+        tempId = session['id_usuario']
+        session.clear()
+        print(rows)
 
-            if row['Id_Empleado'] == 1:
-                session['id_encargadoCaja'] = tempId
-                return redirect("/caja")
-            elif row['Id_Empleado'] == 2:
-                session['id_supervisor'] = tempId
-                return redirect("/supervisores")
-            elif row['Id_Empleado'] == 3:
-                session['id_administrador'] = tempId
-                return redirect("/administradores")
-            elif row['Id_Empleado'] == 4:
-                session['id_inventario'] = tempId
-                return redirect("/inventario")
+        if rows[0] == 1:
+            session['id_encargadoCaja'] = tempId
+            return redirect("/caja")
+        elif rows[0] == 2:
+            session['id_supervisor'] = tempId
+            return redirect("/supervisores")
+        elif rows[0] == 3:
+            session['id_administrador'] = tempId
+            return redirect("/administradores")
+        elif rows[0] == 4:
+            session['id_inventario'] = tempId
+            return redirect("/inventario")
     else:
-        with mysql.connect.cursor() as cursor:
+        with mysql.connection.cursor() as cursor:
             cursor.execute("SELECT * FROM usuarios WHERE Id_Usuario = %s", (session['id_usuario'],))
             usuario = cursor.fetchone()
 
         if usuario is None:
             return redirect("/formulario")
         else:
-            if usuario['Nombre'] is None:
+            if usuario[1] is None:
                 return redirect("/formulario")
             return redirect("/usuarios")
 
@@ -248,16 +246,20 @@ def guardarDatosUsuario():
     colorPiel = request.form["colorPiel"]
     colorCabello = request.form["colorCabello"]
 
-    with mysql.connect.cursor() as cursor:
+    with mysql.connection.cursor() as cursor:
         cursor.execute("INSERT INTO usuarios VALUES(%s, %s, %s, %s, %s, %s, %s, 2)", (session['id_usuario'], nombre, edad, colorOjos, tipoPiel, colorPiel, colorCabello))
 
-    mysql.connect.commit()
+    mysql.connection.commit()
 
     return redirect("/usuarios")
     
 @app.route("/videoFeed")
 def videoFeed():
     return Response(generate(), mimetype="multipart/x-mixed-replace; boundary=frame")
+
+@app.route("/camara")
+def camara():
+    return render_template("usuarios/cam.jinja")
 
 #@app.before_request
 def before_request():
