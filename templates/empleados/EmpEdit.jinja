@@ -4,52 +4,59 @@
 {% endblock %}
 
 {% block content %}
-<div class="shadow p-3">
-{%for row in empleado%}
-    <form action="/administradores/GuardarEmp/{{row['Id_Empleado']}}" method="post">
-    
+
+
+<div>
+    <form action="/administradores/GuardarEmp/{{row['Id_Empleado']}}" method="post" class="to-left position-absolute p-5 d-flex flex-column justify-content-center align-items-center h-100" style="top: 0; bottom: 0; left: 0; right: 0;">
+
       <div class="mb-3">
-        <label class="form-label"> Informacion Empleado</label>
+        <p>Informacion Empleado</p>
       </div>
-      <div class="mb-3">
-        <label for="EmpNombre" class="form-label">Nombre</label>
-        <input type="text" class="form-control" id="EmpNombre" name="EmpNombre" placeholder="{{row['Nombre_Empleado']}}">
-        
+      <div class="d-flex flex-column justify-content-between align-items-center h-100 w-100">
+        <div class="mb-3 w-100 form-group d-flex align-items-center flex-column">
+          <label for="EmpNombre" class="form-label w-100">Nombre</label>
+          <input type="text" class="form-control" id="EmpNombre" value="{{empleado[0]}}">
+        </div>
+
+        <div class="mb-3 w-100 form-group d-flex align-items-center flex-column">
+          <label for="EmpEmail" class="form-label">Correo</label>
+          <input type="email" class="form-control" id="EmpEmail" value="{{empleado[1]}}">
+        </div>
+
+        <div class="mb-3 w-100 form-group d-flex align-items-center flex-column">
+          <label for="EmpPassword" class="form-label">Contraseña</label>
+          <input type="password" class="form-control" id="EmpPassword" value="{{empleado[2]}}">
+        </div>
+
+        <div class="mb-3 w-100 form-group d-flex align-items-center flex-column">
+          <label for="EmpRFC" class="form-label">RFC</label>
+          <input type="text" class="form-control" id="EmpRFC" value="{{empleado[3]}}">
+        </div>
+
+        <div class="mb-3 w-100 form-group d-flex align-items-center flex-column">
+          <label for="EmpDireccion" class="form-label">Direccion</label>
+          <input type="text" class="form-control" id="EmpDireccion" value="{{empleado[4]}}">
+        </div>
+
+        <div class="mb-3 w-100 form-group d-flex align-items-center flex-column">
+          <label for="EmpTelefono" class="form-label">Telefono</label>
+          <input type="tel" class="form-control" id="EmpTelefono" value="{{empleado[5]}}">
+        </div>
+
+        <div class="mb-3 w-100 form-group d-flex align-items-center flex-column">
+          <label for="lista" class="form-label">Puesto</label>
+          <select id="lista" name="lista" class="form-control form-control-lg h-25">
+            <option selected disabled value="{{empleado[6]}}">{{empleado[6]}}</option>
+            <option value="" disabled>Elige una opción...</option>
+            <option value="3">Administrador</option>
+            <option value="2">Supervisor</option>
+            <option value="1">Encargado Caja</option>
+            <option value="4">Encargado Almacen</option>
+          </select>
+        </div>
+        <button type="submit" class="btn btn-secondary w-50">Submit</button>
       </div>
-      <div class="mb-3">
-        <label for="EmpEmail" class="form-label">Correo</label>
-        <input type="email" class="form-control" id="EmpEmail" name="EmpEmail" placeholder="{{row['Correo']}}">
-      </div>
-      <div class="mb-3">
-        <label for="EmpPassword" class="form-label">Contraseña</label>
-        <input type="password" class="form-control" id="EmpPassword" name="EmpPassword" placeholder="{{row['Contraseña']}}">
-      </div>
-      <div class="mb-3">
-        <label for="EmpRFC" class="form-label">RFC</label>
-        <input type="text" class="form-control" id="EmpRFC" name="EmpRFC" placeholder="{{row['RFC']}}">
-      </div>
-      <div class="mb-3">
-        <label for="EmpDireccion" class="form-label">Direccion</label>
-        <input type="text" class="form-control" id="EmpDireccion" name="EmpDireccion" placeholder="{{row['Direccion']}}">
-    
-      </div>
-      <div class="mb-3">
-        <label for="EmpTelefono" class="form-label">Telefono</label>
-        <input type="tel" class="form-control" id="EmpTelefono" name="EmpTelefono" placeholder="{{row['Telefono']}}">
-      </div>
-      <div class="mb-3 ">
-        <label for="listaTipo" class="form-label">Selecciona el Puesto:</label>
-        <select id="listaTipo" name="listaTipo"  class="form-select form-select-lg ">
-        <option selected value="{{row['Tipo_Empleado']}}">{{row['Tipo_Empleado']}}</option>
-        <option value="">Elige una opción...</option>
-        <option value="3">Administrador</option>
-        <option value="2">Supervisor</option>
-        <option value="1">Encargado Caja</option>
-        <option value="4">Encargado Almacen</option>
-        </select>
-      </div>
-      <button type="submit" class="btn btn-primary">Guardar</button>
-    
+
     </form>
     {% endfor%}
 </div>

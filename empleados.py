@@ -13,10 +13,9 @@ def on_load(state):
 def asignarNombre(idEmpleado):
     with mysql.connect.cursor() as cursor:
         cursor.execute('SELECT Nombre_Empleado FROM empleado WHERE Id_Empleado = %s', (idEmpleado,))
-        rows = cursor.fetchall()
-        
-        for row in rows:
-            nombre = row['Nombre_Empleado']  
+        rows = cursor.fetchone()
+        print(rows)
+        nombre = rows[0]  
         flash(nombre[:(nombre.index(' '))])
 
 @empleados.route("/administradores")
@@ -31,7 +30,7 @@ def invAdmin():
 @empleados.route("/administradores/EmpleadosList")
 def EmpAdmin():
     with mysql.connect.cursor() as cursor:
-        cursor.execute("SELECT empleado.Id_Empleado, empleado.Nombre_Empleado, tipo_empleado.Tipo FROM empleado INNER JOIN tipo_empleado ON empleado.Tipo_Empleado = tipo_empleado.Id_Tipo")
+        cursor.execute("SELECT empleado.Id_Empleado, empleado.Nombre_Empleado, `tipo empleado`.Tipo FROM empleado INNER JOIN `tipo empleado` ON empleado.Tipo_Empleado = `tipo empleado`.Id_Tipo")
         resultado = cursor.fetchall()
 
     return render_template("empleados/EmpleadosList.jinja", resultados = resultado)
@@ -39,14 +38,15 @@ def EmpAdmin():
 @empleados.route('/administradores/editarEmpleados/<id>', methods=['POST', 'GET'])
 def Admin_empleados_Edit(id):
     with mysql.connect.cursor() as cursor:
-        cursor.execute("SELECT empleado.Id_Empleado, empleado.Nombre_Empleado, cuenta.Correo, cuenta.Contraseña ,empleado.RFC, empleado.Direccion, empleado.Telefono, empleado.Tipo_Empleado FROM empleado INNER JOIN cuenta ON cuenta.Id_cuenta = empleado.Id_Empleado WHERE cuenta.Id_cuenta = %s", id)
-        rows = cursor.fetchall()
-       
-    return render_template("empleados/EmpEdit.jinja", empleado=rows)
+
+        cursor.execute("SELECT empleado.Nombre_Empleado, cuenta.Correo, cuenta.Contraseña ,empleado.RFC, empleado.Direccion, empleado.RFC, empleado.Tipo_Empleado FROM empleado INNER JOIN cuenta ON cuenta.Id_cuenta = empleado.Id_Empleado WHERE cuenta.Id_cuenta = %s", id)
+        resultado = cursor.fetchone()
+    
+    print(resultado)
+    return render_template("empleados/EmpEdit.jinja", empleado = resultado)
 
 @empleados.route('/administradores/BorrarEmpleados/<id>')
 def Admin_empleados_Delete(id):
-
     return redirect("/")
 
 
