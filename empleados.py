@@ -63,9 +63,9 @@ def GuardarEmp(id):
     tipo = request.form['ListaTipo']
     with mysql.connection.cursor() as cursor:
         cursor.execute("UPDATE cuenta SET Correo = %s, Contraseña = %s WHERE Id_cuenta = %s", (email, password, id))
-        cursor.execute("UPDATE empleado SET RFC = %s, Nombre_Empleado = %s, Telefono = %s, Direccion = %s, Tipo_Empleado = %s WHERE Id_cuenta = %s",(rfc, nombre, tel, direccion, tipo,id))
         mysql.connection.commit()
-        cursor.close()
+        cursor.execute("UPDATE empleado SET RFC = %s, Nombre_Empleado = %s, Telefono = %s, Direccion = %s, Tipo_Empleado = %s WHERE Id_Empleado = %s",(rfc, nombre, tel, direccion, tipo, id))
+        mysql.connection.commit()
     return redirect("/administradores/EmpleadosList")
 
 @empleados.route("/administradores/delete")
