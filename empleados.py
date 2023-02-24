@@ -30,7 +30,7 @@ def invAdmin():
 @empleados.route("/administradores/EmpleadosList")
 def EmpAdmin():
     with mysql.connect.cursor() as cursor:
-        cursor.execute("SELECT empleado.Id_Empleado, empleado.Nombre_Empleado, tipo_empleado.Tipo FROM empleado INNER JOIN tipo_empleado ON empleado.Tipo_Empleado = tipo_empleado.Id_Tipo")
+        cursor.execute("SELECT empleado.Id_Empleado, empleado.Nombre_Empleado, tipo_empleado.Tipo FROM empleado INNER JOIN tipo_empleado ON empleado.Tipo_Empleado = tipo_empleado.Id_Tipo ORDER BY empleado.Id_Empleado ASC")
         resultado = cursor.fetchall()
 
     return render_template("empleados/EmpleadosList.jinja", resultados = resultado)
