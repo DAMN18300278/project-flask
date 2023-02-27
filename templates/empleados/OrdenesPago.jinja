@@ -1,0 +1,51 @@
+{% extends "empleados/empleadosMaster.jinja" %}
+{% block head %}
+    {{ super() }}
+{% endblock %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="row align-items-start"> 
+            <div class="col-2">
+            <a href="../administradores"><button >volver</button> </a>
+            </div>
+            
+            <div class="col-8"><h2>Ordenes de Pago</h2></div>
+            <span class="col-2"> </span>
+        </div>
+        <div class="row align-items-center">
+            <span class="col-2"></span>
+            <div class="col-8 "> <input  type="search"  placeholder="buscar"></div>
+            <div class="col-2 text-left" style="float: left;">
+                <lord-icon
+                     src="https://cdn.lordicon.com/rlizirgt.json"
+                    trigger="click"
+                     style="width:26px;height:26px; ">
+                </lord-icon></div>
+            
+        </div>   
+        <div class="table table-hover containerEmp ">
+        <table >
+            <thead style="padding: 5px;">
+                <tr>
+                    <th>Id de la Orden</th>
+                    <th>Nombre del Usuario</th>
+                    <th>Fecha</th>
+                    
+                </tr>
+            </thead>
+            <tbody>
+        {%for row in resultados%}
+        <tr> 
+            <td>{{row[0]}}</td>
+            <td>{{row[1]}}</td>
+            <td>{{row[2]}}</td>
+            <td><a href="/administradores/OrdenEspecifica/{{row[0]}}"> <button class="btn btn-outline-danger" style="font-size: 12px;">Ver Orden</button></a> </td>
+        </tr>
+        {% endfor%}
+        </tbody>
+        </table>
+        </div> 
+    
+    </div>
+{% endblock %}
