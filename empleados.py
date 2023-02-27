@@ -39,7 +39,7 @@ def EmpAdmin():
 @empleados.route('/administradores/editarEmpleados/<id>', methods=['POST', 'GET'])
 def Admin_empleados_Edit(id=None):
     if id:
-        with mysql.connect.cursor() as cursor:
+        with mysql.connection.cursor() as cursor:
             cursor.execute("SELECT empleado.Nombre_Empleado, cuenta.Correo, cuenta.Contraseña ,empleado.RFC, empleado.Direccion, empleado.RFC, empleado.Tipo_Empleado, empleado.Id_Empleado FROM empleado INNER JOIN cuenta ON cuenta.Id_cuenta = empleado.Id_Empleado WHERE cuenta.Id_cuenta = %s", id)
             resultado = cursor.fetchone()
         return render_template("empleados/EmpEdit.jinja", empleado = resultado)
@@ -49,7 +49,7 @@ def Admin_empleados_Edit(id=None):
 @empleados.route('/administradores/BorrarEmpleados/<int:id>')
 def Admin_empleados_Delete(id):
 
-    with mysql.connect.cursor() as cursor:
+    with mysql.connection.cursor() as cursor:
         
         cursor.execute("DELETE FROM empleado WHERE Id_Empleado = %s", (id,))
         mysql.connection.commit()
@@ -83,9 +83,14 @@ def GuardarEmp(id=None):
         return redirect("/administradores/EmpleadosList")
     else:
         with mysql.connection.cursor() as cursor:
-            cursor.execute("INSERT INTO cuenta(Rol, Correo, Contraseña, estado) VALUES (%s,%s,%s,Inactivo) ", (tipo,email,password))
+            cursor.execute("SELECT MAX(Id_cuenta) FROM cuenta")
+            max_id = cursor.fetchone()[0] or 0 # esta linea es para obtener el primer valor y verifique que no se encuentre vacia
+            print(max_id)
+            #Insertar en la tabla cuenta con el id máximo + 1
+            cursor.execute("INSERT INTO cuenta(Id_cuenta, Rol, Correo, Contraseña, estado) VALUES (%s, %s, %s, %s, %s)", (max_id + 1, tipo, email, password, 'Inactivo'))
             mysql.connection.commit()
-            cursor.execute("INSERT INTO empleado(RFC, Nombre_Empleado, Telefono, Direccion, Tipo_Empleado) VALUES (%s,%s,%s,%s) ", (rfc,nombre,direccion,tipo))
+            # Insertar en la tabla empleado con el mismo id_cuenta
+            cursor.execute("INSERT INTO empleado(Id_Empleado, RFC, Nombre_Empleado, Telefono, Direccion, Tipo_Empleado) VALUES (%s, %s, %s, %s, %s, %s)", (max_id + 1, rfc, nombre, tel, direccion, tipo))
             mysql.connection.commit()
         return redirect("/administradores/EmpleadosList") 
 
