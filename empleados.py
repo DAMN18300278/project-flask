@@ -25,7 +25,10 @@ def indexAdmin():
 
 @empleados.route("/administradores/inventario")
 def invAdmin():
-    return render_template("empleados/inventario.jinja")
+    with mysql.connect.cursor() as cursor:
+        cursor.execute("SELECT Id_Productos, Nombre, Cantidad From productos")
+        resultado = cursor.fetchall()
+    return render_template("empleados/inventario.jinja", resultados = resultado)
 
 @empleados.route("/administradores/EmpleadosList")
 def EmpAdmin():
@@ -61,7 +64,16 @@ def Admin_empleados_Delete(id):
 
 @empleados.route("/administradores/OrdenesPago")
 def PagosAdmin():
-    return render_template("empleados/OrdenesPago.jinja")
+
+    with mysql.connect.cursor() as cursor:
+        cursor.execute("SELECT OrdenPago.Id_Orden,usuarios.Nombre ,OrdenPago.Fecha FROM OrdenPago INNER JOIN usuarios ON usuarios.Id_Usuario = OrdenPago.Id_Usuario ORDER BY Id_Orden ASC")
+        resultado = cursor.fetchall()
+    return render_template("empleados/OrdenesPago.jinja", resultados = resultado)
+
+@empleados.route("/administradores/OrdenEspecifica/<int:id>")
+def OrdenUsuario(id):
+
+    return render_template("empleados/OrdenEspecifica.jinja",id=id)
 
 @empleados.route("/administradores/GuardarEmp", methods=['POST', 'GET'])
 @empleados.route("/administradores/GuardarEmp/<int:id>", methods=['POST','GET'])
