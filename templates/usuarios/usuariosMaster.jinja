@@ -12,11 +12,11 @@
     <link rel="stylesheet" href="{{ url_for('static', filename= 'css/stylesUsuarios.css') }}">
     {% endblock %}
 </head>
-<body>
+<body class="bg-white">
     {% block nav %}{% endblock %}
     {% block content %}{% endblock %}
 
     <script src="{{ url_for('static', filename= 'js/usuarios.js') }}"></script>
-    <script src="{{ url_for('static', filename = 'bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ url_for('static', filename = 'bootstrap/dist/js/bootstrap.bundle.min.js') }}"></script>
 </body>
 </html>
