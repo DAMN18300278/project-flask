@@ -40,8 +40,8 @@
             <td>{{row[1]}}</td>
             <td style="width: 50px;">
             <div class="form-group" >
-                <form method="post">
-                    <input type="number" class="form-control"  value="{{row[2]}}" inputmode="numeric">
+                <form method="post" action="/administradores/inventario/{{row[0]}}" id="UpCant">
+                    <input type="number" class="form-control" name="cantidad" id="cantidad" value="{{row[2]}}" inputmode="numeric">
                 </form> 
             </div>
                 
@@ -55,8 +55,8 @@
         </div> 
         
         <div >
-            <a href=""><button class="btn">Guardar</button></a>
-            <a href=""><button class="btn">Añadir</button></a>
+            <button type="submit" form="UpCant" class="btn">Guardar</button>
+            <a href="/administradores/inventario/Agregar"><button class="btn">Añadir</button></a>
             
         </div>
     </div>

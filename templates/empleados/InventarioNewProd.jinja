@@ -1,0 +1,102 @@
+{% extends "empleados/empleadosMaster.jinja" %}
+{% block head %}
+    {{ super() }}
+{% endblock %}
+
+{% block content %}
+
+
+<div>
+    <form action="" method="post" class="to-left position-absolute p-5 d-flex flex-column justify-content-center align-items-center h-100" style="top: 0; bottom: 0; left: 0; right: 0;">
+
+      <div class="mb-3">
+        <p>Nuevo Producto</p>
+      </div>
+      <div class="d-flex flex-column justify-content-between align-items-center h-100 w-100">
+        <div  class="mb-3 w-100 form-group d-flex align-items-center flex-column">
+          <label for="Imagen" class="form-label w-100">Imagen</label>
+          <input  type="text" class="form-control" id="Imagen" name="Imagen" value="">
+        </div>
+
+        <div class="mb-3 w-100 form-group d-flex align-items-center flex-column">
+            <label for="Descripcion" class="form-label">Descripcion</label>
+            <input style="height: 200px;" type="email" class="form-control" id="Descripcion" name="Descripcion" value="">
+        </div>
+
+        <div class="mb-3 w-100 form-group d-flex align-items-center flex-column">
+            <label for="Precio" class="form-label">Precio</label>
+            <input type="number" inputmode="numeric" class="form-control" id="Precio" name="Precio" value="">
+        </div>
+        <label for="NombreColor" class="col-form-label ">Color</label>
+        <div class="mb-3 w-100 form-group d-flex align-items-center">
+        
+            <div class="col-md-6 d-flex justify-content-center" style="margin-right: 5%;">
+                
+                <input type="text" class="form-control" id="NombreColor" name="NombreColor" value="">
+            </div>
+
+            
+            <div style="flex: auto; margin-left: 10px;">
+                <input type="color" name="colorRGB" id="colorRGB" value="" class="input-color">
+            </div>
+         
+            <div class="col-md-6 d-flex justify-content-end">
+                <button id="btnAgregar" type="button" class="btn btn-outline-danger" style="font-size: 12px;" >Agregar</button>
+            </div>    
+        </div>
+        <div class="mb-3  form-group " id="contenedorCampos"></div>
+          
+          
+          
+        </div>
+
+        <div class="mb-3 w-100 form-group d-flex align-items-center flex-column">
+          <label for="Categoria" class="form-label">Categoria</label>
+          <input type="text" class="form-control" id="Categoria" name="Categoria" value="">
+        </div>
+
+        <div class="mb-3 w-100 form-group d-flex align-items-center flex-column">
+          <label for="Recomendacion" class="form-label">Recomendacion</label>
+          <input type="tel" class="form-control" id="Recomendacion" name="Recomendacion" value="">
+        </div>
+
+        <div class="mb-3 w-100 form-group d-flex align-items-center flex-column">
+          <label for="Marca" class="form-label">Marca</label>
+          <input type="tel" class="form-control" id="Marca" name="Marca" value="">
+        </div>
+        
+        <button type="submit" class="btn btn-secondary w-50">Submit</button>
+      </div>
+
+    </form>
+</div>
+
+<script>
+    
+function agregarCampos() {
+    // Obtener el elemento donde se agregarán los nuevos campos de entrada
+    var contenedor = document.getElementById("contenedorCampos");
+  
+    // Crear los nuevos elementos de entrada de texto y color
+    var nuevoInputText = document.createElement("input");
+    nuevoInputText.type = "text";
+    nuevoInputText.name = "NombreColor";
+    nuevoInputText.className = "form-control";
+    nuevoInputText.value = "";
+  
+    var nuevoInputColor = document.createElement("input");
+    nuevoInputColor.type = "color";
+    nuevoInputColor.name = "colorRGB";
+    nuevoInputColor.className = "input-color";
+    nuevoInputColor.value = "";
+  
+    // Agregar los nuevos elementos al contenedor
+    contenedor.appendChild(nuevoInputText);
+    contenedor.appendChild(nuevoInputColor);
+  }
+
+  var btnAgregar = document.getElementById("btnAgregar");
+    btnAgregar.addEventListener("click", agregarCampos);
+</script>
+
+{% endblock %}

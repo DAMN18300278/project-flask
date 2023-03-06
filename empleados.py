@@ -23,6 +23,8 @@ def indexAdmin():
     asignarNombre(session['id_administrador'])
     return render_template("empleados/indexAdmin.jinja")
 
+    #Inventario
+
 @empleados.route("/administradores/inventario")
 def invAdmin():
     with mysql.connect.cursor() as cursor:
@@ -30,12 +32,46 @@ def invAdmin():
         resultado = cursor.fetchall()
     return render_template("empleados/inventario.jinja", resultados = resultado)
 
+@empleados.route("/administradores/inventario/<int:id>", methods=['POST', 'GET'])
+def UpCantidad(id):
+    cantidad = request.form['cantidad']
+    with mysql.connection.cursor() as cursor:
+        cursor.execute("Update productos SET Cantidad = %s where %s = Id_Productos",(cantidad, id))
+        mysql.connection.commit()
+    return redirect("/administradores/inventario")
+
+@empleados.route("/administradores/inventario/NuevoProducto", methods=['POST','GET'])
+def AñadirProdcuto():
+    nombre = request.form['EmpNombre']
+    email = request.form['EmpEmail']
+    password = request.form['EmpPassword']
+    tel = request.form['EmpTelefono']
+    rfc = request.form['EmpRFC']
+    direccion = request.form['EmpDireccion']
+    tipo = request.form['ListaTipo']
+    with mysql.connect.cursor() as cursor:
+            cursor.execute("SELECT MAX(Id_cuenta) FROM cuenta")
+            max_id = cursor.fetchone() # esta linea es para obtener el primer valor y verifique que no se encuentre vacia
+            id_nuevo = max_id[0]
+            #Insertar en la tabla cuenta con el id máximo + 1
+    with mysql.connection.cursor() as cursor:
+            print(id_nuevo)
+            cursor.execute("INSERT INTO cuenta(Id_cuenta, Rol, Correo, Contraseña, estado) VALUES (%s, %s, %s, %s, %s)", (id_nuevo, tipo, email, password, 'Inactivo'))
+            mysql.connection.commit()
+            # Insertar en la tabla empleado con el mismo id_cuenta
+            cursor.execute("INSERT INTO empleado(Id_Empleado, RFC, Nombre_Empleado, Telefono, Direccion, Tipo_Empleado) VALUES (%s, %s, %s, %s, %s, %s)", (id_nuevo, rfc, nombre, tel, direccion, tipo))
+            mysql.connection.commit()
+            return redirect("/administradores/EmpleadosList")  
+
+@empleados.route('/administradores/inventario/Agregar', methods=['POST', 'GET'])
+def Inv_Agregar():
+    return render_template("empleados/InventarioNewProd.jinja", empleado = "")
+
 @empleados.route("/administradores/EmpleadosList")
 def EmpAdmin():
     with mysql.connect.cursor() as cursor:
         cursor.execute("SELECT empleado.Id_Empleado, empleado.Nombre_Empleado, tipo_empleado.Tipo FROM empleado INNER JOIN tipo_empleado ON empleado.Tipo_Empleado = tipo_empleado.Id_Tipo ORDER BY empleado.Id_Empleado ASC")
         resultado = cursor.fetchall()
-
     return render_template("empleados/EmpleadosList.jinja", resultados = resultado)
 
 @empleados.route('/administradores/editarEmpleados', methods=['POST', 'GET'])
@@ -51,20 +87,16 @@ def Admin_empleados_Edit(id=None):
 
 @empleados.route('/administradores/BorrarEmpleados/<int:id>')
 def Admin_empleados_Delete(id):
-
     with mysql.connection.cursor() as cursor:
-        
         cursor.execute("DELETE FROM empleado WHERE Id_Empleado = %s", (id,))
         mysql.connection.commit()
         cursor.execute("DELETE FROM cuenta WHERE Id_cuenta = %s", (id,))
         mysql.connection.commit()
-
     return redirect("/administradores/EmpleadosList")
 
 
 @empleados.route("/administradores/OrdenesPago")
 def PagosAdmin():
-
     with mysql.connect.cursor() as cursor:
         cursor.execute("SELECT OrdenPago.Id_Orden,usuarios.Nombre ,OrdenPago.Fecha FROM OrdenPago INNER JOIN usuarios ON usuarios.Id_Usuario = OrdenPago.Id_Usuario ORDER BY Id_Orden ASC")
         resultado = cursor.fetchall()
@@ -72,7 +104,6 @@ def PagosAdmin():
 
 @empleados.route("/administradores/OrdenEspecifica/<int:id>")
 def OrdenUsuario(id):
-
     return render_template("empleados/OrdenEspecifica.jinja",id=id)
 
 @empleados.route("/administradores/GuardarEmp", methods=['POST', 'GET'])
