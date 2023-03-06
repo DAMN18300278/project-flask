@@ -15,7 +15,7 @@
       <div class="d-flex flex-column justify-content-between align-items-center h-100 w-100">
         <div  class="mb-3 w-100 form-group d-flex align-items-center flex-column">
           <label for="Imagen" class="form-label w-100">Imagen</label>
-          <input  type="text" class="form-control" id="Imagen" name="Imagen" value="">
+          <input  type="file" class="form-control" id="Imagen" name="Imagen" value="">
         </div>
 
         <div class="mb-3 w-100 form-group d-flex align-items-center flex-column">
@@ -29,26 +29,19 @@
         </div>
         <label for="NombreColor" class="col-form-label ">Color</label>
         <div class="mb-3 w-100 form-group d-flex align-items-center">
-        
             <div class="col-md-6 d-flex justify-content-center" style="margin-right: 5%;">
-                
-                <input type="text" class="form-control" id="NombreColor" name="NombreColor" value="">
-            </div>
-
-            
+                <input type="text" class="form-control border" id="NombreColor1" name="NombreColor" value="">
+            </div>            
             <div style="flex: auto; margin-left: 10px;">
-                <input type="color" name="colorRGB" id="colorRGB" value="" class="input-color">
+                <input type="color" name="colorRGB" id="colorRGB1" value="" class="input-color">
             </div>
          
             <div class="col-md-6 d-flex justify-content-end">
-                <button id="btnAgregar" type="button" class="btn btn-outline-danger" style="font-size: 12px;" >Agregar</button>
+                <button type="button" class="btn btn-outline-danger" onclick="agregarCampos()" style="font-size: 12px;" >Agregar</button>
             </div>    
         </div>
-        <div class="mb-3  form-group " id="contenedorCampos"></div>
-          
-          
-          
-        </div>
+
+        <div class="mb-3  form-group" id="contenedorCampos"></div>
 
         <div class="mb-3 w-100 form-group d-flex align-items-center flex-column">
           <label for="Categoria" class="form-label">Categoria</label>
@@ -72,31 +65,47 @@
 </div>
 
 <script>
-    
-function agregarCampos() {
-    // Obtener el elemento donde se agregarán los nuevos campos de entrada
-    var contenedor = document.getElementById("contenedorCampos");
-  
-    // Crear los nuevos elementos de entrada de texto y color
-    var nuevoInputText = document.createElement("input");
-    nuevoInputText.type = "text";
-    nuevoInputText.name = "NombreColor";
-    nuevoInputText.className = "form-control";
-    nuevoInputText.value = "";
-  
-    var nuevoInputColor = document.createElement("input");
-    nuevoInputColor.type = "color";
-    nuevoInputColor.name = "colorRGB";
-    nuevoInputColor.className = "input-color";
-    nuevoInputColor.value = "";
-  
-    // Agregar los nuevos elementos al contenedor
-    contenedor.appendChild(nuevoInputText);
-    contenedor.appendChild(nuevoInputColor);
-  }
+var numColors = 2;
 
-  var btnAgregar = document.getElementById("btnAgregar");
-    btnAgregar.addEventListener("click", agregarCampos);
+function agregarCampos() {
+    if(numColors < 7){
+      // Obtener el elemento donde se agregarán los nuevos campos de entrada
+      var contenedor = document.getElementById("contenedorCampos");
+    
+      var nuevoDiv = document.createElement("div");
+      nuevoDiv.className = "mb-3 w-100 form-group d-flex align-items-center"
+
+      // Crear los nuevos elementos de entrada de texto y color
+      var contenedorLabel = document.createElement("div");
+      contenedorLabel.className = "col-md-6 d-flex justify-content-center";
+      contenedorLabel.style = "margin-right: 5%;"
+
+      var nuevoInputText = document.createElement("input");
+      nuevoInputText.type = "text";
+      nuevoInputText.name = "NombreColor" + numColors;
+      nuevoInputText.className = "form-control border";
+      nuevoInputText.value = "";
+
+      contenedorLabel.appendChild(nuevoInputText);
+
+      var contenedorColor = document.createElement("div");
+      contenedorColor.style = "flex: auto; margin-left: 10px;";
+    
+      var nuevoInputColor = document.createElement("input");
+      nuevoInputColor.type = "color";
+      nuevoInputColor.name = "colorRGB" + numColors;
+      nuevoInputColor.className = "input-color";
+      nuevoInputColor.value = "";
+
+      contenedorColor.appendChild(nuevoInputColor);
+    
+      // Agregar los nuevos elementos al contenedor
+      nuevoDiv.appendChild(contenedorLabel);
+      nuevoDiv.appendChild(contenedorColor);
+      contenedor.appendChild(nuevoDiv);
+      numColors += 1;
+    }
+  }
 </script>
 
 {% endblock %}
