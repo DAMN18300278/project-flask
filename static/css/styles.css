@@ -51,7 +51,7 @@ h1{
 @keyframes vRight {
     from{
         right: 20%;
-        width: 300%;
+        width: 100%;
         opacity: 0%;
     }    
 
@@ -124,8 +124,6 @@ h1{
     outline: none;
 }
 
-
-
 .rs-line::-webkit-slider-runnable-track{
     width: 100%;
     height: 1px;
@@ -168,4 +166,8 @@ h1{
     font-size: 18px; 
     border-radius: 10px; 
     height: 36px; 
+}
+
+.box-shadow1{
+    box-shadow: rgba(100, 100, 111, 0.8) 0px 7px 29px -8px;
 }

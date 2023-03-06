@@ -39,11 +39,11 @@ def EmpAdmin():
     return render_template("empleados/EmpleadosList.jinja", resultados = resultado)
 
 @empleados.route('/administradores/editarEmpleados', methods=['POST', 'GET'])
-@empleados.route('/administradores/editarEmpleados/<id>', methods=['POST', 'GET'])
+@empleados.route('/administradores/editarEmpleados/<int:id>', methods=['POST', 'GET'])
 def Admin_empleados_Edit(id=None):
     if id:
-        with mysql.connection.cursor() as cursor:
-            cursor.execute("SELECT empleado.Nombre_Empleado, cuenta.Correo, cuenta.Contraseña ,empleado.RFC, empleado.Direccion, empleado.RFC, empleado.Tipo_Empleado, empleado.Id_Empleado FROM empleado INNER JOIN cuenta ON cuenta.Id_cuenta = empleado.Id_Empleado WHERE cuenta.Id_cuenta = %s", id)
+        with mysql.connect.cursor() as cursor:
+            cursor.execute("SELECT empleado.Nombre_Empleado, cuenta.Correo, cuenta.Contraseña ,empleado.RFC, empleado.Direccion, empleado.RFC, empleado.Tipo_Empleado, empleado.Id_Empleado FROM empleado INNER JOIN cuenta ON cuenta.Id_cuenta = empleado.Id_Empleado WHERE cuenta.Id_cuenta = %s", (id,))
             resultado = cursor.fetchone()
         return render_template("empleados/EmpEdit.jinja", empleado = resultado)
     else:
@@ -86,7 +86,6 @@ def GuardarEmp(id=None):
     direccion = request.form['EmpDireccion']
     tipo = request.form['ListaTipo']
     if id:
-        
         with mysql.connection.cursor() as cursor:
             cursor.execute("UPDATE cuenta SET Correo = %s, Contraseña = %s WHERE Id_cuenta = %s", (email, password, id))
             mysql.connection.commit()
@@ -94,15 +93,17 @@ def GuardarEmp(id=None):
             mysql.connection.commit()
         return redirect("/administradores/EmpleadosList")
     else:
-        with mysql.connection.cursor() as cursor:
+        with mysql.connect.cursor() as cursor:
             cursor.execute("SELECT MAX(Id_cuenta) FROM cuenta")
-            max_id = cursor.fetchone()[0] or 0 # esta linea es para obtener el primer valor y verifique que no se encuentre vacia
-            print(max_id)
+            max_id = cursor.fetchone() # esta linea es para obtener el primer valor y verifique que no se encuentre vacia
+            id_nuevo = max_id[0]
             #Insertar en la tabla cuenta con el id máximo + 1
-            cursor.execute("INSERT INTO cuenta(Id_cuenta, Rol, Correo, Contraseña, estado) VALUES (%s, %s, %s, %s, %s)", (max_id + 1, tipo, email, password, 'Inactivo'))
+        with mysql.connection.cursor() as cursor:
+            print(id_nuevo)
+            cursor.execute("INSERT INTO cuenta(Id_cuenta, Rol, Correo, Contraseña, estado) VALUES (%s, %s, %s, %s, %s)", (id_nuevo, tipo, email, password, 'Inactivo'))
             mysql.connection.commit()
             # Insertar en la tabla empleado con el mismo id_cuenta
-            cursor.execute("INSERT INTO empleado(Id_Empleado, RFC, Nombre_Empleado, Telefono, Direccion, Tipo_Empleado) VALUES (%s, %s, %s, %s, %s, %s)", (max_id + 1, rfc, nombre, tel, direccion, tipo))
+            cursor.execute("INSERT INTO empleado(Id_Empleado, RFC, Nombre_Empleado, Telefono, Direccion, Tipo_Empleado) VALUES (%s, %s, %s, %s, %s, %s)", (id_nuevo, rfc, nombre, tel, direccion, tipo))
             mysql.connection.commit()
         return redirect("/administradores/EmpleadosList") 
 

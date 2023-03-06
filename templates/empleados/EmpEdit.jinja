@@ -7,7 +7,7 @@
 
 
 <div>
-    <form {% if empleado[7] == "" %} action="/administradores/GuardarEmp/{{empleado[7]}}" {% else %} action="/administradores/GuardarEmp" {% endif %} method="post" class="to-left position-absolute p-5 d-flex flex-column justify-content-center align-items-center h-100" style="top: 0; bottom: 0; left: 0; right: 0;">
+    <form {% if not empleado[7] %} action="/administradores/GuardarEmp" {% else %} action="/administradores/GuardarEmp/{{empleado[7]}}" {% endif %} method="post" class="to-left position-absolute p-5 d-flex flex-column justify-content-center align-items-center h-100" style="top: 0; bottom: 0; left: 0; right: 0;">
 
       <div class="mb-3">
         <p>Informacion Empleado</p>
