@@ -1,5 +1,6 @@
-document.addEventListener("DOMContentLoaded", function ojosBorderLeft() {
+document.addEventListener("DOMContentLoaded", () => {
     horizontalMenuChange(1);
+    document.getElementById("body").style.display = "block";
 });
 
 function horizontalMenuChange(element) {
