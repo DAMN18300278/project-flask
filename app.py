@@ -7,8 +7,6 @@ from usuarios import usuarios
 import mediapipe as mp
 import cv2
 from flask_mysqldb import MySQL
-import aiomysql
-import asyncio
 
 app = Flask(__name__)
 app.secret_key = "ab"
