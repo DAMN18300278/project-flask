@@ -5,62 +5,9 @@
 
 {% block content %}
     {% include "usuarios/nav.jinja" %}
-    <div class="container h-auto vanish1" style="animation-delay: 0.5s; padding-left: 0; padding-right: 0; animation-duration: 3s;">
-        <div class="w-100">
-
-            <p class="p-3" style="text-align: left; margin-bottom: 0; margin-left: 3%;">Productos populares</p>
-            <div class="mx-4 mb-4 bg-white p-3 box-shadow1" style="border-radius: 20px;">
-                <div class="snap-container w-100 h-100"> {# snap-container fue otorgado por https://www.silocreativo.com/controla-desplazamiento-web-css-scroll-snap/ #}
-                    <div class="snap-section position-relative">
-                        <img src="/static/src/img1.jpg" class="h-100">
-                        <button class="position-absolute btn btn-outline-danger btn-product" style="bottom: 10%; left: 7%;">Detalles</button>
-                    </div>
-                    <div class="snap-section position-relative">
-                        <img src="/static/src/img2.jpg" width="70%">
-                        <button class="position-absolute btn btn-outline-danger btn-product" style="bottom: 10%; left: 7%;">Detalles</button>
-                    </div>
-                    <div class="snap-section position-relative">
-                        <img src="/static/src/img3.jpg" width="70%">
-                        <button class="position-absolute btn btn-outline-danger btn-product" style="bottom: 10%; left: 7%;">Detalles</button>
-                    </div>
-                </div>
-            </div>
-            <p class="p-3" style="text-align: left; margin-bottom: 0; margin-left: 3%;">Productos populares</p>
-            <div class="mx-4 mb-4 bg-white p-3 box-shadow1" style="border-radius: 20px;">
-                <div class="snap-container w-100 h-100"> {# snap-container fue otorgado por https://www.silocreativo.com/controla-desplazamiento-web-css-scroll-snap/ #}
-                    <div class="snap-section position-relative h-100">
-                        <img src="/static/src/img4.jpg" class="h-100">
-                        <button class="position-absolute btn btn-outline-danger btn-product" style="bottom: 10%; left: 7%;">Detalles</button>
-                    </div>
-                    <div class="snap-section position-relative">
-                        <img src="/static/src/img5.jpg" width="70%">
-                        <button class="position-absolute btn btn-outline-danger btn-product" style="bottom: 10%; left: 7%;">Detalles</button>
-                    </div>
-                    <div class="snap-section position-relative">
-                        <img src="/static/src/img3.jpg" width="70%">
-                        <button class="position-absolute btn btn-outline-danger btn-product" style="bottom: 10%; left: 7%;">Detalles</button>
-                    </div>
-                </div>
-            </div>
-            <p class="p-3" style="text-align: left; margin-bottom: 0; margin-left: 3%;">Productos populares</p>
-            <div class="mx-4 mb-4 bg-white p-3 box-shadow1" style="border-radius: 20px;">
-                <div class="snap-container"> {# snap-container fue otorgado por https://www.silocreativo.com/controla-desplazamiento-web-css-scroll-snap/ #}
-                    <div class="snap-section position-relative">
-                        <img src="/static/src/img1.jpg" width="70%">
-                        <button class="position-absolute btn btn-outline-danger btn-product" style="bottom: 10%; left: 7%;">Detalles</button>
-                    </div>
-                    <div class="snap-section position-relative">
-                        <img src="/static/src/img2.jpg" width="70%">
-                        <button class="position-absolute btn btn-outline-danger btn-product" style="bottom: 10%; left: 7%;">Detalles</button>
-                    </div>
-                    <div class="snap-section position-relative">
-                        <img src="/static/src/img3.jpg" width="70%">
-                        <button class="position-absolute btn btn-outline-danger btn-product" style="bottom: 10%; left: 7%;">Detalles</button>
-                    </div>
-                </div>
-            </div>
-            
-
-        </div>
+    {% include "usuarios/infoProducto.jinja" %}
+    <div class="container-div-index" id="container-div-index">
+        {% include "usuarios/inicioDiv.jinja" %}
+        {% include "usuarios/ojosDiv.jinja" %}
     </div>
 {% endblock %}
