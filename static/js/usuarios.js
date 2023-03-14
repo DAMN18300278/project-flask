@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
     horizontalMenuChange(1);
-    document.getElementById("body").style.display = "block";
+    document.getElementById("body").style.display = "block"; 
 });
 
 function horizontalMenuChange(element) {
@@ -109,5 +109,21 @@ function snapContainerTranslateRight(e) {
             })
             break;
     }
-
 }
+
+$(document).ready(function() {
+    // Obtener el input de búsqueda y el menú desplegable
+    var $search = $(".dropdown-menu input");
+    var $dropdownMenu = $(".dropdown-menu");
+  
+    // Filtrar los elementos del menú desplegable al escribir en el input de búsqueda
+    $search.keyup(function() {
+        var filter = $(this).val().toLowerCase();
+        var $items = $dropdownMenu.find("a");
+        $items.each(function() {
+            var text = $(this).text().toLowerCase();
+            var match = text.indexOf(filter) > -1;
+            $(this).toggle(match);
+        });
+    });
+});

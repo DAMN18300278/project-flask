@@ -1,0 +1,61 @@
+<div class="container h-auto container-div-slider" id="ojosDiv" style="padding-left: 0; padding-right: 0;">
+    <div class="w-100">
+        <div class="d-flex justify-content-end p-2">
+            <p class="me-auto ms-2 my-auto">Categoria: ojos</p>
+            <lord-icon
+                src="https://cdn.lordicon.com/msoeawqm.json"
+                trigger="click"
+                colors="primary:#000,secondary:#bfa2db"
+                style="width:35px;height:35px;"
+                id="dropdownSearchOjos"
+                type="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false">
+            </lord-icon>
+            <div class="dropdown-menu px-5 h-50" aria-labelledby="dropdownSearchOjos" style="font-size: 16px; overflow-y:scroll;">
+                <div class="input-group mb-3" style="font-size: 15px;">
+                    <input type="text" class="form-control border border-2" placeholder="Buscar" aria-label="Search" aria-describedby="basic-addon2">
+                </div>
+                <div class="h-100" style="overflow-y: scroll;">
+                {% for i in range(1, 100) %}
+                    <a class="dropdown-item p-2" href="#" data-bs-toggle="modal" data-bs-target="#infoProducto">Pestaña 3D {{ i }}</a>
+                {% endfor %}
+                </div>
+            </div>
+
+            <lord-icon
+                src="https://cdn.lordicon.com/sbiheqdr.json"
+                trigger="click"
+                colors="primary:#000,secondary:#bfa2db"
+                style="width:40px;height:40px; margin-top:-2px;"
+                id="dropdownFiltersOjos"
+                type="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false">
+            </lord-icon>
+            <ul class="dropdown-menu" aria-labelledby="dropdownFiltersOjos" style="font-size: 16px;">
+                <li><a class="dropdown-item p-3 px-5">Ordenar por nombre (A - Z)</a></li>
+                <li><a class="dropdown-item p-3 px-5">Ordenar por nombre (Z - A)</a></li>
+                <li><a class="dropdown-item p-3 px-5">Ordenar por precio</a></li>
+                <li><a class="dropdown-item p-3 px-5">Ordenar por tipo de piel</a></li>
+                <li><a class="dropdown-item p-3 px-5">Ordenar por colores</a></li>
+            </ul>
+        </div>
+        <div class="position-relative border-top border-bottom border-3">
+            <img class="img-principal" src="/static/src/img2.jpg">
+            <div class="position-absolute bg-white border border-1 border-danger p-1 py-3 w-50" style="bottom: 35px; left: 20px;">
+                <p class="mb-4" style="font-size: 20px; display:inline; white-space:break-spaces;">Mascara cepillo pino</p>
+                <button class="btn btn-product border-1 text-danger" type="button" data-bs-toggle="modal" data-bs-target="#infoProducto">Detalles ></button>
+            </div>
+        </div>
+
+        <div class="p-5 row">
+            <div class="col-6">
+                {% include "usuarios/productosCard.jinja" %}
+            </div>
+            <div class="col-6">
+                {% include "usuarios/productosCard.jinja" %}
+            </div>
+        </div>
+    </div>
+</div>

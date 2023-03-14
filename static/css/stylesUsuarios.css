@@ -166,6 +166,11 @@ img{
     object-fit: cover;
 }
 
+.img-principal{
+    height: 50%;
+    width: 100%;
+}
+
 .imgInfo{
     height: 16em;
     width: 16em;
@@ -173,7 +178,7 @@ img{
 
 .product-text{
     margin-bottom: 0px;
-    font-size: 26px;
+    font-size: 20px;
     letter-spacing: 4px;
     color: #000;
 }
@@ -183,4 +188,17 @@ img{
     height: 3.3rem;
     border: 3px solid rgb(43, 43, 43);
     border-radius: 50%;
+}
+
+.container-div-index{
+    scroll-snap-type: x mandatory;
+    display: flex;
+    -webkit-overflow-scrolling: touch;
+    overflow-x: scroll;
+}
+
+.container-div-slider{
+    min-width: 100%;
+    scroll-snap-align: center;
+    position: relative;
 }
