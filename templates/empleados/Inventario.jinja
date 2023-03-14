@@ -1,63 +1,59 @@
 {% extends "empleados/empleadosMaster.jinja" %}
+
 {% block head %}
     {{ super() }}
 {% endblock %}
 
 {% block content %}
-    <div >
-        <div class="row align-items-start"> 
+    <div>
+        <div class="row align-items-start">
             <div class="col-2">
-            <a href="../administradores"><button >volver</button> </a>
+                <a href="../administradores"><button>volver</button> </a>
             </div>
-            
+
             <div class="col-8"><h2>Inventario</h2></div>
             <span class="col-2"> </span>
         </div>
         <div class="row align-items-center">
             <span class="col-2"></span>
-            <div class="col-8 "> <input  type="search"  placeholder="buscar"></div>
+            <div class="col-8 "> <input type="search" placeholder="buscar"></div>
             <div class="col-2 text-left" style="float: left;">
                 <lord-icon
-                     src="https://cdn.lordicon.com/rlizirgt.json"
+                    src="https://cdn.lordicon.com/rlizirgt.json"
                     trigger="click"
-                     style="width:26px;height:26px; ">
-                </lord-icon></div>
-            
-        </div>   
-        <div class="table table-hover containerEmp ">
-        <table >
-            <thead style="padding: 5px;">
-                <tr>
-                    <th>Id Producto</th>
-                    <th>Nombre Prodcuto</th>
-                    <th>cantidad</th>
-                </tr>
-            </thead>
-            <tbody>
-        {%for row in resultados%}
-        <tr>
-            <td>{{row[0]}}</td>
-            <td>{{row[1]}}</td>
-            <td style="width: 50px;">
-            <div class="form-group" >
-                <form method="post" action="/administradores/inventario/{{row[0]}}" id="UpCant">
-                    <input type="number" class="form-control" name="cantidad" id="cantidad" value="{{row[2]}}" inputmode="numeric">
-                </form> 
+                    style="width:26px;height:26px; ">
+                </lord-icon>
             </div>
-                
-            
-            </td>
-     
-        </tr>
-        {% endfor%}
-        </tbody>
-        </table>
-        </div> 
-        
-        <div >
-            <button type="submit" form="UpCant" class="btn">Guardar</button>
+        </div>
+        <div class="table table-hover containerEmp ">
+            <table>
+                <thead style="padding: 5px;">
+                    <tr>
+                        <th>Id Producto</th>
+                        <th>Nombre Prodcuto</th>
+                        <th>cantidad</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in resultados %}
+                    <tr>
+                        <td>{{ row[0] }}</td>
+                        <td>{{ row[1] }}</td>
+                        <td style="width: 50px;">
+                            <div class="form-group">
+                                <form method="post" action="/administradores/inventario/{{ row[0] }}" class="UpCant" onsubmit="return confirm('¿Desea actualizar la cantidad del producto {{ row[0] }} de {{ row[2] }} a ' + document.getElementsByName('cantidad')[{{ loop.index0 }}].value + '?')">
+                                    <input type="number" class="form-control" name="cantidad" value="{{ row[2] }}" inputmode="numeric">
+                                    <button type="submit" class="btn">Guardar</button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div>
             <a href="/administradores/inventario/Agregar"><button class="btn">Añadir</button></a>
-            
         </div>
     </div>
 {% endblock %}

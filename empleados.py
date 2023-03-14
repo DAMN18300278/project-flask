@@ -23,7 +23,11 @@ def indexAdmin():
     asignarNombre(session['id_administrador'])
     return render_template("empleados/indexAdmin.jinja")
 
-    #Inventario
+
+
+@empleados.route("/administradores/inventario/Agregar")
+def Agregar():
+    return render_template("empleados/inventarioNewProd.jinja")
 
 @empleados.route("/administradores/inventario")
 def invAdmin():
@@ -41,31 +45,30 @@ def UpCantidad(id):
     return redirect("/administradores/inventario")
 
 @empleados.route("/administradores/inventario/NuevoProducto", methods=['POST','GET'])
-def AñadirProdcuto():
-    nombre = request.form['EmpNombre']
-    email = request.form['EmpEmail']
-    password = request.form['EmpPassword']
-    tel = request.form['EmpTelefono']
-    rfc = request.form['EmpRFC']
-    direccion = request.form['EmpDireccion']
-    tipo = request.form['ListaTipo']
-    with mysql.connect.cursor() as cursor:
-            cursor.execute("SELECT MAX(Id_cuenta) FROM cuenta")
-            max_id = cursor.fetchone() # esta linea es para obtener el primer valor y verifique que no se encuentre vacia
-            id_nuevo = max_id[0]
-            #Insertar en la tabla cuenta con el id máximo + 1
-    with mysql.connection.cursor() as cursor:
-            print(id_nuevo)
-            cursor.execute("INSERT INTO cuenta(Id_cuenta, Rol, Correo, Contraseña, estado) VALUES (%s, %s, %s, %s, %s)", (id_nuevo, tipo, email, password, 'Inactivo'))
-            mysql.connection.commit()
-            # Insertar en la tabla empleado con el mismo id_cuenta
-            cursor.execute("INSERT INTO empleado(Id_Empleado, RFC, Nombre_Empleado, Telefono, Direccion, Tipo_Empleado) VALUES (%s, %s, %s, %s, %s, %s)", (id_nuevo, rfc, nombre, tel, direccion, tipo))
-            mysql.connection.commit()
-            return redirect("/administradores/EmpleadosList")  
+def añadir_producto():
 
-@empleados.route('/administradores/inventario/Agregar', methods=['POST', 'GET'])
-def Inv_Agregar():
-    return render_template("empleados/InventarioNewProd.jinja", empleado = "")
+    
+
+    if request.method == 'POST':
+        id_producto = request.form['IdProducto']
+        nombre = request.form['Nombre']
+        imagen = request.form['Imagen']
+        descripcion = request.form['Descripcion']
+        precio = request.form['Precio']
+        nombre_color = request.form['NombreColor']
+        color_rgba = request.form['colorRGB']
+        categoria = request.form['Categoria']
+        cantidad = request.form['Cantidad']
+        marca = request.form['Marca']
+        tipo_piel = request.form['TipoPiel']
+        recomendacion = request.form['Recomendacion']
+        
+
+    with mysql.connection.cursor() as cursor:
+            cursor.execute("INSERT INTO productos(Id_Productos, Nombre, Imagen, Descripcion, Precio, Nombre_Color, Color_RGBA, Categoria, Recomendacion, Marca, Cantidad , Tipo_Piel) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", (id_producto, nombre, imagen, descripcion, precio, nombre_color, color_rgba, categoria, recomendacion, marca, cantidad, tipo_piel))
+            mysql.connection.commit()
+    return redirect("/administradores/inventario")
+
 
 @empleados.route("/administradores/EmpleadosList")
 def EmpAdmin():
