@@ -7,12 +7,22 @@
 
 
 <div>
-    <form action="" method="post" class="to-left position-absolute p-5 d-flex flex-column justify-content-center align-items-center h-100" style="top: 0; bottom: 0; left: 0; right: 0;">
+    <form action="./NuevoProducto" id="form-nuevo-producto" method="post" class="to-left position-absolute p-5 d-flex flex-column justify-content-center align-items-center h-100" style="top: 0; bottom: 0; left: 0; right: 0;">
 
       <div class="mb-3">
         <p>Nuevo Producto</p>
       </div>
+      <div class="mb-3 w-100 form-group d-flex align-items-center flex-column">
+        <label for="IdProducto" class="form-label">ID del Producto</label>
+        <input type="text" class="form-control" id="IdProducto" name="IdProducto" value="">
+      </div>
+
       <div class="d-flex flex-column justify-content-between align-items-center h-100 w-100">
+        <div class="mb-3 w-100 form-group d-flex align-items-center flex-column">
+          <label for="Nombre" class="form-label">Nombre</label>
+          <input type="text" class="form-control" id="Nombre" name="Nombre" value="">
+        </div>
+
         <div  class="mb-3 w-100 form-group d-flex align-items-center flex-column">
           <label for="Imagen" class="form-label w-100">Imagen</label>
           <input  type="file" class="form-control" id="Imagen" name="Imagen" value="">
@@ -20,7 +30,12 @@
 
         <div class="mb-3 w-100 form-group d-flex align-items-center flex-column">
             <label for="Descripcion" class="form-label">Descripcion</label>
-            <input style="height: 200px;" type="email" class="form-control" id="Descripcion" name="Descripcion" value="">
+            <input style="height: 200px;" type="text" class="form-control" id="Descripcion" name="Descripcion" value="">
+        </div>
+
+        <div class="mb-3 w-100 form-group d-flex align-items-center flex-column">
+          <label for="Cantidad" class="form-label">Cantidad</label>
+          <input type="number" class="form-control" id="Cantidad" name="Cantidad" value="">
         </div>
 
         <div class="mb-3 w-100 form-group d-flex align-items-center flex-column">
@@ -44,18 +59,42 @@
         <div class="mb-3  form-group" id="contenedorCampos"></div>
 
         <div class="mb-3 w-100 form-group d-flex align-items-center flex-column">
-          <label for="Categoria" class="form-label">Categoria</label>
-          <input type="text" class="form-control" id="Categoria" name="Categoria" value="">
+          <label for="Categoria" class="form-label">Categoría</label>
+          <select class="form-control" id="Categoria" name="Categoria">
+            <option value="Ojos">Ojos</option>
+            <option value="Labios">Labios</option>
+            <option value="Piel">Piel</option>
+            <option value="SkinCare">SkinCare</option>
+            <option value="Accesorios">Accesorios</option>
+          </select>
         </div>
 
         <div class="mb-3 w-100 form-group d-flex align-items-center flex-column">
           <label for="Recomendacion" class="form-label">Recomendacion</label>
-          <input type="tel" class="form-control" id="Recomendacion" name="Recomendacion" value="">
+          <input type="text" class="form-control" id="Recomendacion" name="Recomendacion" value="">
         </div>
 
         <div class="mb-3 w-100 form-group d-flex align-items-center flex-column">
           <label for="Marca" class="form-label">Marca</label>
-          <input type="tel" class="form-control" id="Marca" name="Marca" value="">
+          <select class="form-control" id="Marca" name="Marca">
+            <option value="Maybelline">Maybelline</option>
+            <option value="L'Oréal">L'Oréal</option>
+            <option value="Mary kay">Mary kay</option>
+            <option value="MAC">MAC</option>
+            <option value="Sephora">Sephora</option>
+          </select>
+        </div>
+
+        <div class="mb-3 w-100 form-group d-flex align-items-center flex-column">
+          <label for="TipoPiel" class="form-label">Tipo de piel</label>
+          <select class="form-control" id="TipoPiel" name="TipoPiel">
+              <option value="1">Normal</option>
+              <option value="2">Seca</option>
+              <option value="3">Grasa</option>
+              <option value="4">Mixta</option>
+              <option value="5">Acné</option>
+              <option value="6">Sensible</option>
+          </select>
         </div>
         
         <button type="submit" class="btn btn-secondary w-50">Submit</button>
@@ -65,6 +104,17 @@
 </div>
 
 <script>
+const form = document.getElementById('form-nuevo-producto');
+
+form.addEventListener('submit', function(event) {
+  event.preventDefault(); // Evita que el formulario se envíe automáticamente
+
+  if (confirm('¿Estás seguro de ingresar los datos del producto?')) {
+    // Si el usuario confirma, envía el formulario
+    this.submit();
+  }
+});
+
 var numColors = 2;
 
 function agregarCampos() {

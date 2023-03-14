@@ -14,26 +14,43 @@
         </svg>
     </div>
 
-    <form action="/login" id="form" method="post" class="input-group input-group-lg d-flex justify-content-between flex-column">
-        <div class="input-group">
-            <input type="text" class="form-control mb-4 to-left" placeholder="Correo" name="correo">
-        </div>
-        <div class="input-group">
-            <input type="text" class="form-control mt-4 to-right" placeholder="Contraseña" name="contraseña">
-        </div>
-    </form>
-
-    <div class="d-flex flex-column" style="margin-bottom: 1rem;">
-        <a href="/recover" class="link-success mb-5 vanish1" style="font-size: 12px; animation-duration: 3s;">Recuperar contraseña</a>
-        <a onclick="login()" class="btn btn-success vanish1" style="font-size: 18px; border-radius: 10px; height: 36px; animation-duration: 4s; margin-bottom: 5rem;">Login</a>
-        <a href="/register" class="link-success vanish1" style="font-size: 15px; animation-duration: 5s;">Registrarse</a>
+<form action="/login" id="form" method="post" class="input-group input-group-lg d-flex justify-content-between flex-column">
+  <div class="input-group">
+    <input type="text" class="form-control mb-4 to-left" placeholder="Correo" name="correo">
+  </div>
+  <div class="input-group">
+    <div class="input-group-prepend">
+      <span class="input-group-text">
+        <button type="button" id="show-password-btn" class="btn btn-outline-secondary">Mostrar</button>
+      </span>
     </div>
+    <input type="text" class="form-control mt-4 to-right" placeholder="Contraseña" name="contraseña" maxlength="20">
+  </div>
+</form>
 
-    <script>
-        form = document.getElementById("form")
+<div class="d-flex flex-column" style="margin-bottom: 1rem;">
+  <a href="/recover" class="link-success mb-5 vanish1" style="font-size: 12px; animation-duration: 3s;">Recuperar contraseña</a>
+  <a onclick="login()" class="btn btn-success vanish1" style="font-size: 18px; border-radius: 10px; height: 36px; animation-duration: 4s; margin-bottom: 5rem;">Login</a>
+  <a href="/register" class="link-success vanish1" style="font-size: 15px; animation-duration: 5s;">Registrarse</a>
+</div>
 
-        function login(){
-            form.submit();
-        }
-    </script>
+<script>
+  form = document.getElementById("form");
+  showPasswordBtn = document.getElementById("show-password-btn");
+  passwordInput = document.querySelector("input[name='contraseña']");
+
+  showPasswordBtn.addEventListener("click", function() {
+    if (passwordInput.type === "password") {
+      passwordInput.type = "text";
+      showPasswordBtn.textContent = "Ocultar";
+    } else {
+      passwordInput.type = "password";
+      showPasswordBtn.textContent = "Mostrar";
+    }
+  });
+
+  function login(){
+    form.submit();
+  }
+</script>
 {% endblock %}
