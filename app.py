@@ -204,7 +204,6 @@ def login():
         rows = cursor.fetchone()
         tempId = session['id_usuario']
         session.clear()
-        print(rows)
 
         if rows[0] == 1:
             session['id_encargadoCaja'] = tempId
