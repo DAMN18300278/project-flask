@@ -45,7 +45,7 @@
 
         <div class="h-100" style="overflow-y: scroll;">
             <div class="position-relative border-bottom border-3">
-                <img class="img-principal" src="/static/src/img2_1.jpg">
+                <img class="img-principal" src="{{ url_for('static', filename= 'src/img2_1') }}">
                 <div class="position-absolute bg-white border border-1 border-danger p-1 py-3 w-50" style="bottom: 35px; left: 20px;">
                     <p class="mb-4" style="font-size: 20px; display:inline; white-space:break-spaces;">Mascara cepillo pino</p>
                     <button class="btn btn-product border-1 text-danger" type="button" data-bs-toggle="modal" data-bs-target="#infoProducto">Detalles ></button>
