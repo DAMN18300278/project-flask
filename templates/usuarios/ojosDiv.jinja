@@ -1,6 +1,7 @@
-<div class="container h-auto container-div-slider" id="ojosDiv" style="padding-left: 0; padding-right: 0;">
-    <div class="w-100">
-        <div class="d-flex justify-content-end p-2">
+{% set subelementos = 291 %}
+<div class="container container-div-slider h-100" id="ojosDiv" style="padding-left: 0; padding-right: 0; padding-bottom: 120px;">
+    <div class="w-100 h-100">
+        <div class="d-flex justify-content-end p-2 border-bottom border-3">
             <p class="me-auto ms-2 my-auto">Categoria: ojos</p>
             <lord-icon
                 src="https://cdn.lordicon.com/msoeawqm.json"
@@ -17,7 +18,7 @@
                     <input type="text" class="form-control border border-2" placeholder="Buscar" aria-label="Search" aria-describedby="basic-addon2">
                 </div>
                 <div class="h-100" style="overflow-y: scroll;">
-                {% for i in range(1, 100) %}
+                {% for i in range(1, subelementos) %}
                     <a class="dropdown-item p-2" href="#" data-bs-toggle="modal" data-bs-target="#infoProducto">Pestaña 3D {{ i }}</a>
                 {% endfor %}
                 </div>
@@ -41,20 +42,41 @@
                 <li><a class="dropdown-item p-3 px-5">Ordenar por colores</a></li>
             </ul>
         </div>
-        <div class="position-relative border-top border-bottom border-3">
-            <img class="img-principal" src="/static/src/img2.jpg">
-            <div class="position-absolute bg-white border border-1 border-danger p-1 py-3 w-50" style="bottom: 35px; left: 20px;">
-                <p class="mb-4" style="font-size: 20px; display:inline; white-space:break-spaces;">Mascara cepillo pino</p>
-                <button class="btn btn-product border-1 text-danger" type="button" data-bs-toggle="modal" data-bs-target="#infoProducto">Detalles ></button>
-            </div>
-        </div>
 
-        <div class="p-5 row">
-            <div class="col-6">
-                {% include "usuarios/productosCard.jinja" %}
+        <div class="h-100" style="overflow-y: scroll;">
+            <div class="position-relative border-bottom border-3">
+                <img class="img-principal" src="/static/src/img2_1.jpg">
+                <div class="position-absolute bg-white border border-1 border-danger p-1 py-3 w-50" style="bottom: 35px; left: 20px;">
+                    <p class="mb-4" style="font-size: 20px; display:inline; white-space:break-spaces;">Mascara cepillo pino</p>
+                    <button class="btn btn-product border-1 text-danger" type="button" data-bs-toggle="modal" data-bs-target="#infoProducto">Detalles ></button>
+                </div>
             </div>
-            <div class="col-6">
-                {% include "usuarios/productosCard.jinja" %}
+
+            <div class="m-3 row">
+                <div id="content">
+
+                <div class="tab-content">
+                    {% for i in range(0, subelementos, 24) %}
+                    <div class="tab-pane fade {% if loop.first %}show active{% endif %}" id="tab{{ loop.index }}">
+                        <div class="row w-100 ms-0">
+                        {% for j in range(i+1, i+25)%}
+                        {% if j < subelementos %}
+                            <div class="col mx-auto mb-4">
+                                {% include "usuarios/productosCard.jinja" %}
+                            </div>
+                        {% endif %}
+                        {% endfor %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                </div>
+
+                <div id="tabs" class="nav nav-tabs" role="tablist">
+                    {% for i in range(0, subelementos, 24) %}
+                    <button class="btn btn-outline-danger m-3 {% if loop.first %}active" aria-selected="true" {%else%}" aria-selected="false" {% endif %} id="tablink{{ loop.index }}" data-bs-target="#tab{{ loop.index }}" aria-controls="tab{{ loop.index }}" data-bs-toggle="tab" style="font-size: 15px;">{{ loop.index }}</button>
+                    {% endfor %}
+                </div>
             </div>
         </div>
     </div>

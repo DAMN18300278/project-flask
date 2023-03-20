@@ -12,12 +12,12 @@
     <link rel="stylesheet" href="{{ url_for('static', filename= 'css/stylesUsuarios.css') }}">
     {% endblock %}
 </head>
-<body class="bg-white" style="display: none;" id="body">
-    {% block nav %}{% endblock %}
-    {% block content %}{% endblock %}
-
+<body class="bg-white" style="display: none; overflow-y:hidden" id="body">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="{{ url_for('static', filename= 'js/usuarios.js') }}"></script>
     <script src="{{ url_for('static', filename = 'bootstrap/dist/js/bootstrap.bundle.min.js') }}"></script>
+    {% block nav %}{% endblock %}
+    {% block content %}{% endblock %}
+
 </body>
 </html>

@@ -30,7 +30,6 @@ body{
 .container-forms{
     margin-top: 5%;
     height: 100%;
-    width: 95%;
     font-size: 35px;
     padding: 2rem;
 }
@@ -193,8 +192,7 @@ img{
 .container-div-index{
     scroll-snap-type: x mandatory;
     display: flex;
-    -webkit-overflow-scrolling: touch;
-    overflow-x: scroll;
+    overflow-x: hidden;
 }
 
 .container-div-slider{

@@ -1,5 +1,8 @@
 document.addEventListener("DOMContentLoaded", () => {
-    horizontalMenuChange(1);
+    var url = $(location).attr('href')
+    if(!url.includes('formulario')){
+        horizontalMenuChange(1);
+    }
     document.getElementById("body").style.display = "block"; 
 });
 
@@ -17,21 +20,51 @@ function horizontalMenuChange(element) {
     selected[0].classList.remove("horizontal-menu-hover");
     switch (element) {
         case 1:
+            var positionAt = document.getElementById("inicioDiv");
+            document.getElementById("container-div-index").scrollTo({
+                left: positionAt.offsetLeft,
+                behavior: "smooth"
+            })
             inicio.classList.add("horizontal-menu-hover");
             break;
         case 2:
+            var positionAt = document.getElementById("ojosDiv");
+            document.getElementById("container-div-index").scrollTo({
+                left: positionAt.offsetLeft,
+                behavior: "smooth"
+            })
             ojos.classList.add("horizontal-menu-hover");
             break;
         case 3:
+            var positionAt = document.getElementById("inicioDiv");
+            document.getElementById("container-div-index").scrollTo({
+                left: positionAt.offsetLeft,
+                behavior: "smooth"
+            })
             labios.classList.add("horizontal-menu-hover");
             break;
         case 4:
+            var positionAt = document.getElementById("inicioDiv");
+            document.getElementById("container-div-index").scrollTo({
+                left: positionAt.offsetLeft,
+                behavior: "smooth"
+            })
             piel.classList.add("horizontal-menu-hover");
             break;
         case 5:
+            var positionAt = document.getElementById("inicioDiv");
+            document.getElementById("container-div-index").scrollTo({
+                left: positionAt.offsetLeft,
+                behavior: "smooth"
+            })
             skincare.classList.add("horizontal-menu-hover");
             break;
         case 6:
+            var positionAt = document.getElementById("inicioDiv");
+            document.getElementById("container-div-index").scrollTo({
+                left: positionAt.offsetLeft,
+                behavior: "smooth"
+            })
             accesorios.classList.add("horizontal-menu-hover");
             break;
     }
@@ -126,4 +159,8 @@ $(document).ready(function() {
             $(this).toggle(match);
         });
     });
+});
+
+$(document).ready(function ($) {
+    $('#tabs').tab();
 });
