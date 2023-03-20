@@ -12,9 +12,6 @@ def on_load(state):
 
 @usuarios.route("/usuarios")
 def index():
-    with mysql.connect.cursor() as cursor:
-        cursor.execute('SELECT * FROM productos')
-
     return render_template("usuarios/landing.jinja")
 
 @usuarios.route("/usuarios/delete")
