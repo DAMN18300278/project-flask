@@ -1,4 +1,4 @@
-<div class="container h-auto container-div-slider" id="inicioDiv" style="padding-left: 0; padding-right: 0;">
+<div class="container h-100 container-div-slider" id="inicioDiv" style="padding-left: 0; padding-right: 0; overflow-y:scroll;padding-bottom: 90px;">
     <div class="to-left" style="animation-delay: 1s;">
         <div>
             <div class="d-flex">
@@ -30,23 +30,24 @@
 
                 <div class="snap-container w-100 h-100" id="snapProductosPopulares"> {# snap-container fue otorgado por https://www.silocreativo.com/controla-desplazamiento-web-css-scroll-snap/ #}
                     <div class="snap-section position-relative">
-                        <img src="/static/src/img1.jpg">
+                        <img src="{{ url_for('static', filename= 'src/img2_1.jpg') }}">
                         <p class="product-text">Mascara pino</p>
                         <button class="btn btn-outline-danger btn-product mx-auto mb-4" type="button" data-bs-toggle="modal" data-bs-target="#infoProducto">Detalles</button>
                     </div>
                     <div class="snap-section position-relative">
-                        <img src="/static/src/img2.jpg">
+                        <img src="{{ url_for('static', filename= 'src/img2_1.jpg') }}">
                         <p class="product-text">Mascara pino</p>
                         <button class="btn btn-outline-danger btn-product mx-auto mb-4" type="button" data-bs-toggle="modal" data-bs-target="#infoProducto">Detalles</button>
                     </div>
                     <div class="snap-section position-relative">
-                        <img src="/static/src/img3.jpg">
+                        <img src="{{ url_for('static', filename= 'src/img2_1.jpg') }}">
                         <p class="product-text">Mascara pino</p>
                         <button class="btn btn-outline-danger btn-product mx-auto mb-4" type="button" data-bs-toggle="modal" data-bs-target="#infoProducto">Detalles</button>
                     </div>
                 </div>
             </div>   
         </div>
+
         <div>
             <div class="d-flex">
                 <p class="p-3 my-auto" style="text-align: left; margin-bottom: 0; margin-left: 3%;">Màs vendidos</p>
@@ -76,17 +77,17 @@
 
                 <div class="snap-container w-100 h-100" id="snapBestSeller"> {# snap-container fue otorgado por https://www.silocreativo.com/controla-desplazamiento-web-css-scroll-snap/ #}
                     <div class="snap-section position-relative">
-                        <img src="/static/src/img4.jpg">
+                        <img src="{{ url_for('static', filename= 'src/img2_1.jpg') }}">
                         <p class="product-text">Mascara pino</p>
                         <button class="btn btn-outline-danger btn-product mx-auto mb-4" type="button" data-bs-toggle="modal" data-bs-target="#infoProducto">Detalles</button>
                     </div>
                     <div class="snap-section position-relative">
-                        <img src="/static/src/img5.jpg">
+                        <img src="{{ url_for('static', filename= 'src/img2_1.jpg') }}">
                         <p class="product-text">Mascara pino</p>
                         <button class="btn btn-outline-danger btn-product mx-auto mb-4" type="button" data-bs-toggle="modal" data-bs-target="#infoProducto">Detalles</button>
                     </div>
                     <div class="snap-section position-relative">
-                        <img src="/static/src/img6.jpg">
+                        <img src="{{ url_for('static', filename= 'src/img2_1.jpg') }}">
                         <p class="product-text">Mascara pino</p>
                         <button class="btn btn-outline-danger btn-product mx-auto mb-4" type="button" data-bs-toggle="modal" data-bs-target="#infoProducto">Detalles</button>
                     </div>
@@ -123,17 +124,17 @@
 
                 <div class="snap-container w-100 h-100" id="snapSelectedForUser"> {# snap-container fue otorgado por https://www.silocreativo.com/controla-desplazamiento-web-css-scroll-snap/ #}
                     <div class="snap-section position-relative">
-                        <img src="/static/src/img7.jpg">
+                        <img src="{{ url_for('static', filename= 'src/img2_1.jpg') }}">
                         <p class="product-text">Mascara pino</p>
                         <button class="btn btn-outline-danger btn-product mx-auto mb-4" type="button" data-bs-toggle="modal" data-bs-target="#infoProducto">Detalles</button>
                     </div>
                     <div class="snap-section position-relative">
-                        <img src="/static/src/img5.jpg">
+                        <img src="{{ url_for('static', filename= 'src/img2_1.jpg') }}">
                         <p class="product-text">Mascara pino</p>
                         <button class="btn btn-outline-danger btn-product mx-auto mb-4" type="button" data-bs-toggle="modal" data-bs-target="#infoProducto">Detalles</button>
                     </div>
                     <div class="snap-section position-relative">
-                        <img src="/static/src/img3.jpg">
+                        <img src="{{ url_for('static', filename= 'src/img2_1.jpg') }}">
                         <p class="product-text">Mascara pino</p>
                         <button class="btn btn-outline-danger btn-product mx-auto mb-4" type="button" data-bs-toggle="modal" data-bs-target="#infoProducto">Detalles</button>
                     </div>

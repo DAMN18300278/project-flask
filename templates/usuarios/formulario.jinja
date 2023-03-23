@@ -4,7 +4,7 @@
 {% endblock %}
 
 {% block content %}
-    <form action="/guardarDatosUsuario" method="post">
+    <form action="/guardarDatosUsuario" class="w-100" method="post">
     <div class="position-absolute w-100 h-100" id="alertaOjos" style="z-index: 2; display: none; background-color: rgba(0, 0, 0, 0.152); top: 0;">
         <div class="to-left position-relative justify-content-center align-items-center d-flex" style="top: 30%; animation-duration: 0.7s;">
             <div>
@@ -217,14 +217,14 @@
 
             <div>
                 <div class="to-left mb-5" style="animation-delay: 0.8s;">
-                    <button class="btn btn-outline-secondary w-75" id="btnColorOjos" onclick="selectEyes()" type="button" style="transition: ease all 1s;">Color de ojos</button>
+                    <button class="btn btn-outline-danger w-75" id="btnColorOjos" onclick="selectEyes()" type="button" style="transition: ease all 1s;">Color de ojos</button>
                     <input type="text" id="colorOjos" name="colorOjos" style="display: none;">
                 </div>
             </div>
 
             <div>
                 <div class="to-left mb-5" style="animation-delay: 1s;">
-                    <button class="btn btn-outline-secondary w-75" onclick="selectSkin()" id="btnTipoPiel" type="button">Tipo de piel</button>
+                    <button class="btn btn-outline-danger w-75" onclick="selectSkin()" id="btnTipoPiel" type="button">Tipo de piel</button>
                 </div>
             </div>
             
@@ -256,5 +256,5 @@
     </div>
     </form>
 
-    <script src="{{ url_for('static', filename='formulario.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/formulario.js') }}"></script>
 {% endblock %}
