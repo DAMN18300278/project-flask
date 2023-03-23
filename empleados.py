@@ -14,7 +14,6 @@ def asignarNombre(idEmpleado):
     with mysql.connect.cursor() as cursor:
         cursor.execute('SELECT Nombre_Empleado FROM empleado WHERE Id_Empleado = %s', (idEmpleado,))
         rows = cursor.fetchone()
-        print(rows)
         nombre = rows[0]  
         flash(nombre[:(nombre.index(' '))])
 
