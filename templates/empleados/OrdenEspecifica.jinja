@@ -1,14 +1,34 @@
 {% extends "empleados/empleadosMaster.jinja" %}
+
 {% block head %}
     {{ super() }}
+   
 {% endblock %}
 
 {% block content %}
     <div class="p-5">
         <h1>Carrito de compras de la orden: {{id}}</h1>
-        {% for row in range(1, 5) %}
-            {% include "empleados/ordenProducto.jinja"%}
-        {% endfor %}
-    </div>
+        {#jalar los id de los productos dentro de la orden#}
+        {% set productos = 3 %}
+        <p>Productos:{{productos}}</p>
 
+        {% set productos = 3 %}
+        {% set total = 0 %}
+        {% set cantidad = 2 %}
+        {% set precio_unitario = 10 %}
+        {% for row in range(0, productos) %}
+            {% set subtotal = cantidad * precio_unitario %}
+            {% set suma = total + subtotal %}
+            {% include "empleados/ordenProducto.jinja" %}
+            {% set total = suma %}
+        {% endfor %}
+        <h1>{{ total }}</h1>
+
+        <div id="paypal-button-container"></div>
+        <script src="https://www.paypal.com/sdk/js?client-id=Ac_6kX_qOrk9brT964ANt-BcLIOUlkOIxODPBRiDX7i_yghM52dEn0NGNF_nTi5OBlJy4FtxscvgOmxi&currency=MXN"></script>    </div>
+
+    <script>
+        // Render the PayPal button into #paypal-button-container
+        paypal.Buttons().render('#paypal-button-container');
+    </script>
 {% endblock content %}

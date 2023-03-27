@@ -5,6 +5,7 @@ from flask_mail import Mail, Message
 from empleados import empleados
 from usuarios import usuarios
 import mediapipe as mp
+import paypalrestsdk
 import cv2
 from flask_mysqldb import MySQL
 
@@ -17,9 +18,23 @@ app.register_blueprint(usuarios)
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'
 app.config['MAIL_PORT'] = 465
 app.config['MAIL_USERNAME'] = 'decore.makeup@gmail.com'
-app.config['MAIL_PASSWORD'] = 'nuyalekqyacxgahg'
+app.config['MAIL_PASSWORD'] = 'dtcnejovtwzeozhr'
 app.config['MAIL_USE_TLS'] = False
 app.config['MAIL_USE_SSL'] = True 
+
+# Configura las credenciales de PayPal en tu archivo de configuración de Flask
+app.config['PAYPAL_MODE'] = 'sandbox' # 'sandbox' o 'live'
+app.config['PAYPAL_CLIENT_ID'] = 'TU_CLIENT_ID_DE_PAYPAL'
+app.config['PAYPAL_CLIENT_SECRET'] = 'TU_CLIENT_SECRET_DE_PAYPAL'
+app.config['PAYPAL_CURRENCY'] = 'MXN' # La moneda que utilizarás para los pagos
+
+# Inicializa la biblioteca de PayPal con las credenciales de tu archivo de configuración
+paypalrestsdk.configure({
+    "mode": app.config['PAYPAL_MODE'],
+    "client_id": app.config['PAYPAL_CLIENT_ID'],
+    "client_secret": app.config['PAYPAL_CLIENT_SECRET']
+})
+
 
 #mysql-variables----------------------------------#
 mysql = MySQL(app)
@@ -38,6 +53,51 @@ s = URLSafeTimedSerializer('decore')
 mpFaceMesh = mp.solutions.face_mesh
 mpDrawing = mp.solutions.drawing_utils
 cap = cv2.VideoCapture(0)
+
+@app.route('/procesar_pago', methods=['POST'])
+def procesar_pago():
+    # Obtiene el monto del pago desde el formulario de la solicitud POST
+    total = request.form['total']
+
+    # Crea un pago en PayPal utilizando la biblioteca de PayPal
+    payment = paypalrestsdk.Payment({
+        "intent": "sale",
+        "payer": {
+            "payment_method": "paypal"
+        },
+        "transactions": [
+            {
+                "amount": {
+                    "total": total,
+                    "currency": app.config['PAYPAL_CURRENCY']
+                },
+                "description": "Pago por orden"
+            }
+        ],
+        "redirect_urls": {
+            "return_url": "http://localhost:5000/pago_exitoso",
+            "cancel_url": "http://localhost:5000/pago_cancelado"
+        }
+    })
+
+    # Intenta crear el pago y redirige al usuario a la página de pago de PayPal
+    if payment.create():
+        for link in payment.links:
+            if link.method == "REDIRECT":
+                return redirect(link.href)
+    else:
+        flash("Error al procesar el pago: {}".format(payment.error))
+        return redirect(url_for('carrito_compras'))
+
+@app.route('/pago_exitoso')
+def pago_exitoso():
+    # Renderiza una página de éxito después de que el usuario haya completado el pago
+    return render_template('pago_exitoso.html')
+
+@app.route('/pago_cancelado')
+def pago_cancelado():
+    # Renderiza una página de cancelación si el usuario ha cancelado el pago
+    return render_template('pago_cancelado.html')
 
 def generate():
     with mpFaceMesh.FaceMesh(

@@ -12,10 +12,13 @@ def on_load(state):
     app = state.app
     mysql.init_app(app)
 
+
+
 @usuarios.route("/productsApi")
 @usuarios.route("/productsApi/<id>", methods=['GET'])
-def productsApi(id = 0):
+def productsApi(id=0):
     keys = [
+
     'Id',
     'Nombre', 
     'Imagenes',
@@ -30,10 +33,10 @@ def productsApi(id = 0):
     'Tipo de piel',
     'Imagenes filtro',
     'Tipo'
-    ]
-
+    
     arr = []
     colors = {}
+
 
     with mysql.connect.cursor() as cursor:
         if id != 0:
@@ -59,7 +62,6 @@ def productsApi(id = 0):
             rows = cursor.fetchall()
             for item in rows:
                 ord = OrderedDict(zip(keys, item))
-
                 # Dividir los nombres de colores y los valores de Hex
                 color_names = ord['Nombre color'].split(',')
                 hex_values = ord['Hex color'].split(',')
@@ -81,7 +83,6 @@ def productsApi(id = 0):
         }), 200)
 
     response.headers["Content-type"] = "application/json"
-
     return response
 
 @usuarios.route("/usuarios")
