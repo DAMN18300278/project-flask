@@ -19,49 +19,50 @@
                 </lord-icon>
 
                 <div class="snap-container h-50" id="snapInfoProductos"> {# snap-container fue otorgado por https://www.silocreativo.com/controla-desplazamiento-web-css-scroll-snap/ #}
-                    <div class="snap-section">
-                        <img class="imgInfo" src="{{ url_for('static', filename= 'src/img2_1.jpg') }}">
-                    </div>
-                    <div class="snap-section">
-                        <img class="imgInfo" src="{{ url_for('static', filename= 'src/img2_1.jpg') }}">
-                    </div>
-                    <div class="snap-section">
-                        <img class="imgInfo" src="{{ url_for('static', filename= 'src/img2_1.jpg') }}">
-                    </div>
-                    <div class="snap-section">
-                        <img class="imgInfo" src="{{ url_for('static', filename= 'src/img2_1.jpg') }}">
-                    </div>
-                    <div class="snap-section">
-                        <img class="imgInfo" src="{{ url_for('static', filename= 'src/img2_1.jpg') }}">
-                    </div>
+                    {% for imgCount in range(0, producto['Imagenes']) %}
+                        {% set imgModal = 'src/img' + producto['Id']|string + '_' + loop.index|string + '.jpg' %}
+                        <div class="snap-section">
+                            <img class="imgInfo" src="{{ url_for('static', filename= imgModal) }}">
+                        </div>
+                    {% endfor %}
                 </div>
-                <button type="button" class="close bg-white position-absolute" style="border: none; top: 2%; right: 3%;" data-bs-dismiss="modal" aria-label="Close">
+                <button type="button" class="close position-absolute" style="border: none; top: 2%; right: 3%; background-color:transparent" data-bs-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true" style="font-size: 40px;">&times;</span>
                 </button>
             </div>
             <div class="p-4">
-                <p class="product-text" style="letter-spacing: 2px; font-size: 29px; text-align:left;">Mascara pino <span style="font-size: 23px; letter-spacing:1px;color: rgb(93, 93, 93);">#00001</span></p>
-                <p class="normal-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec dapibus sagittis nunc, eu pharetra odio lacinia eget. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                <p class="product-text" id="nombreInfoProductos" style="letter-spacing: 2px; font-size: 29px; text-align:left;"><p style="font-size: 20px; letter-spacing:1px;color: rgb(93, 93, 93); text-align:left" id="idInfoProductos">#00001</p></p>
+                <p class="normal-text" id="descInfoProductos">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec dapibus sagittis nunc, eu pharetra odio lacinia eget. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
                 <div class="row">
-                    <div class="col-6 bg-red">
-                        <button class="btn btn-outline-danger text-recom p-4 d-flex align-items-center mb-3">Piel que afecta: Seca, Mixta, Acné</button>
-                        <button class="btn btn-outline-danger text-recom p-4 d-flex align-items-center mb-3">Marca: Amorus</button>
-                        <button class="btn btn-outline-danger text-recom p-4 d-flex align-items-center">Tipo: Pestaña</button>
+                    <div class="col-6 p-3">
+                        <button class="btn btn-outline-danger text-recom p-4 d-flex align-items-center mb-3" id="tipoPielInfoProductos">Piel que afecta: Seca, Mixta, Acné</button>
+                        <button class="btn btn-outline-danger text-recom p-4 d-flex align-items-center mb-3" id="marcaInfoProductos">Marca: Amorus</button>
+                        <button class="btn btn-outline-danger text-recom p-4 d-flex align-items-center" id="tipoInfoProductos">Tipo: Pestaña</button>
+                        <p class="text-start mt-4 ms-3" style="font-weight: bold; font-size: 19px" id="precioInfoProductos">$510.00</p>
                     </div>
-                    <div class="col-6 bg-red ps-3">
-                        <div class="row">
-                            <div class="colores-info col-3 m-2" style="background-color: #c22424;"></div>
-                            <div class="colores-info col-3 m-2" style="background-color: #eb8c8c;"></div>
-                            <div class="colores-info col-3 m-2" style="background-color: #ffb06f;"></div>
-                            <div class="colores-info col-3 m-2" style="background-color: #e4e158;"></div>
-                            <div class="colores-info col-3 m-2" style="background-color: #9cff3f;"></div>
-                            <div class="colores-info col-3 m-2" style="background-color: #2affc6;"></div>
-                            <div class="colores-info col-3 m-2" style="background-color: #5ea0eb;"></div>
-                            <div class="colores-info col-3 m-2" style="background-color: #c748e4;"></div>
+                    <div class="col-6 ">
+                        <label for="cantidad" class="col-form-label" id="nombreColorInfoProductos" style="font-size: 15px;">Color</label>
+                        <div class="row justify-content-center" id="hexColorInfoProductos">
+                            <div class="colores-info col-3 m-2" data-color="Tinto mate1" style="background-color: #c22424;"></div>
+                            <div class="colores-info col-3 m-2" data-color="Tinto mate2" style="background-color: #eb8c8c;"></div>
                         </div>
-                        <div class=" d-flex align-items-center mt-5">
-                            <label for="cantidad" class="col-form-label">Cantidad:</label>
-                            <input type="number" class="form-control ms-4 border border-dark" value="1" name="cantidad" id="cantidad">
+                        <label for="cantidad" class="col-form-label mt-2" style="font-size: 15px;">Cantidad</label>
+                        <div class="d-flex align-items-center justify-content-center">
+                            <lord-icon
+                                src="https://cdn.lordicon.com/rivoakkk.json"
+                                trigger="hover"
+                                colors="primary:#121331,secondary:#810CA8"
+                                style="width:35px;height:35px"
+                                id="btn-minus">
+                            </lord-icon>
+                            <input type="number" class="form-control text-center mx-3 w-25" style="box-shadow: none; border:none; font-size:15px" readonly value="1" name="cantidad" id="cantidad">
+                            <lord-icon
+                                src="https://cdn.lordicon.com/mecwbjnp.json"
+                                trigger="hover"
+                                colors="primary:#121331,secondary:#810ca8"
+                                style="width:35px;height:35px"
+                                id="btn-plus">
+                            </lord-icon>
                         </div>
                     </div>
 
@@ -69,8 +70,8 @@
             </div>
             
             <div class="d-flex px-4 pb-4">
-                <button type="button" class="btn btn-danger me-auto px-5 py-2 d-flex align-items-center" style="border-radius: 0px; font-size:15px">Probar</button>
-                <button type="button" class="btn btn-danger ms-auto px-5 py-2 d-flex align-items-center" data-bs-dismiss="modal" style="border-radius: 0px; font-size:15px">Comprar</button>
+                <button type="button" class="btn btn-danger me-auto px-5 py-2 d-flex align-items-center" data-bs-dismiss="modal" style="border-radius: 0px; font-size:15px">Cancelar</button>
+                <button type="button" class="btn btn-danger ms-auto px-5 py-2 d-flex align-items-center" style="border-radius: 0px; font-size:15px">Comprar</button>
             </div>
         </div>
     </div>

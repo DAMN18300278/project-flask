@@ -2,7 +2,7 @@
 {% block head %}
     {{ super() }}
 {% endblock %}
-
+{% set producto = productos[0] %}
 {% block content %}
     {% include "usuarios/nav.jinja" %}
     {% include "usuarios/infoProducto.jinja" %}

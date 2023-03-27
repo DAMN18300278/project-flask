@@ -191,7 +191,6 @@ def send_correo():
 
         mail.send(message)
 
-        success = "Correo enviado"
         return redirect("/")
 
 #correocon es para recuperar la contraseña
