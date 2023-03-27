@@ -1,4 +1,11 @@
-{% set subelementos = 291 %}
+{% set productosLabios = [] %}
+{% for producto in productos %}
+    {% if producto['Categoria'] == 'piel' %}
+        {% set _ = productosLabios.append(producto) %}
+    {% endif %}
+{% endfor %}
+{% set subelementos = productosLabios|length %}
+
 <div class="container container-div-slider h-100" id="ojosDiv" style="padding-left: 0; padding-right: 0; padding-bottom: 120px;">
     <div class="w-100 h-100">
         <div class="d-flex justify-content-end p-2 border-bottom border-3">
@@ -27,7 +34,7 @@
             <lord-icon
                 src="https://cdn.lordicon.com/sbiheqdr.json"
                 trigger="click"
-                colors="primary:#000,secondary:#bfa2db"
+                colors="primary:#000,secondary:#810CA8"
                 style="width:40px;height:40px; margin-top:-2px;"
                 id="dropdownFiltersOjos"
                 type="button"
@@ -44,32 +51,36 @@
         </div>
 
         <div class="h-100" style="overflow-y: scroll;">
-            <div class="position-relative border-bottom border-3">
-                <img class="img-principal" src="{{ url_for('static', filename= 'src/img2_1.jpg') }}">
-                <div class="position-absolute bg-white border border-1 border-danger p-1 py-3 w-50" style="bottom: 35px; left: 20px;">
-                    <p class="mb-4" style="font-size: 20px; display:inline; white-space:break-spaces;">Mascara cepillo pino</p>
-                    <button class="btn btn-product border-1 text-danger" type="button" data-bs-toggle="modal" data-bs-target="#infoProducto">Detalles ></button>
+            {% with producto=productosLabios[0] %}
+            {% set img = 'src/img' + producto['Id']|string + '_1.jpg' %}
+                <div class="position-relative border-bottom border-3">
+                    <img class="img-principal" src="{{ url_for('static', filename = img) }}">
+                    <div class="position-absolute bg-white border border-1 border-danger p-1 py-3 w-50" style="bottom: 35px; left: 20px;">
+                        <p class="mb-4" style="font-size: 20px; display:inline; white-space:break-spaces;">{{ producto['Nombre'] }}</p>
+                        <button class="btn btn-product border-1 text-danger" type="button" data-bs-toggle="modal" data-bs-target="#infoProducto">Detalles ></button>
+                    </div>
                 </div>
-            </div>
-
+            {% endwith %}
             <div class="m-3 row">
                 <div id="content">
-
-                <div class="tab-content">
-                    {% for i in range(0, subelementos, 24) %}
-                    <div class="tab-pane fade {% if loop.first %}show active{% endif %}" id="tab{{ loop.index }}">
-                        <div class="row w-100 ms-0">
-                        {% for j in range(i+1, i+25)%}
-                        {% if j < subelementos %}
-                            <div class="col mx-auto mb-4">
-                                {% include "usuarios/productosCard.jinja" %}
+                    <div class="tab-content">
+                        {% for i in range(0, subelementos, 24) %}
+                        <div class="tab-pane fade {% if loop.first %}show active{% endif %}" id="tab{{ loop.index }}">
+                            <div class="row justify-content-start w-100 ms-0">
+                            {% for j in range(i+1, i+25)%}
+                            {% if productosLabios[j] is defined %}
+                                <div class="col me-auto mb-4">
+                                    {% with producto=productosLabios[j] %}
+                                        {% include "usuarios/productosCard.jinja" %}
+                                    {% endwith %}
+                                </div>
+                            {% else %}
+                            {% endif %}
+                            {% endfor %}
                             </div>
-                        {% endif %}
-                        {% endfor %}
                         </div>
+                        {% endfor %}
                     </div>
-                    {% endfor %}
-                </div>
                 </div>
 
                 <div id="tabs" class="nav nav-tabs" role="tablist">

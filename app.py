@@ -17,7 +17,7 @@ app.register_blueprint(usuarios)
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'
 app.config['MAIL_PORT'] = 465
 app.config['MAIL_USERNAME'] = 'decore.makeup@gmail.com'
-app.config['MAIL_PASSWORD'] = 'xnuetwrrzayzvvvy'
+app.config['MAIL_PASSWORD'] = 'nuyalekqyacxgahg'
 app.config['MAIL_USE_TLS'] = False
 app.config['MAIL_USE_SSL'] = True 
 
@@ -131,7 +131,6 @@ def send_correo():
 
         mail.send(message)
 
-        success = "Correo enviado"
         return redirect("/")
 
 #correocon es para recuperar la contraseña

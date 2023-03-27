@@ -1,7 +1,8 @@
 import flask
-import json
-from flask import session, render_template, redirect, jsonify, make_response
+import requests
+from flask import session, render_template, redirect, jsonify, make_response, url_for, request
 from flask_mysqldb import MySQL
+from collections import OrderedDict
 
 usuarios = flask.Blueprint('usuarios', __name__)
 mysql = MySQL()
@@ -21,42 +22,63 @@ def productsApi(id = 0):
     'Descripcion',
     'Precio u.',
     'Nombre color',
-    'Rgba color',
+    'Hex color',
     'Categoria',
     'Recomendacion',
     'Marca',
     'Stock',
     'Tipo de piel',
-    'Imagenes filtro'
+    'Imagenes filtro',
+    'Tipo'
     ]
 
     arr = []
+    colors = {}
 
     with mysql.connect.cursor() as cursor:
         if id != 0:
             cursor.execute("SELECT * FROM productos WHERE Id_Productos = %s", (id,))
             rows = cursor.fetchone()
-            ord = dict(zip(keys, rows))
+            ord = OrderedDict(zip(keys, rows))
+            # Dividir los nombres de colores y los valores de Hex
+            color_names = ord['Nombre color'].split(',')
+            hex_values = ord['Hex color'].split(',')
+
+            # Crear un nuevo JSON para cada color
+            colors = {}
+            for i, name in enumerate(color_names):
+                colors[i+1] = {'Nombre': name, 'Hex': hex_values[i]}
+
+            # Reemplazar 'Nombre color' y 'Hex color' con el nuevo JSON
+            ord['Colores'] = colors
+            del ord['Nombre color']
+            del ord['Hex color']
             arr.append(ord)
         else:
             cursor.execute("SELECT * FROM productos")
             rows = cursor.fetchall()
             for item in rows:
-                # item[2] = json.dumps(item[2].split(","))
-                # item[5] = item[5].split(", ")
-                # item[6] = item[6].split("|")
-                values = []
-                values = item
-                pua = json.dumps(item[5].split(","))
-                puaa = json.dumps(item[6].split("|")) 
-                print(type(pua))
-                ord = dict(zip(keys, pua))
+                ord = OrderedDict(zip(keys, item))
+
+                # Dividir los nombres de colores y los valores de Hex
+                color_names = ord['Nombre color'].split(',')
+                hex_values = ord['Hex color'].split(',')
+
+                # Crear un nuevo JSON para cada color
+                colors = {}
+                for i, name in enumerate(color_names):
+                    colors[i+1] = {'Nombre': name, 'Hex': hex_values[i]}
+
+                # Reemplazar 'Nombre color' y 'Hex color' con el nuevo JSON
+                ord['Colores'] = colors
+                del ord['Nombre color']
+                del ord['Hex color']
+
                 arr.append(ord)
 
     response = make_response(jsonify({
             'Productos': arr
         }), 200)
-
 
     response.headers["Content-type"] = "application/json"
 
@@ -64,7 +86,13 @@ def productsApi(id = 0):
 
 @usuarios.route("/usuarios")
 def index():
-    return render_template("usuarios/landing.jinja")
+    link = url_for('usuarios.productsApi', _external=True)
+
+    response = requests.get(link).json()
+
+    data = response['Productos']
+
+    return render_template("usuarios/landing.jinja", productos = data)
 
 @usuarios.route("/usuarios/delete")
 def delete():
