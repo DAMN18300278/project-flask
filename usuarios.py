@@ -18,7 +18,6 @@ def on_load(state):
 @usuarios.route("/productsApi/<id>", methods=['GET'])
 def productsApi(id=0):
     keys = [
-
     'Id',
     'Nombre', 
     'Imagenes',
@@ -33,6 +32,7 @@ def productsApi(id=0):
     'Tipo de piel',
     'Imagenes filtro',
     'Tipo'
+    ]
     
     arr = []
     colors = {}
