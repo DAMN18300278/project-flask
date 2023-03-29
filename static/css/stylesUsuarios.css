@@ -183,16 +183,16 @@ img{
 }
 
 .colores-info{
-    width: 3.3rem;
-    height: 3.3rem;
+    width: 4rem;
+    height: 4rem;
     border: 3px solid rgb(0, 0, 0);
     border-radius: 50%;
     transition: ease-in all 0.2s;
 }
 
 .colores-info-selected{
-    width: 4rem;
-    height: 4rem;
+    width: 4.6rem;
+    height: 4.6rem;
     border: 3px solid #260035;
     box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
 }

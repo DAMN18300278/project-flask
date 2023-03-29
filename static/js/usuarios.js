@@ -25,29 +25,29 @@ function horizontalMenuChange(element) {
             var rect = positionAt.getBoundingClientRect();
             var left = rect.left;
             temp.scrollTo({
-                left: left,
+                left: positionAt.offsetLeft,
                 behavior: "smooth"
             })
             inicio.classList.add("horizontal-menu-hover");
             break;
         case 2:
-            var positionAt = document.getElementById("ojosDiv");
+            var positionAt = document.getElementById("pielDiv");
             var temp = document.getElementById("container-div-index");
             var rect = positionAt.getBoundingClientRect();
             var left = rect.left;
             temp.scrollTo({
-                left: left,
+                left: positionAt.offsetLeft,
                 behavior: "smooth"
             })
             ojos.classList.add("horizontal-menu-hover");
             break;
         case 3:
-            var positionAt = document.getElementById("inicioDiv");
+            var positionAt = document.getElementById("labiosDiv");
             var temp = document.getElementById("container-div-index");
             var rect = positionAt.getBoundingClientRect();
             var left = rect.left;
             temp.scrollTo({
-                left: left,
+                left: positionAt.offsetLeft,
                 behavior: "smooth"
             })
             labios.classList.add("horizontal-menu-hover");
