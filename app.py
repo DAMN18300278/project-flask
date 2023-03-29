@@ -21,6 +21,7 @@ app.config['MAIL_USERNAME'] = 'decore.makeup@gmail.com'
 app.config['MAIL_PASSWORD'] = 'dtcnejovtwzeozhr'
 app.config['MAIL_USE_TLS'] = False
 app.config['MAIL_USE_SSL'] = True 
+mail = Mail(app)
 
 # Configura las credenciales de PayPal en tu archivo de configuración de Flask
 app.config['PAYPAL_MODE'] = 'sandbox' # 'sandbox' o 'live'
@@ -35,17 +36,16 @@ paypalrestsdk.configure({
     "client_secret": app.config['PAYPAL_CLIENT_SECRET']
 })
 
-
 #mysql-variables----------------------------------#
-mysql = MySQL(app)
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
 app.config['MYSQL_PASSWORD'] = ''
 app.config['MYSQL_DB'] = 'diegomedel$decore'
+app.config["MYSQL_PORT"] = 3306
+mysql = MySQL(app)
 
 #--------------------------------------------------#
 
-mail = Mail(app)
 #Este valor es como la contraseña del token
 s = URLSafeTimedSerializer('decore')
 
