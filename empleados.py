@@ -1,6 +1,5 @@
 from flask_mysqldb import MySQL
-from flask import render_template, session, redirect, flash, Blueprint
-from flask import request
+from flask import render_template, session, redirect, flash, Blueprint, request, url_for
 
 empleados = Blueprint('empleados', __name__)
 mysql = MySQL()
@@ -19,10 +18,8 @@ def asignarNombre(idEmpleado):
 
 @empleados.route("/administradores")
 def indexAdmin():
-    asignarNombre(session['id_administrador'])
+    asignarNombre(session.get('id_administrador'))
     return render_template("empleados/indexAdmin.jinja")
-
-
 
 @empleados.route("/administradores/inventario/Agregar")
 def Agregar():
@@ -33,7 +30,7 @@ def invAdmin():
     with mysql.connect.cursor() as cursor:
         cursor.execute("SELECT Id_Productos, Nombre, Cantidad From productos")
         resultado = cursor.fetchall()
-    return render_template("empleados/inventario.jinja", resultados = resultado)
+    return render_template("empleados/inventario.jinja" , resultados = resultado)
 
 @empleados.route("/administradores/inventario/<int:id>", methods=['POST', 'GET'])
 def UpCantidad(id):
@@ -45,9 +42,6 @@ def UpCantidad(id):
 
 @empleados.route("/administradores/inventario/NuevoProducto", methods=['POST','GET'])
 def añadir_producto():
-
-    
-
     if request.method == 'POST':
         id_producto = request.form['IdProducto']
         nombre = request.form['Nombre']
@@ -61,7 +55,6 @@ def añadir_producto():
         marca = request.form['Marca']
         tipo_piel = request.form['TipoPiel']
         recomendacion = request.form['Recomendacion']
-        
 
     with mysql.connection.cursor() as cursor:
             cursor.execute("INSERT INTO productos(Id_Productos, Nombre, Imagen, Descripcion, Precio, Nombre_Color, Color_RGBA, Categoria, Recomendacion, Marca, Cantidad , Tipo_Piel) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", (id_producto, nombre, imagen, descripcion, precio, nombre_color, color_rgba, categoria, recomendacion, marca, cantidad, tipo_piel))
