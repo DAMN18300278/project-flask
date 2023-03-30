@@ -12,8 +12,6 @@ def on_load(state):
     app = state.app
     mysql.init_app(app)
 
-
-
 @usuarios.route("/productsApi")
 @usuarios.route("/productsApi/<id>", methods=['GET'])
 def productsApi(id=0):

@@ -1,4 +1,3 @@
-
 from itsdangerous import URLSafeTimedSerializer, SignatureExpired
 from flask import render_template, Response, request, redirect, flash, session, Flask, url_for
 from flask_mail import Mail, Message
@@ -7,29 +6,15 @@ from usuarios import usuarios
 import mediapipe as mp
 import paypalrestsdk
 import cv2
-import sshtunnel
 from flask_mysqldb import MySQL
-
-
-sshtunnel.SSH_TIMEOUT = 5.0
-sshtunnel.TUNNEL_TIMEOUT = 5.0
-
-tunnel = sshtunnel.SSHTunnelForwarder(
-    ('ssh.pythonanywhere.com'),
-    ssh_username='DiegoMedel',
-    ssh_password='Nambo123',
-    remote_bind_address=('DiegoMedel.mysql.pythonanywhere-services.com', 3306)
-)
-
-tunnel.start()
 
 app = Flask(__name__)
 
 app.config['MYSQL_HOST'] = 'localhost'
-app.config['MYSQL_USER'] = 'DiegoMedel'
-app.config['MYSQL_PASSWORD'] = '278090F!'
-app.config['MYSQL_DB'] = 'DiegoMedel$decore'
-app.config["MYSQL_PORT"] = tunnel.local_bind_port
+app.config['MYSQL_USER'] = 'root'
+app.config['MYSQL_PASSWORD'] = ''
+app.config['MYSQL_DB'] = 'diegomedel$decore'
+app.config["MYSQL_PORT"] = 3306
 
 mysql = MySQL(app)
 
@@ -256,13 +241,13 @@ def login():
     cursor.execute("SELECT * FROM cuenta WHERE Correo = %s", (correo,))
     rows = cursor.fetchone()
         
+    if rows is None:
+        flash("Correo inexistente")
+        return redirect("/")
+    
     session['id_usuario'] = rows[0]
     rol = rows[1]
     contraseñaC = rows[3]
-    
-    if 'rows' not in vars():
-        flash("Correo inexistente")
-        return redirect("/")
 
     if 'contraseñaC' in vars():
         if contraseña != contraseñaC:
@@ -272,9 +257,9 @@ def login():
         return redirect("/")
 
     if rol == 1:
-        cursor.execute("SELECT Tipo_Empleado FROM empleado WHERE Id_Empleado = %s", (session['id_usuario'],))
+        cursor.execute("SELECT Tipo_Empleado FROM empleado WHERE Id_Empleado = %s", (session.get('id_usuario'),))
         rows = cursor.fetchone()
-        tempId = session['id_usuario']
+        tempId = session.get('id_usuario')
         session.clear()
 
         if rows[0] == 1:
@@ -291,7 +276,7 @@ def login():
             return redirect("/inventario")
     else:
         with mysql.connection.cursor() as cursor:
-            cursor.execute("SELECT * FROM usuarios WHERE Id_Usuario = %s", (session['id_usuario'],))
+            cursor.execute("SELECT * FROM usuarios WHERE Id_Usuario = %s", (session.get('id_usuario'),))
             usuario = cursor.fetchone()
 
         if usuario is None:
@@ -316,7 +301,7 @@ def guardarDatosUsuario():
     colorCabello = request.form["colorCabello"]
 
     with mysql.connection.cursor() as cursor:
-        cursor.execute("INSERT INTO usuarios VALUES(%s, %s, %s, %s, %s, %s, %s, 2)", (session['id_usuario'], nombre, edad, colorOjos, tipoPiel, colorPiel, colorCabello))
+        cursor.execute("INSERT INTO usuarios VALUES(%s, %s, %s, %s, %s, %s, %s, 2)", (session.get('id_usuario'), nombre, edad, colorOjos, tipoPiel, colorPiel, colorCabello))
 
     mysql.connection.commit()
 
@@ -339,7 +324,6 @@ def before_request():
         return redirect("/")
 
     if not 'id_administrador' in session and '/administradores' in ruta:
-        print("True")
         return redirect("/")
 
     if not 'id_encargadoCaja' in session and '/caja' in ruta:
