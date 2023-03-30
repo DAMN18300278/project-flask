@@ -7,9 +7,32 @@ from usuarios import usuarios
 import mediapipe as mp
 import paypalrestsdk
 import cv2
+import sshtunnel
 from flask_mysqldb import MySQL
 
+
+sshtunnel.SSH_TIMEOUT = 5.0
+sshtunnel.TUNNEL_TIMEOUT = 5.0
+
+tunnel = sshtunnel.SSHTunnelForwarder(
+    ('ssh.pythonanywhere.com'),
+    ssh_username='DiegoMedel',
+    ssh_password='Nambo123',
+    remote_bind_address=('DiegoMedel.mysql.pythonanywhere-services.com', 3306)
+)
+
+tunnel.start()
+
 app = Flask(__name__)
+
+app.config['MYSQL_HOST'] = 'localhost'
+app.config['MYSQL_USER'] = 'DiegoMedel'
+app.config['MYSQL_PASSWORD'] = '278090F!'
+app.config['MYSQL_DB'] = 'DiegoMedel$decore'
+app.config["MYSQL_PORT"] = tunnel.local_bind_port
+
+mysql = MySQL(app)
+
 app.secret_key = "ab"
 app.register_blueprint(empleados)
 app.register_blueprint(usuarios)
@@ -35,16 +58,6 @@ paypalrestsdk.configure({
     "client_id": app.config['PAYPAL_CLIENT_ID'],
     "client_secret": app.config['PAYPAL_CLIENT_SECRET']
 })
-
-#mysql-variables----------------------------------#
-app.config['MYSQL_HOST'] = 'localhost'
-app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = ''
-app.config['MYSQL_DB'] = 'diegomedel$decore'
-app.config["MYSQL_PORT"] = 3306
-mysql = MySQL(app)
-
-#--------------------------------------------------#
 
 #Este valor es como la contraseña del token
 s = URLSafeTimedSerializer('decore')
