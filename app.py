@@ -234,7 +234,7 @@ def confirmrecover(token):
 
 @app.route("/login", methods=["POST"])
 def login():
-    cursor = mysql.connection.cursor()
+    cursor = mysql.connect.cursor()
     correo = request.form["correo"]
     contraseña = request.form["contraseña"]
     
