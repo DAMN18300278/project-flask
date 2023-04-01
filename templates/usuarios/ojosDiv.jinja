@@ -1,15 +1,15 @@
-{% set productosLabios = [] %}
+{% set productosOjos = [] %}
 {% for producto in productos %}
-    {% if producto['Categoria'] == 'labios' %}
-        {% set _ = productosLabios.append(producto) %}
+    {% if producto['Categoria'] == 'ojos' %}
+        {% set _ = productosOjos.append(producto) %}
     {% endif %}
 {% endfor %}
-{% set subelementos = productosLabios|length %}
+{% set subelementos = productosOjos|length %}
 
-<div class="container container-div-slider h-100" id="labiosDiv" style="padding-left: 0; padding-right: 0; padding-bottom: 120px;">
+<div class="container container-div-slider h-100" id="pielDiv" style="padding-left: 0; padding-right: 0; padding-bottom: 120px;">
     <div class="w-100 h-100">
         <div class="d-flex justify-content-end p-2 border-bottom border-3">
-            <p class="me-auto ms-2 my-auto">Categoria: labios</p>
+            <p class="me-auto ms-2 my-auto">Categoria: ojos</p>
             <lord-icon
                 src="https://cdn.lordicon.com/msoeawqm.json"
                 trigger="click"
@@ -51,7 +51,7 @@
         </div>
 
         <div class="h-100" style="overflow-y: scroll;">
-            {% with producto=productosLabios[0] %}
+            {% with producto=productosOjos[0] %}
             {% set img = 'src/img' + producto['Id']|string + '_1.jpg' %}
                 <div class="position-relative border-bottom border-3">
                     <img class="img-principal" src="{{ url_for('static', filename = img) }}">
@@ -78,9 +78,9 @@
                         <div class="tab-pane fade {% if loop.first %}show active{% endif %}" id="tab{{ loop.index }}">
                             <div class="row justify-content-start w-100 ms-0">
                             {% for j in range(i+1, i+25)%}
-                            {% if productosLabios[j] is defined %}
+                            {% if productosOjos[j] is defined %}
                                 <div class="col me-auto mb-4">
-                                    {% with producto=productosLabios[j] %}
+                                    {% with producto=productosOjos[j] %}
                                         {% include "usuarios/productosCard.jinja" %}
                                     {% endwith %}
                                 </div>
