@@ -1,10 +1,10 @@
-{% set productosOjos = [] %}
+{% set productosPiel = [] %}
 {% for producto in productos %}
-    {% if producto['Categoria'] == 'ojos' %}
-        {% set _ = productosOjos.append(producto) %}
+    {% if producto['Categoria'] == 'piel' %}
+        {% set _ = productosPiel.append(producto) %}
     {% endif %}
 {% endfor %}
-{% set subelementos = productosOjos|length %}
+{% set subelementos = productosPiel|length %}
 
 <div class="container container-div-slider h-100" id="pielDiv" style="padding-left: 0; padding-right: 0; padding-bottom: 120px;">
     <div class="w-100 h-100">
@@ -51,7 +51,7 @@
         </div>
 
         <div class="h-100" style="overflow-y: scroll;">
-            {% with producto=productosOjos[0] %}
+            {% with producto=productosPiel[0] %}
             {% set img = 'src/img' + producto['Id']|string + '_1.jpg' %}
                 <div class="position-relative border-bottom border-3">
                     <img class="img-principal" src="{{ url_for('static', filename = img) }}">
@@ -78,9 +78,9 @@
                         <div class="tab-pane fade {% if loop.first %}show active{% endif %}" id="tab{{ loop.index }}">
                             <div class="row justify-content-start w-100 ms-0">
                             {% for j in range(i+1, i+25)%}
-                            {% if productosOjos[j] is defined %}
+                            {% if productosPiel[j] is defined %}
                                 <div class="col me-auto mb-4">
-                                    {% with producto=productosOjos[j] %}
+                                    {% with producto=productosPiel[j] %}
                                         {% include "usuarios/productosCard.jinja" %}
                                     {% endwith %}
                                 </div>

@@ -1,7 +1,19 @@
-<div class="border border-1 box-shadow1 position-relative mx-auto" style="width:6.5em; height:6.5em;">
-    <img src="{{ url_for('static', filename= 'src/img2_1.jpg') }}" style="width:6em; height:6em;">
-    <div class="position-absolute border border-danger bg-white py-1 px-2" style="bottom: 5%; left: 5%;">
-        <p class="mb-0 text-start" style="font-size: 12px;letter-spacing:1px">Pestaña 3D {{ j }}</p>
-        <p class="mb-0 text-start" style="font-size: 11px;letter-spacing:1px;font-weight: bold;">$39.99</p>
+{% set img = 'src/img' + producto['Id']|string + '_1.jpg' %}
+<div class="border border-1 box-shadow1 position-relative"
+        data-bs-toggle="modal" 
+        data-bs-target="#infoProducto" 
+        data-producto-id="{{ producto['Id'] }}"
+        data-cantidad-imgs="{{ producto['Imagenes'] }}"
+        data-nombre="{{ producto['Nombre'] }}"
+        data-descripcion="{{ producto['Descripcion'] }}"
+        data-tipo-piel="{{ producto['Tipo de piel'] }}"
+        data-colores="{{ producto['Colores'] }}"
+        data-marca="{{ producto['Marca'] }}"
+        data-tipo="{{ producto['Tipo'] }}"
+        data-precio="{{ producto['Precio u.'] }}"  style="width:6.5em; height:6.5em;">
+    <img src="{{ url_for('static', filename= img) }}" style="width:6em; height:6em;">
+    <div class="position-absolute border border-danger bg-white py-1 px-2" style="bottom: 5%; left: 5%; overflow:hidden; max-width:90%">
+        <p class="mb-0 text-start" style="font-size: 12px;letter-spacing:1px;">{{ producto['Nombre'] }}</p>
+        <p class="mb-0 text-start" style="font-size: 11px;letter-spacing:1px;font-weight: bold;">${{ producto['Precio u.'] }}</p>
     </div>
 </div>

@@ -1,4 +1,3 @@
-
 from itsdangerous import URLSafeTimedSerializer, SignatureExpired
 from flask import render_template, Response, request, redirect, flash, session, Flask, url_for
 from flask_mail import Mail, Message
@@ -10,6 +9,15 @@ import cv2
 from flask_mysqldb import MySQL
 
 app = Flask(__name__)
+
+app.config['MYSQL_HOST'] = 'localhost'
+app.config['MYSQL_USER'] = 'root'
+app.config['MYSQL_PASSWORD'] = ''
+app.config['MYSQL_DB'] = 'diegomedel$decore'
+app.config["MYSQL_PORT"] = 3306
+
+mysql = MySQL(app)
+
 app.secret_key = "ab"
 app.register_blueprint(empleados)
 app.register_blueprint(usuarios)
@@ -21,6 +29,7 @@ app.config['MAIL_USERNAME'] = 'decore.makeup@gmail.com'
 app.config['MAIL_PASSWORD'] = 'dtcnejovtwzeozhr'
 app.config['MAIL_USE_TLS'] = False
 app.config['MAIL_USE_SSL'] = True 
+mail = Mail(app)
 
 # Configura las credenciales de PayPal en tu archivo de configuración de Flask
 app.config['PAYPAL_MODE'] = 'sandbox' # 'sandbox' o 'live'
@@ -35,17 +44,6 @@ paypalrestsdk.configure({
     "client_secret": app.config['PAYPAL_CLIENT_SECRET']
 })
 
-
-#mysql-variables----------------------------------#
-mysql = MySQL(app)
-app.config['MYSQL_HOST'] = 'localhost'
-app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = ''
-app.config['MYSQL_DB'] = 'diegomedel$decore'
-
-#--------------------------------------------------#
-
-mail = Mail(app)
 #Este valor es como la contraseña del token
 s = URLSafeTimedSerializer('decore')
 
@@ -191,7 +189,6 @@ def send_correo():
 
         mail.send(message)
 
-        success = "Correo enviado"
         return redirect("/")
 
 #correocon es para recuperar la contraseña
@@ -237,20 +234,20 @@ def confirmrecover(token):
 
 @app.route("/login", methods=["POST"])
 def login():
-    cursor = mysql.connection.cursor()
+    cursor = mysql.connect.cursor()
     correo = request.form["correo"]
     contraseña = request.form["contraseña"]
     
     cursor.execute("SELECT * FROM cuenta WHERE Correo = %s", (correo,))
     rows = cursor.fetchone()
         
+    if rows is None:
+        flash("Correo inexistente")
+        return redirect("/")
+    
     session['id_usuario'] = rows[0]
     rol = rows[1]
     contraseñaC = rows[3]
-    
-    if 'rows' not in vars():
-        flash("Correo inexistente")
-        return redirect("/")
 
     if 'contraseñaC' in vars():
         if contraseña != contraseñaC:
@@ -260,9 +257,9 @@ def login():
         return redirect("/")
 
     if rol == 1:
-        cursor.execute("SELECT Tipo_Empleado FROM empleado WHERE Id_Empleado = %s", (session['id_usuario'],))
+        cursor.execute("SELECT Tipo_Empleado FROM empleado WHERE Id_Empleado = %s", (session.get('id_usuario'),))
         rows = cursor.fetchone()
-        tempId = session['id_usuario']
+        tempId = session.get('id_usuario')
         session.clear()
 
         if rows[0] == 1:
@@ -279,7 +276,7 @@ def login():
             return redirect("/inventario")
     else:
         with mysql.connection.cursor() as cursor:
-            cursor.execute("SELECT * FROM usuarios WHERE Id_Usuario = %s", (session['id_usuario'],))
+            cursor.execute("SELECT * FROM usuarios WHERE Id_Usuario = %s", (session.get('id_usuario'),))
             usuario = cursor.fetchone()
 
         if usuario is None:
@@ -304,7 +301,7 @@ def guardarDatosUsuario():
     colorCabello = request.form["colorCabello"]
 
     with mysql.connection.cursor() as cursor:
-        cursor.execute("INSERT INTO usuarios VALUES(%s, %s, %s, %s, %s, %s, %s, 2)", (session['id_usuario'], nombre, edad, colorOjos, tipoPiel, colorPiel, colorCabello))
+        cursor.execute("INSERT INTO usuarios VALUES(%s, %s, %s, %s, %s, %s, %s, 2)", (session.get('id_usuario'), nombre, edad, colorOjos, tipoPiel, colorPiel, colorCabello))
 
     mysql.connection.commit()
 
@@ -327,7 +324,6 @@ def before_request():
         return redirect("/")
 
     if not 'id_administrador' in session and '/administradores' in ruta:
-        print("True")
         return redirect("/")
 
     if not 'id_encargadoCaja' in session and '/caja' in ruta:

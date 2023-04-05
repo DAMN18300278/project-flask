@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename= 'css/head.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename= 'css/styles.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename= 'css/stylesIndex.css') }}">
+    <script src="https://cdn.lordicon.com/ritcuqlt.js"></script>
     {% endblock %}
 </head>
 <body>
@@ -31,7 +32,7 @@
         {% block content %}{% endblock %}
     </div>
 
-    <script src="{{ url_for('static', filename = 'bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ url_for('static', filename = 'bootstrap/dist/js/bootstrap.bundle.min.js') }}"></script>
     <script src="{{ url_for('static', filename = 'js/index.js') }}"></script>
 </body>
 </html>

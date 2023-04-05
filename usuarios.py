@@ -1,6 +1,6 @@
 import flask
-import json
-from flask import session, render_template, redirect, jsonify, make_response
+import requests
+from flask import session, render_template, redirect, jsonify, make_response, url_for, request
 from flask_mysqldb import MySQL
 from collections import OrderedDict
 
@@ -12,77 +12,86 @@ def on_load(state):
     app = state.app
     mysql.init_app(app)
 
-
-
 @usuarios.route("/productsApi")
 @usuarios.route("/productsApi/<id>", methods=['GET'])
 def productsApi(id=0):
     keys = [
-        'Id',
-        'Nombre',
-        'Imagenes',
-        'Descripcion',
-        'Precio u.',
-        'Nombre color',
-        'Rgba color',
-        'Categoria',
-        'Recomendacion',
-        'Marca',
-        'Stock',
-        'Tipo de piel',
-        'Imagenes filtro'
+    'Id',
+    'Nombre', 
+    'Imagenes',
+    'Descripcion',
+    'Precio u.',
+    'Nombre color',
+    'Hex color',
+    'Categoria',
+    'Recomendacion',
+    'Marca',
+    'Stock',
+    'Tipo de piel',
+    'Imagenes filtro',
+    'Tipo'
     ]
-   
-    new_keys = [
-        'Id',
-        'Nombre',
-        'Imagenes',
-        'Descripcion',
-        'Precio u.',
-        'Colores',
-        'Categoria',
-        'Recomendacion',
-       
-        'Marca',
-        'Stock',
-        'Tipo de piel',
-        'Imagenes filtro'
-    ]
+    
     arr = []
+    colors = {}
+
+
     with mysql.connect.cursor() as cursor:
         if id != 0:
             cursor.execute("SELECT * FROM productos WHERE Id_Productos = %s", (id,))
             rows = cursor.fetchone()
             ord = OrderedDict(zip(keys, rows))
+            # Dividir los nombres de colores y los valores de Hex
+            color_names = ord['Nombre color'].split(',')
+            hex_values = ord['Hex color'].split(',')
+
+            # Crear un nuevo JSON para cada color
+            colors = {}
+            for i, name in enumerate(color_names):
+                colors[i+1] = {'Nombre': name, 'Hex': hex_values[i]}
+
+            # Reemplazar 'Nombre color' y 'Hex color' con el nuevo JSON
+            ord['Colores'] = colors
+            del ord['Nombre color']
+            del ord['Hex color']
             arr.append(ord)
         else:
             cursor.execute("SELECT * FROM productos")
             rows = cursor.fetchall()
             for item in rows:
                 ord = OrderedDict(zip(keys, item))
-                # Dividir los nombres de colores y los valores de RGBA
+                # Dividir los nombres de colores y los valores de Hex
                 color_names = ord['Nombre color'].split(',')
-                rgba_values = ord['Rgba color'].split('|')
+                hex_values = ord['Hex color'].split(',')
+
                 # Crear un nuevo JSON para cada color
                 colors = {}
                 for i, name in enumerate(color_names):
-                    colors[name] = {'Nombre': name, 'Rgba': rgba_values[i]}
-                # Reemplazar 'Nombre color' y 'Rgba color' con el nuevo JSON
+                    colors[i+1] = {'Nombre': name, 'Hex': hex_values[i]}
+
+                # Reemplazar 'Nombre color' y 'Hex color' con el nuevo JSON
                 ord['Colores'] = colors
                 del ord['Nombre color']
-                del ord['Rgba color']
-                # Reordenar el JSON según el nuevo orden de keys
-                ord = OrderedDict((k, ord[k]) for k in new_keys)
+                del ord['Hex color']
+
                 arr.append(ord)
-                response = make_response(jsonify({
-                    'Productos': arr
-                }), 200)
+
+    response = make_response(jsonify({
+            'Productos': arr
+        }), 200)
+
     response.headers["Content-type"] = "application/json"
     return response
 
 @usuarios.route("/usuarios")
 def index():
-    return render_template("usuarios/landing.jinja")
+    link = url_for('usuarios.productsApi', _external=True)
+
+    response = requests.get(link).json()
+
+    data = response['Productos']
+
+    return render_template("usuarios/landing.jinja", productos = data)
 
 @usuarios.route("/usuarios/delete")
 def delete():
