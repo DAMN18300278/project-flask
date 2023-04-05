@@ -7,7 +7,7 @@
 
 
 <div>
-    <form action="./NuevoProducto" id="form-nuevo-producto" method="post" class="to-left position-absolute p-5 d-flex flex-column justify-content-center align-items-center h-100" style="top: 0; bottom: 0; left: 0; right: 0;">
+    <form action="./NuevoProducto" id="form-nuevo-producto" method="post" class="to-left position-absolute p-5 d-flex flex-column justify-content-center align-items-center h-100" style="top: 0; bottom: 0; left: 0; right: 0;" enctype="multipart/form-data">
 
       <div class="mb-3">
         <p>Nuevo Producto</p>
@@ -25,7 +25,7 @@
 
         <div  class="mb-3 w-100 form-group d-flex align-items-center flex-column">
           <label for="Imagen" class="form-label w-100">Imagen</label>
-          <input  type="file" class="form-control" id="Imagen" name="Imagen" accept="image/png, image/jpeg, image/jpg" value="">
+          <input  type="file" class="form-control-file" id="Imagen" name="Imagen[]" multiple accept="image/png, image/jpeg, image/jpg" value="">
         </div>
 
         <div class="mb-3 w-100 form-group d-flex align-items-center flex-column">
@@ -55,6 +55,16 @@
                 <button type="button" class="btn btn-outline-danger" onclick="agregarCampos()" style="font-size: 12px;" >Agregar</button>
             </div>    
         </div>
+
+        <div class="form-group">
+          <label for="colorName">Nombre del color:</label>
+          <input type="text" class="form-control" id="colorName" name="colorName">
+          <label for="colorHex">Color hexadecimal:</label>
+          <input type="color" class="form-control" id="colorHex" name="colorHex">
+        </div>
+        <div id="colorFields"></div>
+        <button type="button" class="btn btn-primary" onclick="addColorField()">Añadir otro color</button>
+        <br><br>
 
         <div class="mb-3  form-group" id="contenedorCampos"></div>
 
@@ -114,6 +124,13 @@ form.addEventListener('submit', function(event) {
     this.submit();
   }
 });
+
+function addColorField() {
+  var div = document.createElement('div');
+  div.className = 'form-group';
+  div.innerHTML = '<label for="colorName">Nombre del color:</label><input type="text" class="form-control" name="colorName[]"><label for="colorHex">Color hexadecimal:</label><input type="color" class="form-control" name="colorHex[]">';
+  document.getElementById('colorFields').appendChild(div);
+}
 
 var numColors = 2;
 
