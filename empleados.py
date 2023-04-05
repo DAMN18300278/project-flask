@@ -51,11 +51,15 @@ def añadir_producto():
     if request.method == 'POST':
         id_producto = request.form['IdProducto']
         nombre = request.form['Nombre']
-        imagen = request.form['Imagen']
+        imagen = request.files.getlist('Imagen[]')
+        num_imagenes = len(imagen)
+        filenames = ','.join([file.filename for file in imagen])
         descripcion = request.form['Descripcion']
         precio = request.form['Precio']
-        nombre_color = request.form['NombreColor']
-        color_rgba = request.form['colorRGB']
+        #nombre_color = request.form['NombreColor']
+        nombre_color = request.form.getlist('colorName')
+        color_rgba = request.form.getlist('colorHex')
+        #color_rgba = request.form['colorRGB']
         categoria = request.form['Categoria']
         cantidad = request.form['Cantidad']
         marca = request.form['Marca']
@@ -64,7 +68,7 @@ def añadir_producto():
         
 
     with mysql.connection.cursor() as cursor:
-            cursor.execute("INSERT INTO productos(Id_Productos, Nombre, Imagen, Descripcion, Precio, Nombre_Color, Color_RGBA, Categoria, Recomendacion, Marca, Cantidad , Tipo_Piel) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", (id_producto, nombre, imagen, descripcion, precio, nombre_color, color_rgba, categoria, recomendacion, marca, cantidad, tipo_piel))
+            cursor.execute("INSERT INTO productos(Id_Productos, Nombre,Num_imagenes, Imagen, Descripcion, Precio, Nombre_Color, Color_RGBA, Categoria, Recomendacion, Marca, Cantidad , Tipo_Piel) VALUES (%s, %s, %s,%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", (id_producto, nombre,num_imagenes, filenames, descripcion, precio, nombre_color, color_rgba, categoria, recomendacion, marca, cantidad, tipo_piel))
             mysql.connection.commit()
     return redirect("/administradores/inventario")
 
