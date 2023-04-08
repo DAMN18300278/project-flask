@@ -50,18 +50,26 @@ def añadir_producto():
         filenames = ','.join([file.filename for file in imagen])
         descripcion = request.form['Descripcion']
         precio = request.form['Precio']
-        #nombre_color = request.form['NombreColor']
-        nombre_color = request.form.getlist('colorName')
-        color_rgba = request.form.getlist('colorHex')
-        #color_rgba = request.form['colorRGB']
+        
+        nombre_color = request.form.getlist('nombre_color') # Obtener la lista de nombres de colores
+        color_rgba = request.form.getlist('color') # Obtener la lista de valores hexadecimales de colores
+        # Convertir las listas en strings separados por comas
+        nombre_color = ','.join(nombre_color)
+        color_rgba = ','.join(color_rgba)
+       
         categoria = request.form['Categoria']
         cantidad = request.form['Cantidad']
         marca = request.form['Marca']
         tipo_piel = request.form['TipoPiel']
         recomendacion = request.form['Recomendacion']
+        imagen_filtro = request.files.getlist('Imagen_fil[]')
+        filtronames = ','.join([file.filename for file in imagen_filtro])
+
+        
+
 
     with mysql.connection.cursor() as cursor:
-            cursor.execute("INSERT INTO productos(Id_Productos, Nombre,Num_imagenes, Imagen, Descripcion, Precio, Nombre_Color, Color_RGBA, Categoria, Recomendacion, Marca, Cantidad , Tipo_Piel) VALUES (%s, %s, %s,%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", (id_producto, nombre,num_imagenes, filenames, descripcion, precio, nombre_color, color_rgba, categoria, recomendacion, marca, cantidad, tipo_piel))
+            cursor.execute("INSERT INTO productos(Id_Productos, Nombre,Num_imagenes, Imagen, Descripcion, Precio, Nombre_Color, Color_RGBA, Categoria, Recomendacion, Marca, Cantidad , Tipo_Piel, Imagen_filtro) VALUES (%s, %s, %s,%s, %s, %s, %s, %s, %s, %s, %s, %s, %s,%s)", (id_producto, nombre,num_imagenes, filenames, descripcion, precio, nombre_color, color_rgba, categoria, recomendacion, marca, cantidad, tipo_piel,filtronames))
             mysql.connection.commit()
     return redirect("/administradores/inventario")
 
