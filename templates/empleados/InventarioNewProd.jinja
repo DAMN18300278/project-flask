@@ -14,59 +14,62 @@
       </div>
       <div class="mb-3 w-100 form-group d-flex align-items-center flex-column">
         <label for="IdProducto" class="form-label">ID del Producto</label>
-        <input type="text" class="form-control" id="IdProducto" name="IdProducto" value="">
+        <input type="text" class="form-control" id="IdProducto" name="IdProducto" value="" requiered
+        
+        >
+        <small class="text-danger hidden">Este campo es requerido</small>       
       </div>
 
       <div class="d-flex flex-column justify-content-between align-items-center h-100 w-100">
         <div class="mb-3 w-100 form-group d-flex align-items-center flex-column">
           <label for="Nombre" class="form-label">Nombre</label>
-          <input type="text" class="form-control" id="Nombre" name="Nombre" value="">
+          <input type="text" class="form-control" id="Nombre" name="Nombre" value="" required>
+          <small class="text-danger hidden">Este campo es requerido</small>  
         </div>
 
         <div  class="mb-3 w-100 form-group d-flex align-items-center flex-column">
           <label for="Imagen" class="form-label w-100">Imagen</label>
-          <input  type="file" class="form-control-file" id="Imagen" name="Imagen[]" multiple accept="image/png, image/jpeg, image/jpg" value="">
+          <input  type="file" class="form-control-file" id="Imagen" name="Imagen[]" multiple accept="image/png, image/jpeg, image/jpg" value="" required>
+          <small class="text-danger hidden">Este campo es requerido</small>  
         </div>
 
         <div class="mb-3 w-100 form-group d-flex align-items-center flex-column">
             <label for="Descripcion" class="form-label">Descripcion</label>
-            <input style="height: 200px;" type="text" class="form-control" id="Descripcion" name="Descripcion" value="">
+            <input style="height: 200px;" type="text" class="form-control" id="Descripcion" name="Descripcion" value="" required>
+            <small class="text-danger hidden">Este campo es requerido</small>  
         </div>
 
         <div class="mb-3 w-100 form-group d-flex align-items-center flex-column">
           <label for="Cantidad" class="form-label">Cantidad</label>
-          <input type="number" class="form-control" id="Cantidad" name="Cantidad" value="">
+          <input type="number" class="form-control" id="Cantidad" name="Cantidad" value="" required>
+          <small class="text-danger hidden">Este campo es requerido</small>  
         </div>
 
         <div class="mb-3 w-100 form-group d-flex align-items-center flex-column">
             <label for="Precio" class="form-label">Precio</label>
-            <input type="number" inputmode="numeric" class="form-control" id="Precio" name="Precio" value="">
+            <input type="number" inputmode="numeric" class="form-control" id="Precio" name="Precio" value="" required>
+            <small class="text-danger hidden">Este campo es requerido</small>  
         </div>
+
         <label for="NombreColor" class="col-form-label ">Color</label>
         <div class="mb-3 w-100 form-group d-flex align-items-center">
-            <div class="col-md-6 d-flex justify-content-center" style="margin-right: 5%;">
-                <input type="text" class="form-control border" id="NombreColor1" name="NombreColor" value="">
+         
+          <div class="col-md-6 d-flex justify-content-center" style="margin-right: 5%;">
+                <input type="text" class="form-control border" id="nombre_color" name="nombre_color" value="" required>
+                <small class="text-danger hidden">Este campo es requerido</small>  
             </div>            
             <div style="flex: auto; margin-left: 10px;">
-                <input type="color" name="colorRGB" id="colorRGB1" value="" class="input-color">
+                <input type="color" name="color" id="color" value="" class="input-color" required>
+                <small class="text-danger hidden">Este campo es requerido</small>  
             </div>
          
-            <div class="col-md-6 d-flex justify-content-end">
-                <button type="button" class="btn btn-outline-danger" onclick="agregarCampos()" style="font-size: 12px;" >Agregar</button>
-            </div>    
+            <div class="col-md-6 d-flex justify-content-start">
+                <button type="button" id="agregar_color" class="btn btn-outline-danger" onclick="agregarCampos()" style="font-size: 12px;" >Agregar</button>
+            </div> 
+          
+          
         </div>
-
-        <div class="form-group">
-          <label for="colorName">Nombre del color:</label>
-          <input type="text" class="form-control" id="colorName" name="colorName">
-          <label for="colorHex">Color hexadecimal:</label>
-          <input type="color" class="form-control" id="colorHex" name="colorHex">
-        </div>
-        <div id="colorFields"></div>
-        <button type="button" class="btn btn-primary" onclick="addColorField()">Añadir otro color</button>
-        <br><br>
-
-        <div class="mb-3  form-group" id="contenedorCampos"></div>
+        <div id="contenedorCampos" class="mb-3 w-100 form-group d-flex align-items-center flex-column"></div>
 
         <div class="mb-3 w-100 form-group d-flex align-items-center flex-column">
           <label for="Categoria" class="form-label">Categoría</label>
@@ -81,7 +84,8 @@
 
         <div class="mb-3 w-100 form-group d-flex align-items-center flex-column">
           <label for="Recomendacion" class="form-label">Recomendacion</label>
-          <input type="text" class="form-control" id="Recomendacion" name="Recomendacion" value="">
+          <input type="text" class="form-control" id="Recomendacion" name="Recomendacion" value=""required>
+          <small class="text-danger hidden">Este campo es requerido</small>  
         </div>
 
         <div class="mb-3 w-100 form-group d-flex align-items-center flex-column">
@@ -106,6 +110,12 @@
               <option value="6">Sensible</option>
           </select>
         </div>
+
+        <div  class="mb-3 w-100 form-group d-flex align-items-center flex-column">
+          <label for="Imagen_fil" class="form-label w-100">Imagenes para filtro</label>
+          <input  type="file" class="form-control-file" id="Imagen_fil" name="Imagen_fil[]" multiple accept="image/png, image/jpeg, image/jpg" value="" required>
+          <small class="text-danger hidden">Este campo es requerido</small>  
+        </div>
         
         <button type="submit" class="btn btn-secondary w-50">Submit</button>
       </div>
@@ -125,54 +135,64 @@ form.addEventListener('submit', function(event) {
   }
 });
 
-function addColorField() {
-  var div = document.createElement('div');
-  div.className = 'form-group';
-  div.innerHTML = '<label for="colorName">Nombre del color:</label><input type="text" class="form-control" name="colorName[]"><label for="colorHex">Color hexadecimal:</label><input type="color" class="form-control" name="colorHex[]">';
-  document.getElementById('colorFields').appendChild(div);
-}
+  var contador = 1; // variable para llevar la cuenta de los colores agregados
 
-var numColors = 2;
-
-function agregarCampos() {
-    if(numColors < 7){
+  // función para agregar más colores
+  function agregarCampos() {
+    if (contador < 7) {
       // Obtener el elemento donde se agregarán los nuevos campos de entrada
       var contenedor = document.getElementById("contenedorCampos");
-    
+
       var nuevoDiv = document.createElement("div");
       nuevoDiv.className = "mb-3 w-100 form-group d-flex align-items-center"
-
+      
       // Crear los nuevos elementos de entrada de texto y color
       var contenedorLabel = document.createElement("div");
       contenedorLabel.className = "col-md-6 d-flex justify-content-center";
       contenedorLabel.style = "margin-right: 5%;"
+      
+      var inputNombre = document.createElement('input');
+      inputNombre.type = 'text';
+      inputNombre.name = 'nombre_color';
+      inputNombre.placeholder = 'Nombre del color';
+      inputNombre.className = "form-control border";
 
-      var nuevoInputText = document.createElement("input");
-      nuevoInputText.type = "text";
-      nuevoInputText.name = "NombreColor" + numColors;
-      nuevoInputText.className = "form-control border";
-      nuevoInputText.value = "";
-
-      contenedorLabel.appendChild(nuevoInputText);
+      contenedorLabel.appendChild(inputNombre);
 
       var contenedorColor = document.createElement("div");
-      contenedorColor.style = "flex: auto; margin-left: 10px;";
-    
+      contenedorColor.style.flex = "auto";
+      contenedorColor.style.marginLeft = "10px";
       var nuevoInputColor = document.createElement("input");
       nuevoInputColor.type = "color";
-      nuevoInputColor.name = "colorRGB" + numColors;
+      nuevoInputColor.name = "color";
       nuevoInputColor.className = "input-color";
-      nuevoInputColor.value = "";
 
       contenedorColor.appendChild(nuevoInputColor);
     
-      // Agregar los nuevos elementos al contenedor
       nuevoDiv.appendChild(contenedorLabel);
       nuevoDiv.appendChild(contenedorColor);
       contenedor.appendChild(nuevoDiv);
-      numColors += 1;
+      contador++;
     }
   }
+
+  document.getElementById("form-nuevo-producto").addEventListener("submit", function(event) {
+    event.preventDefault(); // Evita que el formulario se envíe automáticamente
+
+    // Recorre todos los elementos del formulario
+    var campos = document.querySelectorAll("#form-nuevo-producto input");
+    console.log(campos);
+    campos.forEach(function(campo) {
+      var mensaje = campo.nextElementSibling; // Obtiene el siguiente elemento después del campo (el elemento <small> en este caso)
+      if (campo.value == "") {
+        mensaje.classList.remove("hidden"); // Muestra el mensaje si el campo está vacío
+      } else {
+        mensaje.classList.add("hidden"); // Oculta el mensaje si el campo tiene contenido
+      }
+    });
+  });
+
+
 </script>
 
 {% endblock %}

@@ -29,6 +29,35 @@
 
     <script>
         // Render the PayPal button into #paypal-button-container
-        paypal.Buttons().render('#paypal-button-container');
+        paypal.Buttons({
+            style:{
+                color: 'silver',
+                shape: 'pill',
+                label: 'pay'
+            },
+            createOrder: function(data, actions){
+                return actions.order.create({
+                    purchase_units: [{
+                        amount:{
+                            //aqui en value tenemos que poner lo que tiene que pagar el usuario
+                            value: 1
+                        }
+                    }]
+                });
+            },
+            onApprove: function(data, actions){
+                //en detalles se va a guardar todo lo que pase en nuestro pago
+                actions.order.capture().then(function (detalles){
+                    window.location.href="/completado.jinja"
+                });
+            },
+            onCancel: function(data){
+                alert("Pago cancelado")
+                console.log(data);
+            },
+            onError: function(error) {
+            alert("Error al procesar el pago: " + error.message);
+            }
+        }).render('#paypal-button-container');
     </script>
 {% endblock content %}
