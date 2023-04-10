@@ -6,7 +6,7 @@
 {% endfor %}
 {% set subelementos = productosPiel|length %}
 
-<div class="container container-div-slider h-100" id="pielDiv" style="padding-left: 0; padding-right: 0; padding-bottom: 120px;">
+<div class="container h-100 tab-pane fade" id="pielDiv" style="padding-left: 0; padding-right: 0; padding-bottom: 120px;">
     <div class="w-100 h-100">
         <div class="d-flex justify-content-end p-2 border-bottom border-3">
             <p class="me-auto ms-2 my-auto">Categoria: ojos</p>
@@ -59,15 +59,7 @@
                         <p class="mb-4" style="font-size: 20px; display:inline; white-space:break-spaces;">{{ producto['Nombre'] }}</p>
                         <button class="btn btn-product border-1 text-danger" type="button" data-bs-toggle="modal" data-bs-target="#infoProducto"
                             data-bs-target="#infoProducto" 
-                            data-producto-id="{{ producto['Id'] }}"
-                            data-cantidad-imgs="{{ producto['Imagenes'] }}"
-                            data-nombre="{{ producto['Nombre'] }}"
-                            data-descripcion="{{ producto['Descripcion'] }}"
-                            data-tipo-piel="{{ producto['Tipo de piel'] }}"
-                            data-colores="{{ producto['Colores'] }}"
-                            data-marca="{{ producto['Marca'] }}"
-                            data-tipo="{{ producto['Tipo'] }}"
-                            data-precio="{{ producto['Precio u.'] }}">Detalles ></button>
+                            data-producto="{{ producto }}">Detalles ></button>
                     </div>
                 </div>
             {% endwith %}

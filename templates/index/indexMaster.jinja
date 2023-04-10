@@ -10,26 +10,16 @@
     <link rel="stylesheet" href="{{ url_for('static', filename= 'css/head.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename= 'css/styles.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename= 'css/stylesIndex.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
     <script src="https://cdn.lordicon.com/ritcuqlt.js"></script>
     {% endblock %}
 </head>
 <body>
-    {% block alert %}
-    {% with error = get_flashed_messages() %}
-    {% if error %}
-    <div class="position-absolute w-100 h-100 vanish2" id="alerta" style="z-index: 2; display: none; background-color: rgba(0, 0, 0, 0.368); top: 0;" onclick="index()">
-        <div class="position-absolute text-center p-4 container" style="width: 60%; height: fit-content; background-color: white; top: 10%; left: 20%; ">
-            <p class="display-4" id="tituloMsg">Datos incorrectos</p>
-
-            <p style="font-size: 12px;" id="msg">{{ error }}</p>
+    <div class="h-100 d-flex align-items-center" style="padding-bottom: 30%; padding-top: 5%">
+        <div class="container d-flex justify-content-between flex-column animate__animated animate__fadeInDown">
+            {% block content %}{% endblock %}
         </div>
-    </div>
-    {% endif %}
-    {% endwith %}
-    {% endblock %}
-
-    <div class="container d-flex justify-content-between flex-column vanish1">
-        {% block content %}{% endblock %}
     </div>
 
     <script src="{{ url_for('static', filename = 'bootstrap/dist/js/bootstrap.bundle.min.js') }}"></script>

@@ -319,7 +319,6 @@ def camara():
 def before_request():
     ruta = request.path
 
-    print(f"{ruta}  {session}")
     if not 'id_usuario' in session and '/usuarios' in ruta:
         return redirect("/")
 

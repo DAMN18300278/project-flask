@@ -10,9 +10,11 @@
     <link rel="stylesheet" href="{{ url_for('static', filename= 'css/head.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename= 'css/styles.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename= 'css/stylesUsuarios.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <script src="https://cdn.lordicon.com/ritcuqlt.js"></script>
     {% endblock %}
 </head>
-<body class="bg-white" style="display: none; overflow-y:hidden" id="body">
+<body class="bg-white animate__animated animate__backInRight" style="display: none; overflow-y:hidden" id="body">
     {% block nav %}{% endblock %}
     {% block content %}{% endblock %}
 
