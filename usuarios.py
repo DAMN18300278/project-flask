@@ -86,12 +86,18 @@ def productsApi(id=0):
 @usuarios.route("/usuarios")
 def index():
     link = url_for('usuarios.productsApi', _external=True)
-
     response = requests.get(link).json()
-
     data = response['Productos']
 
-    return render_template("usuarios/landing.jinja", productos = data)
+    with mysql.connect.cursor() as cursor:
+        cursor.execute("SELECT Carrito FROM Usuarios WHERE Id_Usuario = %s", (session.get('id_usuario'),))
+        fetch = cursor.fetchone()
+        if not fetch[0]:
+            carrito = list()
+        else:
+            
+
+    return render_template("usuarios/landing.jinja", productos = data, idUsuario = session.get('id_usuario'), carrito = carrito)
 
 @usuarios.route("/usuarios/delete")
 def delete():

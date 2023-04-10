@@ -1,163 +1,136 @@
-<div class="container h-100 container-div-slider" id="inicioDiv" style="padding-left: 0; padding-right: 0; overflow-y:scroll;padding-bottom: 90px;">
-    <div class="vanish1" style="animation-delay: 0.6s;">
-        <div>
-            <div class="d-flex">
-                <p class="p-3 my-auto" style="text-align: left; margin-bottom: 0; margin-left: 3%;">Productos populares</p>
-                <lord-icon
-                    src="https://cdn.lordicon.com/aoyqjyes.json"
-                    trigger="loop"
-                    delay="1000"
-                    colors="primary:#f49cc8"
-                    style="width:70px;height:70px">
-                </lord-icon>
-            </div>
-            <div class="mx-4 mb-4 bg-white p-3 box-shadow1 position-relative">
-                <lord-icon
-                    src="https://cdn.lordicon.com/zmkotitn.json"
-                    trigger="click"
-                    style="width:35px;height:35px;transform:rotate(180deg); left:10px; top:calc(50% - 20px); z-index:1"
-                    class="position-absolute"
-                    onclick="snapContainerTranslateLeft(1)">
-                </lord-icon>
-
-                <lord-icon
-                    src="https://cdn.lordicon.com/zmkotitn.json"
-                    trigger="click"
-                    style="width:35px;height:35px;margin-bottom:10px; right:10px; top:calc(50% - 20px); z-index:1"
-                    class="position-absolute"
-                    onclick="snapContainerTranslateRight(1)">
-                </lord-icon>
-
-                <div class="snap-container w-100 h-100" id="snapProductosPopulares"> {# snap-container fue otorgado por https://www.silocreativo.com/controla-desplazamiento-web-css-scroll-snap/ #}
-                    {% for producto in productos %}
-                        <div class="snap-section position-relative" style="overflow: hidden;">
-                            {% set img = 'src/img' + producto['Id']|string + '_1.jpg' %}
-                            <img src="{{ url_for('static', filename = img) }}">
-                            <div>
-                                <p class="product-text my-4 w-75 mx-auto mb-0">{{ producto['Nombre'] }}</p>
-                                <p style="font-size: 13px; color:rgb(70, 70, 70)">{{ producto['Marca'] }}</p>
-                            </div>
-                            {% set foo = "caca" %}
-                            <button class="btn btn-outline-danger btn-product mx-auto mb-4" type="button" 
-                            data-bs-toggle="modal" 
-                            data-bs-target="#infoProducto" 
-                            data-producto-id="{{ producto['Id'] }}"
-                            data-cantidad-imgs="{{ producto['Imagenes'] }}"
-                            data-nombre="{{ producto['Nombre'] }}"
-                            data-descripcion="{{ producto['Descripcion'] }}"
-                            data-tipo-piel="{{ producto['Tipo de piel'] }}"
-                            data-colores="{{ producto['Colores'] }}"
-                            data-marca="{{ producto['Marca'] }}"
-                            data-tipo="{{ producto['Tipo'] }}"
-                            data-precio="{{ producto['Precio u.'] }}">Detalles</button>
-                        </div>
-                    {% endfor %}
-                </div>
-            </div>   
+<div class="container h-100 tab-pane fade show active" id="inicioDiv" style="padding-left: 0; padding-right: 0; overflow-y:scroll;padding-bottom: 90px;">
+    <div>
+        <div class="d-flex">
+            <p class="p-3 my-auto" style="text-align: left; margin-bottom: 0; margin-left: 3%;">Productos populares</p>
+            <lord-icon
+                src="https://cdn.lordicon.com/aoyqjyes.json"
+                trigger="loop"
+                delay="1000"
+                colors="primary:#f49cc8"
+                style="width:70px;height:70px">
+            </lord-icon>
         </div>
+        <div class="mx-4 mb-4 bg-white p-3 box-shadow1 position-relative">
+            <lord-icon
+                src="https://cdn.lordicon.com/zmkotitn.json"
+                trigger="click"
+                style="width:35px;height:35px;transform:rotate(180deg); left:10px; top:calc(50% - 20px); z-index:1"
+                class="position-absolute"
+                onclick="snapContainerTranslateLeft(1)">
+            </lord-icon>
 
-        <div>
-            <div class="d-flex">
-                <p class="p-3 my-auto" style="text-align: left; margin-bottom: 0; margin-left: 3%;">Màs vendidos</p>
-                <lord-icon
-                    src="https://cdn.lordicon.com/gbtkzxxm.json"
-                    trigger="loop"
-                    delay="1000"
-                    style="width:70px;height:70px">
-                </lord-icon>
-            </div>
-            <div class="mx-4 mb-4 bg-white p-3 box-shadow1 position-relative">
-                <lord-icon
-                    src="https://cdn.lordicon.com/zmkotitn.json"
-                    trigger="click"
-                    style="width:35px;height:35px;transform:rotate(180deg); left:10px; top:calc(50% - 20px); z-index:1"
-                    class="position-absolute"
-                    onclick="snapContainerTranslateLeft(2)">
-                </lord-icon>
+            <lord-icon
+                src="https://cdn.lordicon.com/zmkotitn.json"
+                trigger="click"
+                style="width:35px;height:35px;margin-bottom:10px; right:10px; top:calc(50% - 20px); z-index:1"
+                class="position-absolute"
+                onclick="snapContainerTranslateRight(1)">
+            </lord-icon>
 
-                <lord-icon
-                    src="https://cdn.lordicon.com/zmkotitn.json"
-                    trigger="click"
-                    style="width:35px;height:35px;margin-bottom:10px; right:10px; top:calc(50% - 20px); z-index:1"
-                    class="position-absolute"
-                    onclick="snapContainerTranslateRight(2)">
-                </lord-icon>
-
-                <div class="snap-container w-100 h-100" id="snapBestSeller"> {# snap-container fue otorgado por https://www.silocreativo.com/controla-desplazamiento-web-css-scroll-snap/ #}
-                    {% for producto in productos %}
-                        <div class="snap-section position-relative">
-                            {% set img = 'src/img' + producto['Id']|string + '_1.jpg' %}
-                            <img src="{{ url_for('static', filename = img) }}">
-                            <p class="product-text my-4 w-75 mx-auto">{{ producto['Nombre'] }}</p>
+            <div class="snap-container w-100 h-100" id="snapProductosPopulares"> {# snap-container fue otorgado por https://www.silocreativo.com/controla-desplazamiento-web-css-scroll-snap/ #}
+                {% for producto in productos %}
+                    <div class="snap-section position-relative" style="overflow: hidden;">
+                        {% set img = 'src/img' + producto['Id']|string + '_1.jpg' %}
+                        <img src="{{ url_for('static', filename = img) }}">
+                        <div>
+                            <p class="product-text my-4 w-75 mx-auto mb-0">{{ producto['Nombre'] }}</p>
                             <p style="font-size: 13px; color:rgb(70, 70, 70)">{{ producto['Marca'] }}</p>
-                            <button class="btn btn-outline-danger btn-product mx-auto mb-4" type="button" 
-                            data-bs-toggle="modal" 
-                            data-bs-target="#infoProducto" 
-                            data-producto-id="{{ producto['Id'] }}"
-                            data-cantidad-imgs="{{ producto['Imagenes'] }}"
-                            data-nombre="{{ producto['Nombre'] }}"
-                            data-descripcion="{{ producto['Descripcion'] }}"
-                            data-tipo-piel="{{ producto['Tipo de piel'] }}"
-                            data-colores="{{ producto['Colores'] }}"
-                            data-marca="{{ producto['Marca'] }}"
-                            data-tipo="{{ producto['Tipo'] }}"
-                            data-precio="{{ producto['Precio u.'] }}">Detalles</button>
                         </div>
-                    {% endfor %}
-                </div>
-            </div>   
-        </div>
-        <div>
-            <div class="d-flex">
-                <p class="p-3 my-auto" style="text-align: left; margin-bottom: 0; margin-left: 3%;">Seleccionados para ti</p>
-                <lord-icon
-                    src="https://cdn.lordicon.com/iwaotjbp.json"
-                    trigger="loop"
-                    delay="2000"
-                    colors="primary:#ee6d66,secondary:#ebe6ef"
-                    style="width:65px;height:65px">
-                </lord-icon>
+                        <button class="btn btn-outline-danger btn-product mx-auto mb-4" type="button" 
+                        data-bs-toggle="modal" 
+                        data-bs-target="#infoProducto" 
+                        data-producto="{{ producto }}">Detalles</button>
+                    </div>
+                {% endfor %}
             </div>
-            <div class="mx-4 mb-4 bg-white p-3 box-shadow1 position-relative">
-                <lord-icon
-                    src="https://cdn.lordicon.com/zmkotitn.json"
-                    trigger="click"
-                    style="width:35px;height:35px;transform:rotate(180deg); left:10px; top:calc(50% - 20px); z-index:1"
-                    class="position-absolute"
-                    onclick="snapContainerTranslateLeft(3)">
-                </lord-icon>
+        </div>   
+    </div>
 
-                <lord-icon
-                    src="https://cdn.lordicon.com/zmkotitn.json"
-                    trigger="click"
-                    style="width:35px;height:35px;margin-bottom:10px; right:10px; top:calc(50% - 20px); z-index:1"
-                    class="position-absolute"
-                    onclick="snapContainerTranslateRight(3)">
-                </lord-icon>
-
-                <div class="snap-container w-100 h-100" id="snapSelectedForUser"> {# snap-container fue otorgado por https://www.silocreativo.com/controla-desplazamiento-web-css-scroll-snap/ #}
-                    {% for producto in productos %}
-                        <div class="snap-section position-relative">
-                            {% set img = 'src/img' + producto['Id']|string + '_1.jpg' %}
-                            <img src="{{ url_for('static', filename = img) }}">
-                            <p class="product-text my-4 w-75 mx-auto">{{ producto['Nombre'] }}</p>
-                            <p style="font-size: 13px; color:rgb(70, 70, 70)">{{ producto['Marca'] }}</p>
-                            <button class="btn btn-outline-danger btn-product mx-auto mb-4" type="button"
-                            data-bs-toggle="modal" 
-                            data-bs-target="#infoProducto" 
-                            data-producto-id="{{ producto['Id'] }}"
-                            data-cantidad-imgs="{{ producto['Imagenes'] }}"
-                            data-nombre="{{ producto['Nombre'] }}"
-                            data-descripcion="{{ producto['Descripcion'] }}"
-                            data-tipo-piel="{{ producto['Tipo de piel'] }}"
-                            data-colores="{{ producto['Colores'] }}"
-                            data-marca="{{ producto['Marca'] }}"
-                            data-tipo="{{ producto['Tipo'] }}"
-                            data-precio="{{ producto['Precio u.'] }}">Detalles</button>
-                        </div>
-                    {% endfor %}
-                </div>
-            </div>   
+    <div>
+        <div class="d-flex">
+            <p class="p-3 my-auto" style="text-align: left; margin-bottom: 0; margin-left: 3%;">Màs vendidos</p>
+            <lord-icon
+                src="https://cdn.lordicon.com/gbtkzxxm.json"
+                trigger="loop"
+                delay="1000"
+                style="width:70px;height:70px">
+            </lord-icon>
         </div>
+        <div class="mx-4 mb-4 bg-white p-3 box-shadow1 position-relative">
+            <lord-icon
+                src="https://cdn.lordicon.com/zmkotitn.json"
+                trigger="click"
+                style="width:35px;height:35px;transform:rotate(180deg); left:10px; top:calc(50% - 20px); z-index:1"
+                class="position-absolute"
+                onclick="snapContainerTranslateLeft(2)">
+            </lord-icon>
+
+            <lord-icon
+                src="https://cdn.lordicon.com/zmkotitn.json"
+                trigger="click"
+                style="width:35px;height:35px;margin-bottom:10px; right:10px; top:calc(50% - 20px); z-index:1"
+                class="position-absolute"
+                onclick="snapContainerTranslateRight(2)">
+            </lord-icon>
+
+            <div class="snap-container w-100 h-100" id="snapBestSeller"> {# snap-container fue otorgado por https://www.silocreativo.com/controla-desplazamiento-web-css-scroll-snap/ #}
+                {% for producto in productos %}
+                    <div class="snap-section position-relative">
+                        {% set img = 'src/img' + producto['Id']|string + '_1.jpg' %}
+                        <img src="{{ url_for('static', filename = img) }}">
+                        <p class="product-text my-4 w-75 mx-auto">{{ producto['Nombre'] }}</p>
+                        <p style="font-size: 13px; color:rgb(70, 70, 70)">{{ producto['Marca'] }}</p>
+                        <button class="btn btn-outline-danger btn-product mx-auto mb-4" type="button" 
+                        data-bs-toggle="modal" 
+                        data-bs-target="#infoProducto"
+                        data-producto="{{ producto }}">Detalles</button>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>   
+    </div>
+    <div>
+        <div class="d-flex">
+            <p class="p-3 my-auto" style="text-align: left; margin-bottom: 0; margin-left: 3%;">Seleccionados para ti</p>
+            <lord-icon
+                src="https://cdn.lordicon.com/iwaotjbp.json"
+                trigger="loop"
+                delay="2000"
+                colors="primary:#ee6d66,secondary:#ebe6ef"
+                style="width:65px;height:65px">
+            </lord-icon>
+        </div>
+        <div class="mx-4 mb-4 bg-white p-3 box-shadow1 position-relative">
+            <lord-icon
+                src="https://cdn.lordicon.com/zmkotitn.json"
+                trigger="click"
+                style="width:35px;height:35px;transform:rotate(180deg); left:10px; top:calc(50% - 20px); z-index:1"
+                class="position-absolute"
+                onclick="snapContainerTranslateLeft(3)">
+            </lord-icon>
+
+            <lord-icon
+                src="https://cdn.lordicon.com/zmkotitn.json"
+                trigger="click"
+                style="width:35px;height:35px;margin-bottom:10px; right:10px; top:calc(50% - 20px); z-index:1"
+                class="position-absolute"
+                onclick="snapContainerTranslateRight(3)">
+            </lord-icon>
+
+            <div class="snap-container w-100 h-100" id="snapSelectedForUser"> {# snap-container fue otorgado por https://www.silocreativo.com/controla-desplazamiento-web-css-scroll-snap/ #}
+                {% for producto in productos %}
+                    <div class="snap-section position-relative">
+                        {% set img = 'src/img' + producto['Id']|string + '_1.jpg' %}
+                        <img src="{{ url_for('static', filename = img) }}">
+                        <p class="product-text my-4 w-75 mx-auto">{{ producto['Nombre'] }}</p>
+                        <p style="font-size: 13px; color:rgb(70, 70, 70)">{{ producto['Marca'] }}</p>
+                        <button class="btn btn-outline-danger btn-product mx-auto mb-4" type="button"
+                        data-bs-toggle="modal" 
+                        data-bs-target="#infoProducto" 
+                        data-producto="{{ producto }}">Detalles</button>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>   
     </div>
 </div>

@@ -20,69 +20,21 @@ function horizontalMenuChange(element) {
     selected[0].classList.remove("horizontal-menu-hover");
     switch (element) {
         case 1:
-            var positionAt = document.getElementById("inicioDiv");
-            var temp = document.getElementById("container-div-index");
-            var rect = positionAt.getBoundingClientRect();
-            var left = rect.left;
-            temp.scrollTo({
-                left: positionAt.offsetLeft,
-                behavior: "smooth"
-            })
             inicio.classList.add("horizontal-menu-hover");
             break;
         case 2:
-            var positionAt = document.getElementById("pielDiv");
-            var temp = document.getElementById("container-div-index");
-            var rect = positionAt.getBoundingClientRect();
-            var left = rect.left;
-            temp.scrollTo({
-                left: positionAt.offsetLeft,
-                behavior: "smooth"
-            })
             ojos.classList.add("horizontal-menu-hover");
             break;
         case 3:
-            var positionAt = document.getElementById("labiosDiv");
-            var temp = document.getElementById("container-div-index");
-            var rect = positionAt.getBoundingClientRect();
-            var left = rect.left;
-            temp.scrollTo({
-                left: positionAt.offsetLeft,
-                behavior: "smooth"
-            })
             labios.classList.add("horizontal-menu-hover");
             break;
         case 4:
-            var positionAt = document.getElementById("inicioDiv");
-            var temp = document.getElementById("container-div-index");
-            var rect = positionAt.getBoundingClientRect();
-            var left = rect.left;
-            temp.scrollTo({
-                left: left,
-                behavior: "smooth"
-            })
             piel.classList.add("horizontal-menu-hover");
             break;
         case 5:
-            var positionAt = document.getElementById("inicioDiv");
-            var temp = document.getElementById("container-div-index");
-            var rect = positionAt.getBoundingClientRect();
-            var left = rect.left;
-            temp.scrollTo({
-                left: left,
-                behavior: "smooth"
-            })
             skincare.classList.add("horizontal-menu-hover");
             break;
         case 6:
-            var positionAt = document.getElementById("inicioDiv");
-            var temp = document.getElementById("container-div-index");
-            var rect = positionAt.getBoundingClientRect();
-            var left = rect.left;
-            temp.scrollTo({
-                left: left,
-                behavior: "smooth"
-            })
             accesorios.classList.add("horizontal-menu-hover");
             break;
     }
@@ -180,6 +132,8 @@ $(document).ready(function ($) {
 
     $('#tabs').tab();
 
+    $('#tabsMenu').tab();
+
     $('#infoProducto').on('show.bs.modal', function(event){
         var boton = $(event.relatedTarget);
         var modal = $(this);
@@ -193,18 +147,22 @@ $(document).ready(function ($) {
             5: 'Acné',
             6: 'Sensible'
         };
-        
-        var productoId = boton.data('producto-id');
-        var cantidadImgs = boton.data('cantidad-imgs');
-        var nombre = boton.data('nombre');
-        var descripcion = boton.data('descripcion');
-        var tipoPiel = boton.data('tipo-piel');
-        var stringColores = boton.data('colores');
-        var marca = boton.data('marca');
-        var tipo = boton.data('tipo');
-        var precio = boton.data('precio');
 
-        var colores = JSON.parse(stringColores.replace(/'/g, "\""));
+        var textProduct = boton.data('producto');
+        var sinComillas = textProduct.replace('\n\n', " ");
+        var sinTabs = sinComillas.replace(/'/g, "\"");
+        
+        productJson = JSON.parse(sinTabs); 
+        
+        var productoId = productJson['Id'];
+        var cantidadImgs = productJson['Imagenes'];
+        var nombre = productJson['Nombre'];
+        var descripcion = productJson['Descripcion'];
+        var tipoPiel = productJson['Tipo de piel'];
+        var colores = productJson['Colores'];
+        var marca = productJson['Marca'];
+        var tipo = productJson['Tipo'];
+        var precio = productJson['Precio u.'];
         
         for (var i = 0; i < cantidadImgs; i++) {
             var imgModal = 'static/src/img' + productoId + '_' + (i+1) + '.jpg';
@@ -263,3 +221,28 @@ $(document).on('click', '.colores-info', function(event){
     output.text(nombreColor)
 });
 
+const animateCSS = (element, animation, prefix = 'animate__') =>
+// We create a Promise and return it
+new Promise((resolve, reject) => {
+    const animationName = `${prefix}${animation}`;
+    const node = document.getElementById(element);
+
+    node.classList.add(`${prefix}animated`, animationName);
+
+    // When the animation ends, we clean the classes and resolve the Promise
+    function handleAnimationEnd(event) {
+        event.stopPropagation();
+        node.classList.remove(`${prefix}animated`, animationName);
+        resolve('Animation ended');
+        console.log('ya');
+    }
+
+    node.addEventListener('animationend', handleAnimationEnd, {once: true});
+});
+
+// let i = 0;
+// setInterval(function(){
+//     i++;
+//     document.getElementById('cantidadCarrito').textContent = i;
+//     animateCSS('carrito', 'rotateInDownRight');
+// }, 2000)
