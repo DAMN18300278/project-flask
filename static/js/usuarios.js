@@ -206,6 +206,8 @@ $(document).ready(function ($) {
         var input = $('#cantidad');
         var value = parseInt(input.val());
         input.val(value + 1);
+
+        var boton = $(this)
     });
 
 });

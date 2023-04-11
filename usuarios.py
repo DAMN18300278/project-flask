@@ -94,12 +94,9 @@ def index():
         fetch = cursor.fetchone()
         if not fetch[0]:
             carrito = list()
-        else:
-            
 
     return render_template("usuarios/landing.jinja", productos = data, idUsuario = session.get('id_usuario'), carrito = carrito)
 
-@usuarios.route("/usuarios/delete")
-def delete():
-    session.clear()
-    return redirect("/")
+@usuarios.route("/cam")
+def cam():
+    return render_template("usuarios/cam.jinja")
