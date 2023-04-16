@@ -6,6 +6,7 @@ from usuarios import usuarios
 import mediapipe as mp
 import paypalrestsdk
 import cv2
+import math
 import babel
 import time
 from flask_mysqldb import MySQL
@@ -103,10 +104,10 @@ mp_face_mesh = mp.solutions.face_mesh
 # Inicializar la detección de rostros y malla facial
 face_mesh = mp_face_mesh.FaceMesh()
 
-# Inicializar la captura de video
-cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
 
 def generate():
+    # Inicializar la captura de video
+    cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
     while True:
         # Leer un frame del video
         ret, frame = cap.read()
@@ -120,6 +121,14 @@ def generate():
         # Dibujar la malla facial en el frame
         if results.multi_face_landmarks:
             for face_landmarks in results.multi_face_landmarks:
+                # Obtener las coordenadas de los puntos de referencia de la inclinacion
+                nose_landmarks = face_landmarks.landmark[2]
+                chin_landmarks = face_landmarks.landmark[152]
+                nose_x = int(nose_landmarks.x * frame.shape[1])
+                nose_y = int(nose_landmarks.y * frame.shape[0])
+                chin_x = int(chin_landmarks.x * frame.shape[1])
+                chin_y = int(chin_landmarks.y * frame.shape[0])
+
                 # Obtener las coordenadas de los puntos de referencia del ojo izquierdo
                 left_eye_landmarks = face_landmarks.landmark[35]
                 left_eye_x = int(left_eye_landmarks.x * frame.shape[1])
@@ -130,15 +139,24 @@ def generate():
                 right_eye_x = int(right_eye_landmarks.x * frame.shape[1])
                 right_eye_y = int(right_eye_landmarks.y * frame.shape[0])
 
+                # Calcular la inclinación de la cabeza
+                opposite = chin_y - nose_y
+                adjacent = chin_x - nose_x
+                angle = math.degrees(math.atan2(opposite, adjacent))
+
                 # Calcular la posición de las pestañas
                 eyelash_y = int((left_eye_y + right_eye_y) / 2)
 
                 # Cargar la imagen de las pestañas
                 eyelash_img = cv2.imread('intento.png', cv2.IMREAD_UNCHANGED)
 
+                # Girar la imagen de las pestañas de acuerdo a la inclinación de la cabeza
+                M = cv2.getRotationMatrix2D((eyelash_img.shape[1] / 2, eyelash_img.shape[0] / 2), angle, 1)
+                eyelash_img_rotated = cv2.warpAffine(eyelash_img, M, (eyelash_img.shape[1], eyelash_img.shape[0]))
+
                 # Escalar la imagen de las pestañas para que se ajuste al tamaño del ojo
-                scale_factor = (right_eye_x - left_eye_x) / eyelash_img.shape[1]
-                eyelash_img_resized = cv2.resize(eyelash_img, (0, 0), fx=scale_factor, fy=scale_factor)
+                scale_factor = (right_eye_x - left_eye_x) / eyelash_img_rotated.shape[1]
+                eyelash_img_resized = cv2.resize(eyelash_img_rotated, (0, 0), fx=scale_factor, fy=scale_factor)
 
                 # Superponer la imagen de las pestañas en el frame
                 x_offset = left_eye_x

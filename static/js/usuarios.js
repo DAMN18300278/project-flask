@@ -3,7 +3,6 @@ document.addEventListener("DOMContentLoaded", () => {
     if(!url.includes('formulario')){
         horizontalMenuChange(1);
     }
-    document.getElementById("body").style.display = "block"; 
 });
 
 function ircarrito(){
@@ -119,6 +118,8 @@ function snapContainerTranslateRight(e) {
 }
 
 $(document).ready(function ($) {
+    
+    document.getElementById("body").style.display = "block"; 
     // Obtener el input de búsqueda y el menú desplegable
     var $search = $(".dropdown-menu input");
     var $dropdownMenu = $(".dropdown-menu");
