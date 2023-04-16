@@ -7,9 +7,14 @@ import mediapipe as mp
 import paypalrestsdk
 import cv2
 import math
+import babel
+import time
 from flask_mysqldb import MySQL
+from jinja2 import ext
 
 app = Flask(__name__)
+
+app.jinja_env.add_extension(ext.do)
 
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
@@ -194,67 +199,74 @@ def recover():
 def registrar():
     return render_template("index/register.jinja")
 
-@app.route("/send_correo", methods=['GET','POST'])
+    
+
+@app.route("/send_correo", methods=['GET', 'POST'])
 def send_correo():
     if request.method == "POST":
         email = request.form['correo']
         contraseña = request.form['contraseña']
         estado = 'Inactivo'
 
+        # Verificar si ya existe un usuario con el mismo correo electrónico
         with mysql.connection.cursor() as cursor:
-            cursor.execute("INSERT INTO cuenta VALUES ('', 2, %s, %s,%s)", (email, contraseña,estado))
-        mysql.connection.commit()
+            cursor.execute("SELECT Correo FROM cuenta WHERE Correo = %s", (email,))
+            existing_user = cursor.fetchone()
 
-        token = s.dumps(email, salt='email-confirm')
-        subject = 'Confirmacion de Cuenta Decore'
-        
-        # en el sender hay que poner un correo de decore
-        message = Message(subject,sender="decore.makeup@gmail.com", recipients=[email])
-        
-        link = url_for('confirm',token=token, _external=True)
+        if existing_user:
+            # Enviar un correo electrónico de confirmación al usuario existente
+            token = s.dumps(email, salt='email-confirm')
+            subject = 'Restablecimiento de cuenta Decore'
 
-        message.body = 'Porfavor ingresa al siguiente link para confirmar la creacion de tu cuenta {}'.format(link)
+            message = Message(subject, sender="decore.makeup@gmail.com", recipients=[email])
 
-        mail.send(message)
+            link = url_for('confirm', token=token, _external=True)
 
-        return redirect("/")
+            message.body = 'Se ha intentado crear una nueva cuenta con este correo electrónico, pero ya existe una cuenta registrada. Si desea restablecer su cuenta, ingrese al siguiente link: {}'.format(link)
 
-#correocon es para recuperar la contraseña
-@app.route("/send_correocon", methods=['POST'])
-def send_correocon():
-    if request.method == "POST":
-        email = request.form['correorecover']
+            mail.send(message)
+            
 
-        token = s.dumps(email, salt='email-confirm')
-        subject = 'Cambio de contraseña Decore'
-        
-        # en el sender hay que poner un correo de decore
-        message = Message(subject,sender="decore.makeup@gmail.com", recipients=[email])
-        
-        link = url_for('confirmrecover',token=token, _external=True)
+            return redirect("/")
 
-        message.body = 'Porfavor ingresa al siguiente link para confirmar el cambio de contraseña en su cuenta {}'.format(link)
+        else:
+            # Insertar el nuevo usuario en la tabla cuenta
+            with mysql.connection.cursor() as cursor:
+                cursor.execute("INSERT INTO cuenta (Rol, Correo, Contraseña, estado) VALUES (2, %s, %s, %s)", (email, contraseña, estado))
+            mysql.connection.commit()
 
-        mail.send(message)
+            # Enviar un correo electrónico de confirmación al nuevo usuario
+            token = s.dumps(email, salt='email-confirm')
+            subject = 'Confirmación de cuenta Decore'
 
-        success = "Correo enviado"
-        return redirect("/")
+            message = Message(subject, sender="decore.makeup@gmail.com", recipients=[email])
+
+            link = url_for('confirm', token=token, _external=True)
+
+            message.body = 'Por favor, ingrese al siguiente link para confirmar la creación de su cuenta: {}'.format(link)
+
+            mail.send(message)
+
+            return redirect("/")
+
 
 @app.route('/confirm/<token>')
 def confirm(token):
     try:
-        email = s.loads(token, salt='email-confirm', max_age=120)
+        email = s.loads(token, salt='email-confirm', max_age=600)
         with mysql.connection.cursor() as cursor:
             cursor.execute("UPDATE cuenta SET estado = 'Activo' WHERE Correo = (%s)", (email,))
         mysql.connection.commit()
+        return redirect("/")
     except SignatureExpired:
         return '<h1>The token is expired!</h1>'
+
     return '<h1>The Token Works!</h1>'
 
 @app.route('/confirmrecover/<token>')
 def confirmrecover(token):
     try:
-        email = s.loads(token, salt='email-confirm', max_age = 120)
+        email = s.loads(token, salt='email-confirm', max_age = 600)
               
     except SignatureExpired:
         return '<h1>The link is expired!</h1>'

@@ -47,7 +47,6 @@ def añadir_producto():
         nombre = request.form['Nombre']
         imagen = request.files.getlist('Imagen[]')
         num_imagenes = len(imagen)
-        filenames = ','.join([file.filename for file in imagen])
         descripcion = request.form['Descripcion']
         precio = request.form['Precio']
         
@@ -65,11 +64,8 @@ def añadir_producto():
         imagen_filtro = request.files.getlist('Imagen_fil[]')
         filtronames = ','.join([file.filename for file in imagen_filtro])
 
-        
-
-
     with mysql.connection.cursor() as cursor:
-            cursor.execute("INSERT INTO productos(Id_Productos, Nombre,Num_imagenes, Imagen, Descripcion, Precio, Nombre_Color, Color_RGBA, Categoria, Recomendacion, Marca, Cantidad , Tipo_Piel, Imagen_filtro) VALUES (%s, %s, %s,%s, %s, %s, %s, %s, %s, %s, %s, %s, %s,%s)", (id_producto, nombre,num_imagenes, filenames, descripcion, precio, nombre_color, color_rgba, categoria, recomendacion, marca, cantidad, tipo_piel,filtronames))
+            cursor.execute("INSERT INTO productos(Id_Productos, Nombre, Imagen, Descripcion, Precio, Nombre_Color, Color_RGBA, Categoria, Recomendacion, Marca, Cantidad , Tipo_Piel, Imagen_filtro) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,%s)", (id_producto, nombre,num_imagenes, descripcion, precio, nombre_color, color_rgba, categoria, recomendacion, marca, cantidad, tipo_piel,filtronames))
             mysql.connection.commit()
     return redirect("/administradores/inventario")
 
@@ -134,7 +130,7 @@ def GuardarEmp(id=None):
         with mysql.connect.cursor() as cursor:
             cursor.execute("SELECT MAX(Id_cuenta) FROM cuenta")
             max_id = cursor.fetchone() # esta linea es para obtener el primer valor y verifique que no se encuentre vacia
-            id_nuevo = max_id[0]
+            id_nuevo = max_id[0]+1
             #Insertar en la tabla cuenta con el id máximo + 1
         with mysql.connection.cursor() as cursor:
             print(id_nuevo)

@@ -5,6 +5,10 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 });
 
+function ircarrito(){
+    window.location.href = "/usuarios/ordencarrito/"+idUsuario;
+}
+
 function horizontalMenuChange(element) {
     inicio = document.getElementById("inicioMenu");
     ojos = document.getElementById("ojosMenu");
@@ -134,12 +138,15 @@ $(document).ready(function ($) {
     $('#tabs').tab();
 
     $('#tabsMenu').tab();
-
+    var productoId;
+    var contentColores;
+    var keySeleccionado;
+    
     $('#infoProducto').on('show.bs.modal', function(event){
         var boton = $(event.relatedTarget);
         var modal = $(this);
         var contentImgs = '';
-        var contentColores = '';
+        contentColores = '';
         var tiposPiel = {
             1: 'Normal',
             2: 'Seca',
@@ -155,7 +162,7 @@ $(document).ready(function ($) {
         
         productJson = JSON.parse(sinTabs); 
         
-        var productoId = productJson['Id'];
+        productoId = productJson['Id'];
         var cantidadImgs = productJson['Imagenes'];
         var nombre = productJson['Nombre'];
         var descripcion = productJson['Descripcion'];
@@ -184,6 +191,17 @@ $(document).ready(function ($) {
             contentColores += "<div class='colores-info col-3 m-2' data-color='" + colores[key]['Nombre'] + "'style='background-color: #" + colores[key]['Hex'] + ";'></div>"
         }
         modal.find('#hexColorInfoProductos').html(contentColores);
+        modal.find('.colores-info').on('click', function(){
+        var colorSeleccionado = $(this).data('color');
+        keySeleccionado
+        for (var key in colores) {
+            if (colores[key]['Nombre'] == colorSeleccionado) {
+                keySeleccionado = key;
+                break;
+            }
+        }
+
+        });
         modal.find('#marcaInfoProductos').text('Marca: ' + marca.toLowerCase().replace(/\b\w/g, function(l){ return l.toUpperCase(); }));
         modal.find('#tipoInfoProductos').text('Tipo: ' + tipo);
         modal.find('#precioInfoProductos').text('$' + precio);
@@ -209,6 +227,32 @@ $(document).ready(function ($) {
         input.val(value + 1);
 
         var boton = $(this)
+    });
+
+    $('#btn-addcarrito').click(function() {
+      
+        var input = $('#cantidad').val();
+        console.log(idUsuario);
+        var carritoData = ["|"+productoId, input, keySeleccionado].join(",");
+        console.log(carritoData);
+
+        $.ajax({
+            url: '/usuarios/addcarrito',
+            data: {'carritoData': carritoData, 'id': idUsuario},
+            type: 'POST',
+            success: function(response) {
+                $('#infoProducto').modal('hide')
+                var cantidadCarritoInner = parseInt($('#cantidadCarrito').text());
+                cantidadCarritoInner+=1;
+                $('#cantidadCarrito').hide()
+                $('#cantidadCarrito').text(cantidadCarritoInner);
+                $('#cantidadCarrito').style
+                animateCSS('carrito', 'rotateInDownRight');
+            },
+            error: function(error) {
+                console.log(error);
+            }
+        });
     });
 
 });

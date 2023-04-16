@@ -18,7 +18,7 @@
         <input type="text" class="form-control mb-4" placeholder="Correo" name="correo">
       </div>
       <div class="input-group mt-4 position-relative">
-        <input type="text" class="form-control" placeholder="Contraseña" name="contraseña" maxlength="20">
+        <input type="password" class="form-control" placeholder="Contraseña" name="contraseña" maxlength="20">
         <lord-icon
           src="https://cdn.lordicon.com/tyounuzx.json"
           trigger="hover"
@@ -43,10 +43,10 @@
     
 
     showPasswordBtn.addEventListener("click", function() {
-      if (passwordInput.type === "password") {
-        passwordInput.type = "text";
-      } else {
+      if (passwordInput.type === "text") {
         passwordInput.type = "password";
+      } else {
+        passwordInput.type = "text";
       }
     });
 
