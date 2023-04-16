@@ -6,12 +6,12 @@
     <div class="position-relative col">
      
         <div class="position-absolute text-start" style="bottom: 5px;">
-
+            
             <p class="px-5" style="font-size: 14px; display:contents">subtotal: 
-                <span style="font-weight:bold;font-size:13px">${{ subtotal }}</span>
+                <span class="subtotal" style="font-weight:bold;font-size:13px">${{ subtotal }}</span>
             </p>
             <span class="btn btn-danger px-5" style="font-size: 14px; height: 25px; border-radius: 0px;">Cantidad: {{ cantidad }}</span>
-            <button class="btn btn-warning px-5" style="font-size: 14px; height: 25px; border-radius: 0px;">Eliminar</button>
+            <button id="{{index}}_{{id}}" class="btn btn-warning px-5 eliminar-producto" style="font-size: 14px; height: 25px; border-radius: 0px;">Eliminar</button>
         </div>
     </div>
 </div>

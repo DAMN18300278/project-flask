@@ -15,37 +15,46 @@
       <div class="d-flex flex-column justify-content-between align-items-center h-100 w-100">
         <div class="mb-3 w-100 form-group d-flex align-items-center flex-column">
           <label for="EmpNombre" class="form-label w-100">Nombre</label>
-          <input type="text" class="form-control" id="EmpNombre" name="EmpNombre" value="{{empleado[0]}}">
+          <input type="text" class="form-control" id="EmpNombre" name="EmpNombre" value="{{empleado[0]}}" required>
         </div>
 
         <div class="mb-3 w-100 form-group d-flex align-items-center flex-column">
           <label for="EmpEmail" class="form-label">Correo</label>
-          <input type="email" class="form-control" id="EmpEmail" name="EmpEmail" value="{{empleado[1]}}">
+          <input type="email" class="form-control" id="EmpEmail" name="EmpEmail" value="{{empleado[1]}}" required>
         </div>
 
         <div class="mb-3 w-100 form-group d-flex align-items-center flex-column">
           <label for="EmpPassword" class="form-label">Contraseña</label>
-          <input type="password" class="form-control" id="EmpPassword" name="EmpPassword" value="{{empleado[2]}}">
+          <div class="input-group mt-4 position-relative">
+          <input type="password" class="form-control" id="EmpPassword" name="EmpPassword" value="{{empleado[2]}}" required>
+          <lord-icon
+          src="https://cdn.lordicon.com/tyounuzx.json"
+          trigger="hover"
+          colors="primary:#121331,secondary:#810ca8"
+          style="width:45px;height:100%;position:absolute;right:0px;bottom:0px;border-radius:5%;"
+          id="show-password-btn3">
+          </lord-icon>
+          </div>
         </div>
 
         <div class="mb-3 w-100 form-group d-flex align-items-center flex-column">
           <label for="EmpRFC" class="form-label">RFC</label>
-          <input type="text" class="form-control" id="EmpRFC" name="EmpRFC" value="{{empleado[3]}}">
+          <input type="text" class="form-control" id="EmpRFC" name="EmpRFC" value="{{empleado[3]}}" required>
         </div>
 
         <div class="mb-3 w-100 form-group d-flex align-items-center flex-column">
           <label for="EmpDireccion" class="form-label">Direccion</label>
-          <input type="text" class="form-control" id="EmpDireccion" name="EmpDireccion" value="{{empleado[4]}}">
+          <input type="text" class="form-control" id="EmpDireccion" name="EmpDireccion" value="{{empleado[4]}}" required>
         </div>
 
         <div class="mb-3 w-100 form-group d-flex align-items-center flex-column">
           <label for="EmpTelefono" class="form-label">Telefono</label>
-          <input type="tel" class="form-control" id="EmpTelefono" name="EmpTelefono" value="{{empleado[5]}}">
+          <input type="tel" class="form-control" id="EmpTelefono" name="EmpTelefono" value="{{empleado[5]}}" required>
         </div>
 
         <div class="mb-3 w-100 form-group d-flex align-items-center flex-column">
           <label for="ListaTipo" class="form-label">Puesto</label>
-          <select id="ListaTipo" name="ListaTipo" class="form-control form-control-lg h-25">
+          <select id="ListaTipo" name="ListaTipo" class="form-control form-control-lg h-25" required>
             <option selected value="{{empleado[6]}}">{{empleado[6]}}</option>
             <option value="" disabled>Elige una opción...</option>
             <option value="3">Administrador</option>
@@ -59,5 +68,18 @@
 
     </form>
 </div>
+
+<script>
+    const passwordInput = document.getElementById('EmpPassword');
+    showPasswordBtn = document.getElementById("show-password-btn3");
+   
+    showPasswordBtn.addEventListener("click", function() {
+      if (passwordInput.type === "text") {
+        passwordInput.type = "password";
+      } else {
+        passwordInput.type = "text";
+      }
+    });
+</script>
 
 {% endblock %}

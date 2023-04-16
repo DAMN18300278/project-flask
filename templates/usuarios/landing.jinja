@@ -2,6 +2,7 @@
 {% block head %}
     {{ super() }}
 {% endblock %}
+
 {% set producto = productos[0] %}
 {% block content %}
     {% include "usuarios/nav.jinja" %}
@@ -17,11 +18,18 @@
             src="https://cdn.lordicon.com/ggihhudh.json"
             trigger="click"
             colors="primary:#121331,secondary:#646e78,tertiary:#E5B8F4"
-            style="width:50px;height:50px; z-index:2">
+            style="width:50px;height:50px; z-index:2"
+            onclick="ircarrito()"
+            >
         </lord-icon>
 
         <div class="position-absolute bg-white" style="top: -2px; right: -2px; width: 25px; height:25px; z-index:3; border: 2px solid rgba(140, 140, 140, 0.807);border-radius:50%; ">
-            <p class="mb-0 ms-1" id="cantidadCarrito" style="font-size: 14px; text-align:center;font-weight:500; letter-spacing:1px">{{ carrito|length }}</p>
+            <p class="mb-0 ms-1" id="cantidadCarrito" style="font-size: 14px; text-align:center;font-weight:500; letter-spacing:1px">{{ carrito }}</p>
         </div>
     </div>
+
+    <script>
+    var idUsuario = {{ idUsuario }};
+    </script>
+
 {% endblock %}

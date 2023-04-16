@@ -92,10 +92,89 @@ def index():
     with mysql.connect.cursor() as cursor:
         cursor.execute("SELECT Carrito FROM Usuarios WHERE Id_Usuario = %s", (session.get('id_usuario'),))
         fetch = cursor.fetchone()
-        if not fetch[0]:
-            carrito = list()
+        if fetch is None or not fetch[0]:
+            numero = 0
+        else:
+            abubu = fetch[0].split("|")
+            numero = len(abubu)
+    return render_template("usuarios/landing.jinja", productos = data, idUsuario = session.get('id_usuario'), carrito = numero)
 
-    return render_template("usuarios/landing.jinja", productos = data, idUsuario = session.get('id_usuario'), carrito = carrito)
+@usuarios.route("/usuarios/addcarrito", methods=['POST'])
+def addcarrito():
+    carritoData = request.form['carritoData']
+    idUsuario = request.form['id']
+    print(carritoData)
+    print(idUsuario)
+    with mysql.connection.cursor() as cursor:
+        cursor.execute("UPDATE usuarios SET Carrito = CONCAT(Carrito, %s) WHERE id_Usuario = %s", (carritoData, idUsuario))
+        mysql.connection.commit()
+        cursor.close()
+    return redirect("/")
+
+@usuarios.route('/usuarios/eliminar_producto/<string:id>', methods=['POST'])
+def eliminar_producto(id):
+    ids = id.split('_')
+    id_producto = int(ids[0])-1
+    id = ids[1]
+    print(id)
+    print(id_producto)
+    with mysql.connect.cursor() as cursor:
+        cursor.execute("SELECT Carrito FROM Usuarios WHERE Id_Usuario = %s",id,)
+        fetch = cursor.fetchone()
+        carrito = fetch[0].split('|')[1:] # se elimina el primer elemento vacío de la lista
+        print(carrito)
+        del carrito[id_producto]
+        print(carrito)
+        carrito_str = '|'.join(carrito)
+        carrito_str = "|"+carrito_str
+        print(carrito_str)
+    with mysql.connection.cursor() as cursor:
+        cursor.execute("UPDATE usuarios SET Carrito = %s WHERE id_Usuario = %s", (carrito_str, id))
+        mysql.connection.commit()
+        cursor.close()
+    return 'OK'
+
+@usuarios.route("/usuarios/ordencarrito/<string:id>", methods=['POST','GET'])
+def ordencarrito(id):
+    print(id)
+    with mysql.connect.cursor() as cursor:
+        
+        cursor.execute("SELECT Carrito FROM Usuarios WHERE Id_Usuario = %s",id,)
+        fetch = cursor.fetchone()
+        if not fetch or not fetch[0]:
+            numero = 0
+            productos = []
+        else:
+            
+            carrito = fetch[0].split('|')[1:] # se elimina el primer elemento vacío de la lista
+            
+            numero = len(carrito)
+            productos = []
+            i = 0
+            for producto in carrito:
+                producto = producto.split(',')
+                productos.append(producto)
+
+                cursor.execute("SELECT Color_RGBA FROM productos WHERE Id_Productos = %s",producto[0],)
+                color = cursor.fetchone()[0].split(',')
+
+                producto[2] = int(producto[2])
+                indice_color = int(producto[2])-1
+
+                productos[i].append(color[indice_color])
+
+                #print(color[int(productos[int(productos[i][2])])])
+                cursor.execute("SELECT Nombre,Precio FROM productos WHERE Id_Productos = %s",productos[i][0],)
+                datos = cursor.fetchone()
+                
+                productos[i].extend(datos)
+                
+                i+=1
+        cursor.execute("SELECT Nombre FROM Usuarios WHERE Id_Usuario = %s",id,)    
+        nombre = cursor.fetchone()[0]
+        
+    return render_template("usuarios/CarritoCompras.jinja",id=id,numero = numero,productos=productos, nombre=nombre)
+
 
 @usuarios.route("/cam")
 def cam():
