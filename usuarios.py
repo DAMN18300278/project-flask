@@ -3,6 +3,9 @@ import requests
 from flask import session, render_template, redirect, jsonify, make_response, url_for, request
 from flask_mysqldb import MySQL
 from collections import OrderedDict
+import base64
+import cv2
+import numpy as np
 
 usuarios = flask.Blueprint('usuarios', __name__)
 mysql = MySQL()
@@ -100,3 +103,22 @@ def index():
 @usuarios.route("/cam")
 def cam():
     return render_template("usuarios/cam.jinja")
+
+@usuarios.route('/cam2', methods=['POST'])
+def upload():
+  # Obtener la imagen como un objeto base64
+  data = request.get_json()
+  image = data['image']
+  # Decodificar la imagen de base64
+  imgdata = base64.b64decode(image.split(',')[1])
+  # Convertir la imagen en un array de numpy
+  nparr = np.frombuffer(imgdata, np.uint8)
+  img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+  # Aplicar un filtro a la imagen
+  gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+  cv2.imshow('prueba', gray)
+  # Convertir la imagen de nuevo en base64
+  retval, buffer = cv2.imencode('.jpg', gray)
+  gray_base64 = base64.b64encode(buffer).decode('utf-8')
+  # Devolver la imagen procesada como una respuesta HTTP en formato JSON
+  return jsonify(image=gray_base64)
