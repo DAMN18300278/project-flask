@@ -175,7 +175,7 @@ def ordencarrito(id):
         
     return render_template("usuarios/CarritoCompras.jinja",id=id,numero = numero,productos=productos, nombre=nombre)
 
-@usuarios.route("/usuarios/delete")
-def delete():
-    session.clear()
-    return redirect("/")
+
+@usuarios.route("/cam")
+def cam():
+    return render_template("usuarios/cam.jinja")
