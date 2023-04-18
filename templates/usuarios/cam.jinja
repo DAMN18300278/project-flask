@@ -4,7 +4,40 @@
 {% endblock %}
 
 {% block content %}
-<div class = "container">
-    <img src="{{ url_for('videoFeed') }}" width="100px" height="100px">
-</div>
+{# <div>
+    <img src="{{ url_for('videoFeed') }}" class="h-100 w-100" style="position: absolute; top:0;left:0;right:0;bottom:0;">
+    <video></video>
+</div> #}
+  <video id="video" width="640" height="480" autoplay></video>
+  <canvas id="canvas" width="640" height="480"></canvas>
+  <button id="capture">Capture</button>
+
+  <script>
+    const video = document.getElementById('video');
+    const canvas = document.getElementById('canvas');
+    const captureButton = document.getElementById('capture');
+    const context = canvas.getContext('2d');
+
+    // Acceder a la cámara del usuario
+    navigator.mediaDevices.getUserMedia({ video: true })
+      .then((stream) => {
+        video.srcObject = stream;
+      });
+
+    // Tomar una foto cuando se hace clic en el botón de captura
+    captureButton.addEventListener('click', () => {
+      // Dibujar el fotograma actual en el canvas
+      context.drawImage(video, 0, 0, canvas.width, canvas.height);
+      // Obtener la imagen como un objeto base64
+      const image = canvas.toDataURL();
+      // Enviar la imagen al servidor mediante una solicitud POST
+      fetch('/cam2', {
+        method: 'POST',
+        body: JSON.stringify({ image: image }),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+    });
+  </script>
 {% endblock %}

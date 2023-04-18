@@ -6,6 +6,7 @@ from usuarios import usuarios
 import mediapipe as mp
 import paypalrestsdk
 import cv2
+import math
 import babel
 import time
 from flask_mysqldb import MySQL
@@ -52,11 +53,6 @@ paypalrestsdk.configure({
 #Este valor es como la contraseña del token
 s = URLSafeTimedSerializer('decore')
 
-#Mediapipe variables
-mpFaceMesh = mp.solutions.face_mesh
-mpDrawing = mp.solutions.drawing_utils
-cap = cv2.VideoCapture(0)
-
 @app.route('/procesar_pago', methods=['POST'])
 def procesar_pago():
     # Obtiene el monto del pago desde el formulario de la solicitud POST
@@ -102,49 +98,81 @@ def pago_cancelado():
     # Renderiza una página de cancelación si el usuario ha cancelado el pago
     return render_template('pago_cancelado.html')
 
+mp_drawing = mp.solutions.drawing_utils
+mp_face_mesh = mp.solutions.face_mesh
+
+# Inicializar la detección de rostros y malla facial
+face_mesh = mp_face_mesh.FaceMesh()
+
+
 def generate():
-    with mpFaceMesh.FaceMesh(
-        static_image_mode = False,
-        max_num_faces = 1,
-        min_detection_confidence = 0.1) as faceMesh:
-        while True:
-            ret, image = cap.read()
-            if ret == False:
-                break
+    # Inicializar la captura de video
+    cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
+    while True:
+        # Leer un frame del video
+        ret, frame = cap.read()
 
-            image = cv2.flip(image, 1)
-            imageRgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-            results = faceMesh.process(imageRgb)
-            
-            if results.multi_face_landmarks is not None:
-                for fL in results.multi_face_landmarks:
-                    mpDrawing.draw_landmarks(
-                        image, 
-                        fL, 
-                        mpFaceMesh.FACEMESH_CONTOURS, 
-                        mpDrawing.DrawingSpec(color=(255, 0, 100), thickness=1, circle_radius=1),
-                        mpDrawing.DrawingSpec(color=(255, 100, 0), thickness=1))
+        # Convertir el frame a RGB
+        frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
 
-            if image.shape[0] > image.shape[1]:
-                image = cv2.add(image, cv2.resize(marco, (image.shape[1], image.shape[0])))
-            else:
-                image = cv2.resize(image, (1300, 1000))
-                image = image[0:1000, 350:950]
+        # Detectar la malla facial en el frame
+        results = face_mesh.process(frame_rgb)
 
-                marco = cv2.imread('contorno.png')
-                marco = cv2.resize(marco, (600, 600))
+        # Dibujar la malla facial en el frame
+        if results.multi_face_landmarks:
+            for face_landmarks in results.multi_face_landmarks:
+                # Obtener las coordenadas de los puntos de referencia de la inclinacion
+                nose_landmarks = face_landmarks.landmark[2]
+                chin_landmarks = face_landmarks.landmark[152]
+                nose_x = int(nose_landmarks.x * frame.shape[1])
+                nose_y = int(nose_landmarks.y * frame.shape[0])
+                chin_x = int(chin_landmarks.x * frame.shape[1])
+                chin_y = int(chin_landmarks.y * frame.shape[0])
 
-                imageCut = image[200:800, 0:600]
-                imagenMezcla = cv2.addWeighted(imageCut, 1, marco, 1, 0)
+                # Obtener las coordenadas de los puntos de referencia del ojo izquierdo
+                left_eye_landmarks = face_landmarks.landmark[35]
+                left_eye_x = int(left_eye_landmarks.x * frame.shape[1])
+                left_eye_y = int(left_eye_landmarks.y * frame.shape[0])
 
-                image[200:800, 0:600] = imagenMezcla
+                # Obtener las coordenadas de los puntos de referencia del ojo derecho
+                right_eye_landmarks = face_landmarks.landmark[265]
+                right_eye_x = int(right_eye_landmarks.x * frame.shape[1])
+                right_eye_y = int(right_eye_landmarks.y * frame.shape[0])
 
-            #if(results.multi_face_landmarks[264])
+                # Calcular la inclinación de la cabeza
+                opposite = chin_y - nose_y
+                adjacent = chin_x - nose_x
+                angle = math.degrees(math.atan2(opposite, adjacent))
 
-            (flag, encodedImage) = cv2.imencode(".jpg", image)
-            if not flag:
-                continue
-            yield(b'--frame\r\n' b'Content-Type: image\jpeg\r\n\r\n' + bytearray(encodedImage) + b'\r\n')
+                # Calcular la posición de las pestañas
+                eyelash_y = int((left_eye_y + right_eye_y) / 2)
+
+                # Cargar la imagen de las pestañas
+                eyelash_img = cv2.imread('intento.png', cv2.IMREAD_UNCHANGED)
+
+                # Girar la imagen de las pestañas de acuerdo a la inclinación de la cabeza
+                M = cv2.getRotationMatrix2D((eyelash_img.shape[1] / 2, eyelash_img.shape[0] / 2), angle, 1)
+                eyelash_img_rotated = cv2.warpAffine(eyelash_img, M, (eyelash_img.shape[1], eyelash_img.shape[0]))
+
+                # Escalar la imagen de las pestañas para que se ajuste al tamaño del ojo
+                scale_factor = (right_eye_x - left_eye_x) / eyelash_img_rotated.shape[1]
+                eyelash_img_resized = cv2.resize(eyelash_img_rotated, (0, 0), fx=scale_factor, fy=scale_factor)
+
+                # Superponer la imagen de las pestañas en el frame
+                x_offset = left_eye_x
+                y_offset = eyelash_y - eyelash_img_resized.shape[0]
+                alpha_s = eyelash_img_resized[:, :, 3] / 255.0
+                alpha_l = 1.0 - alpha_s
+                for c in range(0, 3):
+                    frame[y_offset:y_offset + eyelash_img_resized.shape[0], x_offset:x_offset + eyelash_img_resized.shape[1], c] = (
+                                alpha_s * eyelash_img_resized[:, :, c] + alpha_l * frame[
+                            y_offset:y_offset + eyelash_img_resized.shape[0],
+                            x_offset:x_offset + eyelash_img_resized.shape[1], c])
+
+        (flag, encodedImage) = cv2.imencode(".jpg", frame)
+        if not flag:
+            continue
+        yield(b'--frame\r\n' b'Content-Type: image\jpeg\r\n\r\n' + bytearray(encodedImage) + b'\r\n')
 
 @app.route("/")
 def index():
