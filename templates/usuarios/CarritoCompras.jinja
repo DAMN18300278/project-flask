@@ -1,0 +1,105 @@
+{% extends "usuarios/usuariosMaster.jinja" %}
+
+{% block content %}
+
+    <div class="p-5">
+        <h1>#{{id}} - <span id="current_date"></span></h1>
+        {#jalar los id de los productos dentro de la orden#}
+       
+        <p>Productos:{{numero}}</p>
+        <p>{{nombre}}</p>
+       
+        
+        {% set total = 0 %}
+
+        {% for producto in productos %}
+            {% set index = loop.index %}
+            {% set id_producto = producto[0] %}
+            {% set cantidad = producto[1]|string|replace(",", "")|int %}
+            {% set color = producto[3] %}
+            <!-- Realizar el cálculo del subtotal y la suma total -->
+            {% set subtotal = cantidad * producto[5] %}
+
+            {% set total = total + subtotal %}
+
+            <!-- Incluir el template para mostrar los detalles del producto -->
+            {% include "empleados/ordenProducto.jinja" %}
+            
+        {% endfor %}
+
+        <h1 >Total: <span id="resultado"></span></h1>
+
+
+        <div id="paypal-button-container"></div>
+        <script src="https://www.paypal.com/sdk/js?client-id=Ac_6kX_qOrk9brT964ANt-BcLIOUlkOIxODPBRiDX7i_yghM52dEn0NGNF_nTi5OBlJy4FtxscvgOmxi&currency=MXN"></script>    </div>
+
+    <script>
+
+        const botonesEliminar = document.querySelectorAll('.eliminar-producto');
+        botonesEliminar.forEach(boton => {
+            boton.addEventListener('click', () => {
+            const index = boton.id;
+            console.log(index)
+            fetch(`/usuarios/eliminar_producto/${index}`, {
+                method: 'POST'
+            }).then(() => {
+               location.reload(); // Actualizar la página 
+            });
+            });
+        });
+
+        var suma = 0
+        const subtotales = document.querySelectorAll('.subtotal');
+        subtotales.forEach((subtotal) => {
+            var sub = subtotal.textContent.replace("$","");
+            suma += parseFloat(sub)
+        });
+
+        
+        let resultado = document.getElementById('resultado');
+        total = suma.toFixed(2)
+        resultado.innerHTML = total
+    
+
+        // Render the PayPal button into #paypal-button-container
+        paypal.Buttons({
+            style:{
+                color: 'silver',
+                shape: 'pill',
+                label: 'pay'
+            },
+            createOrder: function(data, actions){
+                return actions.order.create({
+                    purchase_units: [{
+                        amount:{
+                            //aqui en value tenemos que poner lo que tiene que pagar el usuario
+                            value: total
+                        }
+                    }]
+                });
+            },
+            onApprove: function(data, actions){
+                //en detalles se va a guardar todo lo que pase en nuestro pago
+                actions.order.capture().then(function (detalles){
+                    window.location.href="/completado.jinja"
+                });
+            },
+            onCancel: function(data){
+                alert("Pago cancelado")
+                console.log(data);
+            },
+            onError: function(error) {
+            alert("Error al procesar el pago: " + error.message);
+            }
+        }).render('#paypal-button-container');
+
+        var d = new Date();
+        var hours = d.getHours();
+        var minutes = d.getMinutes();
+        var day = d.getDate();
+        var month = d.getMonth() + 1;  // Agregar 1 ya que el mes se cuenta desde 0
+        var year = d.getFullYear();
+        var formattedDateTime = hours + ':' + minutes + ' ' + day + '/' + month + '/' + year;
+        document.getElementById("current_date").innerHTML = formattedDateTime;    
+    </script>
+{% endblock %}
