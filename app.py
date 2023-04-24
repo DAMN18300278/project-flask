@@ -188,8 +188,9 @@ def cambiarcontra():
 
         with mysql.connection.cursor() as cursor:
             cursor.execute("UPDATE cuenta SET Contraseña = (%s) WHERE Correo = (%s)", (contraseña,correo))
+            mysql.connection.commit()
+            cursor.close()
 
-        mysql.connection.commit()
 
         return redirect("/")
 
@@ -212,6 +213,7 @@ def send_correo():
         with mysql.connection.cursor() as cursor:
             cursor.execute("SELECT Correo FROM cuenta WHERE Correo = %s", (email,))
             existing_user = cursor.fetchone()
+            cursor.close()
 
         if existing_user:
             # Enviar un correo electrónico de confirmación al usuario existente
@@ -230,7 +232,8 @@ def send_correo():
             # Insertar el nuevo usuario en la tabla cuenta
             with mysql.connection.cursor() as cursor:
                 cursor.execute("INSERT INTO cuenta (Rol, Correo, Contraseña, estado) VALUES (5, %s, %s, %s)", (email, contraseña, estado))
-            mysql.connection.commit()
+                mysql.connection.commit()
+                cursor.close()
 
             # Enviar un correo electrónico de confirmación al nuevo usuario
             token = s.dumps(email, salt='email-confirm')
@@ -322,8 +325,8 @@ def guardarDatosUsuario():
 
     with mysql.connection.cursor() as cursor:
         cursor.execute("INSERT INTO usuarios VALUES(%s, %s, %s, %s, %s, %s, %s, 'Inactivo', '')", (session.get('id_usuario'), nombre, edad, colorOjos, tipoPiel, colorPiel, colorCabello))
-
-    mysql.connection.commit()
+        mysql.connection.commit()
+        cursor.close()
 
     return redirect("/usuarios")
     
