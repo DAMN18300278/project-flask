@@ -93,7 +93,7 @@ def index():
     data = response['Productos']
 
     with mysql.connect.cursor() as cursor:
-        cursor.execute("SELECT Carrito FROM Usuarios WHERE Id_Usuario = %s", (session.get('id_usuario'),))
+        cursor.execute("SELECT Carrito FROM usuarios WHERE Id_Usuario = %s", (session.get('id_usuario'),))
         fetch = cursor.fetchone()
         if fetch is None or not fetch[0]:
             numero = 0
@@ -118,7 +118,7 @@ def eliminar_producto(id):
     id_producto = int(ids[0])-1
     id = ids[1]
     with mysql.connect.cursor() as cursor:
-        cursor.execute("SELECT Carrito FROM Usuarios WHERE Id_Usuario = %s",id,)
+        cursor.execute("SELECT Carrito FROM usuarios WHERE Id_Usuario = %s",id,)
         fetch = cursor.fetchone()
         carrito = fetch[0].split('|')[1:] 
         del carrito[id_producto]
@@ -135,7 +135,7 @@ def ordencarrito(id):
 
     with mysql.connect.cursor() as cursor:
         
-        cursor.execute("SELECT Carrito FROM Usuarios WHERE Id_Usuario = %s",id,)
+        cursor.execute("SELECT Carrito FROM usuarios WHERE Id_Usuario = %s",id,)
         fetch = cursor.fetchone()
         if not fetch or not fetch[0]:
             numero = 0
@@ -166,7 +166,7 @@ def ordencarrito(id):
                 productos[i].extend(datos)
                 
                 i+=1
-        cursor.execute("SELECT Nombre FROM Usuarios WHERE Id_Usuario = %s",id,)    
+        cursor.execute("SELECT Nombre FROM usuarios WHERE Id_Usuario = %s",id,)    
         nombre = cursor.fetchone()[0]
         
     return render_template("usuarios/CarritoCompras.jinja",id=id,numero = numero,productos=productos, nombre=nombre)

@@ -18,7 +18,7 @@ def asignarNombre(idEmpleado):
 
 @empleados.route("/administradores")
 def indexAdmin():
-    asignarNombre(session['id_administrador'])
+    asignarNombre(session.get('id_administrador'))
     return render_template("empleados/indexAdmin.jinja")
 
 @empleados.route("/administradores/inventario/Agregar")
@@ -211,18 +211,3 @@ def GuardarEmp(id=None):
 def delAdmin():
     session.clear()
     return redirect("/")
-
-@empleados.route("/caja")
-def indexCaja():
-    asignarNombre(session['id_encargadoCaja'])
-    return render_template("empleados/indexCaja.jinja")
-
-@empleados.route("/supervisores")
-def indexSupervisor():
-    asignarNombre(session['id_supervisor'])
-    return render_template("empleados/indexSupervisores.jinja")
-
-@empleados.route("/inventario")
-def indexInv():
-    asignarNombre(session['id_inventario'])
-    return render_template("empleados/indexAlmacen.jinja")
