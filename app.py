@@ -1,8 +1,11 @@
 from itsdangerous import URLSafeTimedSerializer, SignatureExpired
 from flask import render_template, Response, request, redirect, flash, session, Flask, url_for
+from flask_login import LoginManager, UserMixin, login_user, current_user, login_required
 from flask_mail import Mail, Message
+from flask_session import Session
 from empleados import empleados
 from usuarios import usuarios
+import datetime
 import mediapipe as mp
 import paypalrestsdk
 import cv2
@@ -35,6 +38,11 @@ app.config['MAIL_USE_TLS'] = False
 app.config['MAIL_USE_SSL'] = True 
 mail = Mail(app)
 
+app.config["SESSION_PERMANENT"] = True
+app.config["SESSION_TYPE"] = "filesystem"
+app.config['SECRET_KEY'] = 'una_clave_secreta_super_segura'
+Session(app)
+
 # Configura las credenciales de PayPal en tu archivo de configuración de Flask
 app.config['PAYPAL_MODE'] = 'sandbox' # 'sandbox' o 'live'
 app.config['PAYPAL_CLIENT_ID'] = 'TU_CLIENT_ID_DE_PAYPAL'
@@ -50,6 +58,24 @@ paypalrestsdk.configure({
 
 #Este valor es como la contraseña del token
 s = URLSafeTimedSerializer('decore')
+
+# Definición de la clase de usuario
+# login_manager = LoginManager()
+# login_manager.init_app(app)
+
+# class User(UserMixin):
+#     def __init__(self, id, correo, password, username = " ", tipo = " "):
+#         self.id = id
+#         self.correo = correo
+#         self.password = password
+#         self.username = username
+#         self.tipo = tipo
+
+#     def get_name(self):
+#         return str(self.username)
+
+#     def is_authenticated(self):
+#         return True if self.id else False
 
 @app.route('/procesar_pago', methods=['POST'])
 def procesar_pago():
@@ -224,7 +250,7 @@ def send_correo():
         else:
             # Insertar el nuevo usuario en la tabla cuenta
             with mysql.connection.cursor() as cursor:
-                cursor.execute("INSERT INTO cuenta (Rol, Correo, Contraseña, estado) VALUES (2, %s, %s, %s)", (email, contraseña, estado))
+                cursor.execute("INSERT INTO cuenta (Rol, Correo, Contraseña, estado) VALUES (5, %s, %s, %s)", (email, contraseña, estado))
             mysql.connection.commit()
 
             # Enviar un correo electrónico de confirmación al nuevo usuario
@@ -262,52 +288,49 @@ def confirmrecover(token):
         return '<h1>The link is expired!</h1>'
     return render_template("index/cambiarcontrasena.jinja", correo =email)
 
+# @login_manager.user_loader
+# def user_loader(user_correo):
+#     # cursor = mysql.connect.cursor()
+#     # correo = user_correo
+    
+#     # cursor.execute("SELECT cuenta.Id_cuenta, cuenta.Correo, cuenta.Contraseña, cuenta.Rol\
+#     #                 FROM cuenta \
+#     #                 WHERE cuenta.Correo = %s", (correo,))
+    
+#     # rows = cursor.fetchone()
+#     # if rows:
+#     #     user = User(id=rows[0], correo=rows[1], password=rows[2], tipo=rows[3])
+#     #     return user
+#     return User.get_id()
+
 @app.route("/login", methods=["POST"])
 def login():
+    contraseña = request.form["contraseña"]
     cursor = mysql.connect.cursor()
     correo = request.form["correo"]
     contraseña = request.form["contraseña"]
     
-    cursor.execute("SELECT * FROM cuenta WHERE Correo = %s", (correo,))
+    cursor.execute("SELECT cuenta.Id_cuenta, cuenta.Correo, cuenta.Contraseña, cuenta.Rol\
+                    FROM cuenta \
+                    WHERE cuenta.Correo = %s", (correo,))
+    
     rows = cursor.fetchone()
         
-    if rows is None:
+    if not rows:
         flash("Correo inexistente")
+        return redirect("/")
+
+    if contraseña != rows[2]:
+        flash("Contraseña incorrecta")
         return redirect("/")
     
     session['id_usuario'] = rows[0]
-    rol = rows[1]
-    contraseñaC = rows[3]
 
-    if 'contraseñaC' in vars():
-        if contraseña != contraseñaC:
-            flash("Contraseña incorrecta")
-            return redirect("/")
+    if rows[3] != 5:
+        return redirect("/administradores")
     else:
-        return redirect("/")
-
-    if rol == 1:
-        cursor.execute("SELECT Tipo_Empleado FROM empleado WHERE Id_Empleado = %s", (session['id_usuario'],))
-        rows = cursor.fetchone()
-        tempId = session.get('id_usuario')
-        session.clear()
-
-        if rows[0] == 1:
-            session['id_encargadoCaja'] = tempId
-            return redirect("/caja")
-        elif rows[0] == 2:
-            session['id_supervisor'] = tempId
-            return redirect("/supervisores")
-        elif rows[0] == 3:
-            session['id_administrador'] = tempId
-            return redirect("/administradores")
-        elif rows[0] == 4:
-            session['id_inventario'] = tempId
-            return redirect("/inventario")
-    else:
-        with mysql.connection.cursor() as cursor:
-            cursor.execute("SELECT * FROM usuarios WHERE Id_Usuario = %s", (session['id_usuario'],))
-            usuario = cursor.fetchone()
+        cursor.execute("SELECT * FROM usuarios WHERE Id_Usuario = %s", (session.get('id_usuario'),))
+        usuario = cursor.fetchone()
 
         if usuario is None:
             return redirect("/formulario")
@@ -318,7 +341,8 @@ def login():
 
 @app.route("/formulario")
 def formulario():
-    if not 'id_usuario' in session: return redirect("/")
+    print("ola")
+    if not "id_usuario" in session: return redirect("/")
     return render_template("usuarios/formulario.jinja")
 
 @app.route("/guardarDatosUsuario", methods=["POST"])
@@ -329,9 +353,10 @@ def guardarDatosUsuario():
     tipoPiel = request.form["tipoPiel"]
     colorPiel = request.form["colorPiel"]
     colorCabello = request.form["colorCabello"]
+    print(session.get("id_usuario"))
 
     with mysql.connection.cursor() as cursor:
-        cursor.execute("INSERT INTO usuarios VALUES(%s, %s, %s, %s, %s, %s, %s, 2)", (session['id_usuario'], nombre, edad, colorOjos, tipoPiel, colorPiel, colorCabello))
+        cursor.execute("INSERT INTO usuarios VALUES(%s, %s, %s, %s, %s, %s, %s, 'Inactivo', '')", (session.get('id_usuario'), nombre, edad, colorOjos, tipoPiel, colorPiel, colorCabello))
 
     mysql.connection.commit()
 

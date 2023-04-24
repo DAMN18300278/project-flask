@@ -20,25 +20,18 @@
         <div class="input-group">
             <input type="email" id="correo" class="form-control mt-2 to-left" placeholder="Correo" name="correo" required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$">
         </div>
-        <div class="input-group mt-4 position-relative">
-            <input type="password" id="contraseña" class="form-control" placeholder="Contraseña" name="contraseña" minlength="8" maxlength="14" requiered pattern="^(?=.*[0-9])(?=.*[a-zA-Z])([a-zA-Z0-9]+)$" >
-            <lord-icon
-            src="https://cdn.lordicon.com/tyounuzx.json"
-            trigger="hover"
-            colors="primary:#121331,secondary:#810ca8"
-            style="width:45px;height:100%;position:absolute;right:0px;bottom:0px;border-radius:5%;"
-            id="show-password-btn1">
-            </lord-icon>
+        <div class="form-group mt-4 position-relative">
+            <input type="password" id="contraseña" class="form-control" placeholder="Contraseña" name="contraseña" minlength="8" maxlength="14" requiered pattern="^(?=.*[0-9])(?=.*[a-zA-Z])([a-zA-Z0-9]+)$" data-error="La contraseña debe de contener al menos 8 caracteres y un numero">
+            <span class="d-flex align-items-left form-text mt-1" style="font-size: 12px;"></span>
+            <div class=" h-100 pt-2 position-absolute icon" style="right: 0; bottom:0">
+            <i class="bi bi-eye-slash mx-3" id="show-password-btn1"></i>
+            </div>
         </div>
-        <div class="input-group mt-4 position-relative">
+        <div class="form-group mt-4 position-relative">
             <input type="password" id="contraseñaC" class="form-control" placeholder="Confirmar contraseña" minlength="8" maxlength="14" required pattern="^(?=.*[0-9])(?=.*[a-zA-Z])([a-zA-Z0-9]+)$">
-            <lord-icon
-            src="https://cdn.lordicon.com/tyounuzx.json"
-            trigger="hover"
-            colors="primary:#121331,secondary:#810ca8"
-            style="width:45px;height:100%;position:absolute;right:0px;bottom:0px;border-radius:5%;"
-            id="show-password-btn2">
-            </lord-icon>
+            <div class=" h-100 pt-2 position-absolute icon" style="right: 0; bottom:0">
+            <i class="bi bi-eye-slash mx-3" id="show-password-btn2"></i>
+            </div>
         </div>
         <button type="submit" name="registrarme" class="btn btn-success vanish1 mt-5" style="font-size: 18px; border-radius: 10px; height: 36px; animation-duration: 4s;">Registrarme</button>
     </form> 
@@ -53,16 +46,24 @@
         showPasswordBtn1.addEventListener("click", function() {
         if (passwordInput.type === "text") {
             passwordInput.type = "password";
+            showPasswordBtn1.classList.remove("bi-eye");
+            showPasswordBtn1.classList.add("bi-eye-slash");
         } else {
             passwordInput.type = "text";
+            showPasswordBtn1.classList.remove("bi-eye-slash");
+            showPasswordBtn1.classList.add("bi-eye");
         }
         });
 
         showPasswordBtn2.addEventListener("click", function() {
         if (confirmPasswordInput.type === "text") {
             confirmPasswordInput.type = "password";
+            showPasswordBtn2.classList.remove("bi-eye");
+            showPasswordBtn2.classList.add("bi-eye-slash");
         } else {
             confirmPasswordInput.type = "text";
+            showPasswordBtn2.classList.remove("bi-eye-slash");
+            showPasswordBtn2.classList.add("bi-eye");
         }
         });
 

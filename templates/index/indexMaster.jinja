@@ -14,16 +14,42 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
     <script src="https://cdn.lordicon.com/ritcuqlt.js"></script>
+    <script src="{{ url_for('static', filename = 'bootstrap/dist/js/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ url_for('static', filename = 'js/index.js') }}"></script>
     {% endblock %}
 </head>
 <body>
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+        <div class="modal fade" tabindex="-1" role="dialog" id="infoProducto">
+            <div class="modal-dialog mx-5" style="margin-top: 40%;" role="document">
+                <div class="modal-content p-5">
+                <div class="modal-head">
+                    <h1 class="modal-title">Error en el inicio :(</h1>
+                    <button type="button" class="close position-absolute" style="border: none; top: 2%; right: 3%; background-color:transparent" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true" style="font-size: 40px;">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <h2>
+                        {{ messages[0] }}
+                    </h2>
+                </div>
+                </div>
+            </div>
+        </div>
+        <script>
+        var myModal = document.getElementById('infoProducto');
+        var modal = bootstrap.Modal.getOrCreateInstance(myModal)
+        modal.show()
+        </script>
+    {% endif %}
+    {% endwith %}
     <div class="h-100 d-flex align-items-center" style="padding-bottom: 30%; padding-top: 5%">
         <div class="container d-flex justify-content-between flex-column animate__animated animate__fadeInDown">
             {% block content %}{% endblock %}
         </div>
     </div>
 
-    <script src="{{ url_for('static', filename = 'bootstrap/dist/js/bootstrap.bundle.min.js') }}"></script>
-    <script src="{{ url_for('static', filename = 'js/index.js') }}"></script>
 </body>
 </html>
