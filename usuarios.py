@@ -135,7 +135,7 @@ def ordencarrito(id):
 
     with mysql.connect.cursor() as cursor:
         
-        cursor.execute("SELECT Carrito FROM usuarios WHERE Id_Usuario = %s",id,)
+        cursor.execute("SELECT Carrito FROM usuarios WHERE Id_Usuario = %s", (id,))
         fetch = cursor.fetchone()
         if not fetch or not fetch[0]:
             numero = 0
@@ -166,7 +166,7 @@ def ordencarrito(id):
                 productos[i].extend(datos)
                 
                 i+=1
-        cursor.execute("SELECT Nombre FROM usuarios WHERE Id_Usuario = %s",id,)    
+        cursor.execute("SELECT Nombre FROM usuarios WHERE Id_Usuario = %s",(id,))    
         nombre = cursor.fetchone()[0]
         
     return render_template("usuarios/CarritoCompras.jinja",id=id,numero = numero,productos=productos, nombre=nombre)
