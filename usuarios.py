@@ -139,7 +139,7 @@ def eliminar_producto(id):
 
 @usuarios.route("/usuarios/ordencarrito/<string:id>", methods=['POST','GET'])
 def ordencarrito(id):
-    print(id)
+
     with mysql.connect.cursor() as cursor:
         
         cursor.execute("SELECT Carrito FROM Usuarios WHERE Id_Usuario = %s",id,)

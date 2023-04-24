@@ -23,7 +23,7 @@
             {% set total = total + subtotal %}
 
             <!-- Incluir el template para mostrar los detalles del producto -->
-            {% include "empleados/ordenProducto.jinja" %}
+            {% include "usuarios/ordenCarrito.jinja" %}
             
         {% endfor %}
 
@@ -32,7 +32,10 @@
 
         <div id="paypal-button-container"></div>
         <script src="https://www.paypal.com/sdk/js?client-id=Ac_6kX_qOrk9brT964ANt-BcLIOUlkOIxODPBRiDX7i_yghM52dEn0NGNF_nTi5OBlJy4FtxscvgOmxi&currency=MXN"></script>    </div>
-
+        <div>
+           <a href="/administradores/OrdenEspecifica/RecogerCaja/{{id}}"><button class="btn btn-outline-warning" style="font-size: 24px; padding: 1em; display:inline-flex; justify-content: center; align-items: center;">Pagar en caja</button></a>
+        </div>
+        
     <script>
 
         const botonesEliminar = document.querySelectorAll('.eliminar-producto');
@@ -81,7 +84,7 @@
             onApprove: function(data, actions){
                 //en detalles se va a guardar todo lo que pase en nuestro pago
                 actions.order.capture().then(function (detalles){
-                    window.location.href="/completado.jinja"
+                    window.location.href="/administradores/OrdenEspecifica/crearorden/{{id}}"
                 });
             },
             onCancel: function(data){
