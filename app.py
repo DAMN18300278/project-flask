@@ -38,7 +38,6 @@ mail = Mail(app)
 
 app.config["SESSION_PERMANENT"] = True
 app.config["SESSION_TYPE"] = "filesystem"
-app.config['SECRET_KEY'] = 'una_clave_secreta_super_segura'
 Session(app)
 
 # Configura las credenciales de PayPal en tu archivo de configuración de Flask
