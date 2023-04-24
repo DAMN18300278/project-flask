@@ -7,57 +7,29 @@
 
 {% block content %}
     <div class="p-5">
-        <h1>Carrito de compras de la orden: {{id}}</h1>
+        <h1>#{{orden[0]}} - <span id="current_date"> {{orden[1]}}</span></h1>
         {#jalar los id de los productos dentro de la orden#}
-        {% set productos = 3 %}
-        <p>Productos:{{productos}}</p>
+       
+        <p>Productos:{{numero}}</p>
+        <p>{{nombre}}</p>
+       
+   
 
-        {% set productos = 3 %}
-        {% set total = 0 %}
-        {% set cantidad = 2 %}
-        {% set precio_unitario = 10 %}
-        {% for row in range(0, productos) %}
-            {% set subtotal = cantidad * precio_unitario %}
-            {% set suma = total + subtotal %}
+        {% for producto in productos %}
+            {% set index = loop.index %}
+            {% set id_producto = producto[0] %}
+            {% set cantidad = producto[1]|string|replace(",", "")|int %}
+            {% set color = producto[3] %}
+            <!-- Realizar el cálculo del subtotal y la suma total -->
+            {% set subtotal = cantidad * producto[5] %}
+
+            <!-- Incluir el template para mostrar los detalles del producto -->
             {% include "empleados/ordenProducto.jinja" %}
-            {% set total = suma %}
+            
         {% endfor %}
-        <h1>{{ total }}</h1>
 
-        <div id="paypal-button-container"></div>
-        <script src="https://www.paypal.com/sdk/js?client-id=Ac_6kX_qOrk9brT964ANt-BcLIOUlkOIxODPBRiDX7i_yghM52dEn0NGNF_nTi5OBlJy4FtxscvgOmxi&currency=MXN"></script>    </div>
+        <a href="/administradores/OrdenEspecifica/statusEntregado/{{orden[0]}}"> <button class="btn btn-outline-danger" style="font-size: 12px;">Entregar</button></a>
+    
 
-    <script>
-        // Render the PayPal button into #paypal-button-container
-        paypal.Buttons({
-            style:{
-                color: 'silver',
-                shape: 'pill',
-                label: 'pay'
-            },
-            createOrder: function(data, actions){
-                return actions.order.create({
-                    purchase_units: [{
-                        amount:{
-                            //aqui en value tenemos que poner lo que tiene que pagar el usuario
-                            value: 1
-                        }
-                    }]
-                });
-            },
-            onApprove: function(data, actions){
-                //en detalles se va a guardar todo lo que pase en nuestro pago
-                actions.order.capture().then(function (detalles){
-                    window.location.href="/completado.jinja"
-                });
-            },
-            onCancel: function(data){
-                alert("Pago cancelado")
-                console.log(data);
-            },
-            onError: function(error) {
-            alert("Error al procesar el pago: " + error.message);
-            }
-        }).render('#paypal-button-container');
-    </script>
+
 {% endblock content %}

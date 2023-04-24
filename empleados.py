@@ -101,13 +101,78 @@ def Admin_empleados_Delete(id):
 @empleados.route("/administradores/OrdenesPago")
 def PagosAdmin():
     with mysql.connect.cursor() as cursor:
-        cursor.execute("SELECT OrdenPago.Id_Orden,usuarios.Nombre ,OrdenPago.Fecha FROM OrdenPago INNER JOIN usuarios ON usuarios.Id_Usuario = OrdenPago.Id_Usuario ORDER BY Id_Orden ASC")
+        cursor.execute("SELECT OrdenPago.Id_Orden,usuarios.Nombre ,OrdenPago.Fecha, OrdenPago.Status, OrdenPago.Id_Usuario FROM OrdenPago INNER JOIN usuarios ON usuarios.Id_Usuario = OrdenPago.Id_Usuario ORDER BY Id_Orden ASC")
         resultado = cursor.fetchall()
     return render_template("empleados/OrdenesPago.jinja", resultados = resultado)
 
-@empleados.route("/administradores/OrdenEspecifica/<int:id>")
+
+
+@empleados.route("/administradores/OrdenEspecifica/RecogerCaja/<string:id>")
+def RecogerCaja(id):
+    with mysql.connection.cursor() as cursor:
+        cursor.execute("INSERT INTO ordenpago(Id_Orden, Id_Usuario, Fecha, Status) VALUES (NULL, %s, NOW(), 'Pagar en caja')", (id,))
+        mysql.connection.commit()
+    return redirect("/administradores/OrdenesPago")
+
+@empleados.route("/administradores/OrdenEspecifica/statusEntregado/<string:id>")
+def statusEntregado(id):
+    with mysql.connection.cursor() as cursor:
+        cursor.execute("UPDATE ordenpago SET status = 'Entregado' WHERE Id_Orden = %s", (id,))
+        mysql.connection.commit()
+    return redirect("/administradores/OrdenesPago")
+
+@empleados.route("/administradores/OrdenEspecifica/crearorden/<string:id>")
+def crearorden(id):
+
+    with mysql.connection.cursor() as cursor:
+        cursor.execute("INSERT INTO ordenpago(Id_Orden, Id_Usuario, Fecha, Status) VALUES (NULL, %s, NOW(), 'Pagado, recoger en caja')", (id,))
+        mysql.connection.commit()
+    return redirect("/administradores/OrdenesPago")
+
+@empleados.route("/administradores/OrdenEspecifica/<string:id>")
 def OrdenUsuario(id):
-    return render_template("empleados/OrdenEspecifica.jinja",id=id)
+    with mysql.connect.cursor() as cursor:
+        
+        cursor.execute("SELECT Carrito FROM Usuarios WHERE Id_Usuario = %s",id,)
+        fetch = cursor.fetchone()
+        print(fetch)
+        if not fetch or not fetch[0]:
+            numero = 0
+            productos = []
+        else:
+            
+            carrito = fetch[0].split('|')[1:] # se elimina el primer elemento vacío de la lista
+            
+            numero = len(carrito)
+            productos = []
+            i = 0
+            for producto in carrito:
+                producto = producto.split(',')
+                productos.append(producto)
+
+                cursor.execute("SELECT Color_RGBA FROM productos WHERE Id_Productos = %s",producto[0],)
+                color = cursor.fetchone()[0].split(',')
+
+                producto[2] = int(producto[2])
+                indice_color = int(producto[2])-1
+
+                productos[i].append(color[indice_color])
+
+
+                cursor.execute("SELECT Nombre,Precio FROM productos WHERE Id_Productos = %s",productos[i][0],)
+                datos = cursor.fetchone()
+                
+                productos[i].extend(datos)
+                
+                i+=1
+             
+        cursor.execute("SELECT Nombre FROM Usuarios WHERE Id_Usuario = %s",id,)    
+        nombre = cursor.fetchone()[0]
+
+        cursor.execute("SELECT Id_Orden, Fecha FROM ordenpago WHERE Id_Usuario = %s",id,)
+        orden = cursor.fetchone()
+        print(orden)
+    return render_template("empleados/OrdenEspecifica.jinja",id=id,numero = numero,productos=productos, nombre=nombre, orden = orden)
 
 @empleados.route("/administradores/GuardarEmp", methods=['POST', 'GET'])
 @empleados.route("/administradores/GuardarEmp/<int:id>", methods=['POST','GET'])
