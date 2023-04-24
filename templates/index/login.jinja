@@ -52,27 +52,5 @@
     function login(){
       form.submit();
     }
-
-    setTimeout(function(){
-      document.getElementById('g').style.stroke = '#000';
-
-      anime({
-        targets: '#iconLogin',
-        strokeDashoffset: [anime.setDashoffset, 0],
-        duration: 7000,
-        endDelay: 1000,
-        easing: 'linear',
-        loop: false
-      });
-
-      anime({
-        targets: '#iconLogin',
-        fill: '#000',
-        duration: 2000,
-        endDelay: 1000,
-        easing: 'linear',
-        loop: false
-      });
-    }, 800);
   </script>
 {% endblock %}
