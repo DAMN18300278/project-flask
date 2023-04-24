@@ -7,8 +7,6 @@ import mediapipe as mp
 import paypalrestsdk
 import cv2
 import math
-import babel
-import time
 from flask_mysqldb import MySQL
 from jinja2 import ext
 
@@ -104,7 +102,6 @@ mp_face_mesh = mp.solutions.face_mesh
 # Inicializar la detección de rostros y malla facial
 face_mesh = mp_face_mesh.FaceMesh()
 
-
 def generate():
     # Inicializar la captura de video
     cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
@@ -199,8 +196,6 @@ def recover():
 def registrar():
     return render_template("index/register.jinja")
 
-    
-
 @app.route("/send_correo", methods=['GET', 'POST'])
 def send_correo():
     if request.method == "POST":
@@ -219,13 +214,10 @@ def send_correo():
             subject = 'Restablecimiento de cuenta Decore'
 
             message = Message(subject, sender="decore.makeup@gmail.com", recipients=[email])
-
             link = url_for('confirm', token=token, _external=True)
-
             message.body = 'Se ha intentado crear una nueva cuenta con este correo electrónico, pero ya existe una cuenta registrada. Si desea restablecer su cuenta, ingrese al siguiente link: {}'.format(link)
 
             mail.send(message)
-            
 
             return redirect("/")
 
@@ -261,8 +253,6 @@ def confirm(token):
     except SignatureExpired:
         return '<h1>The token is expired!</h1>'
 
-    return '<h1>The Token Works!</h1>'
-
 @app.route('/confirmrecover/<token>')
 def confirmrecover(token):
     try:
@@ -297,7 +287,7 @@ def login():
         return redirect("/")
 
     if rol == 1:
-        cursor.execute("SELECT Tipo_Empleado FROM empleado WHERE Id_Empleado = %s", (session.get('id_usuario'),))
+        cursor.execute("SELECT Tipo_Empleado FROM empleado WHERE Id_Empleado = %s", (session['id_usuario'],))
         rows = cursor.fetchone()
         tempId = session.get('id_usuario')
         session.clear()
@@ -316,7 +306,7 @@ def login():
             return redirect("/inventario")
     else:
         with mysql.connection.cursor() as cursor:
-            cursor.execute("SELECT * FROM usuarios WHERE Id_Usuario = %s", (session.get('id_usuario'),))
+            cursor.execute("SELECT * FROM usuarios WHERE Id_Usuario = %s", (session['id_usuario'],))
             usuario = cursor.fetchone()
 
         if usuario is None:
@@ -341,7 +331,7 @@ def guardarDatosUsuario():
     colorCabello = request.form["colorCabello"]
 
     with mysql.connection.cursor() as cursor:
-        cursor.execute("INSERT INTO usuarios VALUES(%s, %s, %s, %s, %s, %s, %s, 2)", (session.get('id_usuario'), nombre, edad, colorOjos, tipoPiel, colorPiel, colorCabello))
+        cursor.execute("INSERT INTO usuarios VALUES(%s, %s, %s, %s, %s, %s, %s, 2)", (session['id_usuario'], nombre, edad, colorOjos, tipoPiel, colorPiel, colorCabello))
 
     mysql.connection.commit()
 
