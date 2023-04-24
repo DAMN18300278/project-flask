@@ -15,9 +15,10 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="{{ url_for('static', filename= 'js/usuarios.js') }}"></script>
     <script src="{{ url_for('static', filename = 'bootstrap/dist/js/bootstrap.bundle.min.js') }}"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" />
     {% endblock %}
 </head>
-<body class="bg-white animate__animated animate__backInRight"  id="body">
+<body class="bg-white animate__animated animate__backInRight overflow-hidden"  id="body">
     {% block nav %}{% endblock %}
     {% block content %}{% endblock %}
 

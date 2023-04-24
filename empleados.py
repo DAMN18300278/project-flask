@@ -18,7 +18,7 @@ def asignarNombre(idEmpleado):
 
 @empleados.route("/administradores")
 def indexAdmin():
-    asignarNombre(session.get('id_administrador'))
+    asignarNombre(session['id_administrador'])
     return render_template("empleados/indexAdmin.jinja")
 
 @empleados.route("/administradores/inventario/Agregar")
