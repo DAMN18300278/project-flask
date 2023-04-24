@@ -106,8 +106,6 @@ def index():
 def addcarrito():
     carritoData = request.form['carritoData']
     idUsuario = request.form['id']
-    print(carritoData)
-    print(idUsuario)
     with mysql.connection.cursor() as cursor:
         cursor.execute("UPDATE usuarios SET Carrito = CONCAT(Carrito, %s) WHERE id_Usuario = %s", (carritoData, idUsuario))
         mysql.connection.commit()
@@ -119,18 +117,13 @@ def eliminar_producto(id):
     ids = id.split('_')
     id_producto = int(ids[0])-1
     id = ids[1]
-    print(id)
-    print(id_producto)
     with mysql.connect.cursor() as cursor:
         cursor.execute("SELECT Carrito FROM Usuarios WHERE Id_Usuario = %s",id,)
         fetch = cursor.fetchone()
-        carrito = fetch[0].split('|')[1:] # se elimina el primer elemento vacío de la lista
-        print(carrito)
+        carrito = fetch[0].split('|')[1:] 
         del carrito[id_producto]
-        print(carrito)
         carrito_str = '|'.join(carrito)
         carrito_str = "|"+carrito_str
-        print(carrito_str)
     with mysql.connection.cursor() as cursor:
         cursor.execute("UPDATE usuarios SET Carrito = %s WHERE id_Usuario = %s", (carrito_str, id))
         mysql.connection.commit()

@@ -17,10 +17,10 @@
       <div class="input-group">
         <input type="text" class="form-control mb-4" placeholder="Correo" name="correo">
       </div>
-      <div class="input-group mt-4 position-relative">
+      <div class="form-group mt-4 position-relative">
         <input type="password" class="form-control" placeholder="Contraseña" name="contraseña" maxlength="20">
-        <div class=" h-100 pt-2 position-absolute icon" style="right: 0;">
-          <i class="bi bi-eye mx-3" id="show-password-btn"></i>
+        <div class=" h-100 pt-2 position-absolute icon" style="right: 0; bottom:0">
+          <i class="bi bi-eye-slash mx-3" id="show-password-btn"></i>
         </div>
       </div>
     </form>
@@ -29,7 +29,7 @@
       <a href="/recover" class="link-success mb-5 mx-auto" style="font-size: 12px; width:fit-content">Recuperar contraseña</a>
       <a onclick="login()" class="btn btn-success" style="font-size: 18px; border-radius: 10px; height: 36px; margin-bottom: 5rem;">Login</a>
       <a href="/register" class="link-success" style="font-size: 15px;">Registrarse</a>
-    </div>                  
+    </div>
   </div>
 
   <script>
@@ -37,7 +37,6 @@
     var showPasswordBtn = document.getElementById("show-password-btn");
     passwordInput = document.querySelector("input[name='contraseña']");
     
-
     showPasswordBtn.addEventListener("click", function() {
       if (passwordInput.type === "text") {
         passwordInput.type = "password";
