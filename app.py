@@ -1,11 +1,9 @@
 from itsdangerous import URLSafeTimedSerializer, SignatureExpired
 from flask import render_template, Response, request, redirect, flash, session, Flask, url_for
-from flask_login import LoginManager, UserMixin, login_user, current_user, login_required
 from flask_mail import Mail, Message
 from flask_session import Session
 from empleados import empleados
 from usuarios import usuarios
-import datetime
 import mediapipe as mp
 import paypalrestsdk
 import cv2
@@ -58,24 +56,6 @@ paypalrestsdk.configure({
 
 #Este valor es como la contraseña del token
 s = URLSafeTimedSerializer('decore')
-
-# Definición de la clase de usuario
-# login_manager = LoginManager()
-# login_manager.init_app(app)
-
-# class User(UserMixin):
-#     def __init__(self, id, correo, password, username = " ", tipo = " "):
-#         self.id = id
-#         self.correo = correo
-#         self.password = password
-#         self.username = username
-#         self.tipo = tipo
-
-#     def get_name(self):
-#         return str(self.username)
-
-#     def is_authenticated(self):
-#         return True if self.id else False
 
 @app.route('/procesar_pago', methods=['POST'])
 def procesar_pago():
@@ -288,21 +268,6 @@ def confirmrecover(token):
         return '<h1>The link is expired!</h1>'
     return render_template("index/cambiarcontrasena.jinja", correo =email)
 
-# @login_manager.user_loader
-# def user_loader(user_correo):
-#     # cursor = mysql.connect.cursor()
-#     # correo = user_correo
-    
-#     # cursor.execute("SELECT cuenta.Id_cuenta, cuenta.Correo, cuenta.Contraseña, cuenta.Rol\
-#     #                 FROM cuenta \
-#     #                 WHERE cuenta.Correo = %s", (correo,))
-    
-#     # rows = cursor.fetchone()
-#     # if rows:
-#     #     user = User(id=rows[0], correo=rows[1], password=rows[2], tipo=rows[3])
-#     #     return user
-#     return User.get_id()
-
 @app.route("/login", methods=["POST"])
 def login():
     contraseña = request.form["contraseña"]
@@ -327,6 +292,9 @@ def login():
     session['id_usuario'] = rows[0]
 
     if rows[3] != 5:
+        idTemp = session.get('id_usuario')
+        session.pop("id_usuario")
+        session['id_administrador'] = str(idTemp)
         return redirect("/administradores")
     else:
         cursor.execute("SELECT * FROM usuarios WHERE Id_Usuario = %s", (session.get('id_usuario'),))
@@ -341,7 +309,6 @@ def login():
 
 @app.route("/formulario")
 def formulario():
-    print("ola")
     if not "id_usuario" in session: return redirect("/")
     return render_template("usuarios/formulario.jinja")
 
@@ -353,7 +320,6 @@ def guardarDatosUsuario():
     tipoPiel = request.form["tipoPiel"]
     colorPiel = request.form["colorPiel"]
     colorCabello = request.form["colorCabello"]
-    print(session.get("id_usuario"))
 
     with mysql.connection.cursor() as cursor:
         cursor.execute("INSERT INTO usuarios VALUES(%s, %s, %s, %s, %s, %s, %s, 'Inactivo', '')", (session.get('id_usuario'), nombre, edad, colorOjos, tipoPiel, colorPiel, colorCabello))
@@ -370,7 +336,7 @@ def videoFeed():
 def camara():
     return render_template("usuarios/cam.jinja")
 
-#@app.before_request
+@app.before_request
 def before_request():
     ruta = request.path
 
@@ -378,15 +344,6 @@ def before_request():
         return redirect("/")
 
     if not 'id_administrador' in session and '/administradores' in ruta:
-        return redirect("/")
-
-    if not 'id_encargadoCaja' in session and '/caja' in ruta:
-        return redirect("/")
-
-    if not 'id_supervisor' in session and '/supervisores' in ruta:
-        return redirect("/")
-
-    if not 'id_inventario' in session and '/eInventario' in ruta:
         return redirect("/")
 
 if __name__ == "__main__":
