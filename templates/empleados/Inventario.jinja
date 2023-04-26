@@ -16,7 +16,7 @@
 
         <div class="input-group justify-content-center">
             <div class="form-outline">
-                <input type="search" id="form1" class="form-control" placeholder="search"/>
+                <input type="search" id="search" class="form-control" placeholder="search"/>
             </div>
             <button type="button" class="btn" style="background-color: transparent; box-shadow:none">
                 <i class="bi bi-search"></i>
@@ -39,8 +39,8 @@
                         <td style="width: 50px;">
                             <div class="form-group">
                                 <form method="post" action="/administradores/inventario/{{ row[0] }}" class="UpCant" onsubmit="return confirm('¿Desea actualizar la cantidad del producto {{ row[0] }} de {{ row[2] }} a ' + document.getElementsByName('cantidad')[{{ loop.index0 }}].value + '?')">
-                                    <input type="number" class="form-control" name="cantidad" value="{{ row[2] }}" inputmode="numeric">
-                                    <button type="submit" class="btn">Guardar</button>
+                                    <input type="number" class="form-control" name="cantidad" value="{{ row[2] }}" style="font-size: 15px; height:40%" inputmode="numeric">
+                                    <button type="submit" class="btn btn-outline-danger mt-3" style="font-size: 12px; height:10%">Guardar</button>
                                 </form>
                             </div>
                         </td>

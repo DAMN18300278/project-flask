@@ -119,7 +119,7 @@ def addcarrito():
     with mysql.connection.cursor() as cursor:
         cursor.execute("UPDATE usuarios SET Carrito = CONCAT(Carrito, %s) WHERE id_Usuario = %s", (carritoData, idUsuario))
         mysql.connection.commit()
-        cursor.close()
+        mysql.connection.close()
     return redirect("/")
 
 @usuarios.route('/usuarios/eliminar_producto/<string:id>', methods=['POST'])
@@ -137,9 +137,8 @@ def eliminar_producto(id):
     with mysql.connection.cursor() as cursor:
         cursor.execute("UPDATE usuarios SET Carrito = %s WHERE id_Usuario = %s", (carrito_str, id))
         mysql.connection.commit()
-        mysql.conncetion.close()
+        mysql.connection.close()
         
-        cursor.close()
     return 'OK'
 
 @usuarios.route("/usuarios/ordencarrito/<string:id>", methods=['POST','GET'])

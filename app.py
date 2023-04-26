@@ -189,7 +189,7 @@ def cambiarcontra():
         with mysql.connection.cursor() as cursor:
             cursor.execute("UPDATE cuenta SET Contraseña = (%s) WHERE Correo = (%s)", (contraseña,correo))
             mysql.connection.commit()
-            cursor.close()
+            mysql.connection.close()
 
 
         return redirect("/")
@@ -230,11 +230,11 @@ def send_correo():
 
         else:
             # Insertar el nuevo usuario en la tabla cuenta
-            with mysql.connection.cursor() as cursor:
-                cursor.execute("INSERT INTO cuenta (Rol, Correo, Contraseña, estado) VALUES (5, %s, %s, %s)", (email, contraseña, estado))
-                mysql.connection.commit()
-                cursor.close()
-
+            cursor = mysql.connection.cursor()
+            cursor.execute("INSERT INTO cuenta (Rol, Correo, Contraseña, estado) VALUES (5, %s, %s, %s)", (email, contraseña, estado))
+            mysql.connection.commit()
+            cursor.close()
+            mysql.connection.close()
             # Enviar un correo electrónico de confirmación al nuevo usuario
             token = s.dumps(email, salt='email-confirm')
             subject = 'Confirmación de cuenta Decore'
@@ -256,7 +256,8 @@ def confirm(token):
         email = s.loads(token, salt='email-confirm', max_age=600)
         with mysql.connection.cursor() as cursor:
             cursor.execute("UPDATE cuenta SET estado = 'Activo' WHERE Correo = (%s)", (email,))
-        mysql.connection.commit()
+            mysql.connection.commit()
+            mysql.connection.close()
         return redirect("/")
     except SignatureExpired:
         return '<h1>The token is expired!</h1>'
@@ -301,6 +302,7 @@ def login():
     else:
         cursor.execute("SELECT * FROM usuarios WHERE Id_Usuario = %s", (session.get('id_usuario'),))
         usuario = cursor.fetchone()
+        cursor.close()
 
         if usuario is None:
             return redirect("/formulario")
@@ -326,7 +328,7 @@ def guardarDatosUsuario():
     with mysql.connection.cursor() as cursor:
         cursor.execute("INSERT INTO usuarios VALUES(%s, %s, %s, %s, %s, %s, %s, 'Inactivo', '')", (session.get('id_usuario'), nombre, edad, colorOjos, tipoPiel, colorPiel, colorCabello))
         mysql.connection.commit()
-        cursor.close()
+        mysql.connection.close()
 
     return redirect("/usuarios")
     
