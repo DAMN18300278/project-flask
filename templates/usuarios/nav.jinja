@@ -1,8 +1,7 @@
 {% block nav %}
     <nav class="navbar navbar-light bg-white p-2 " style="font-size: 25px;">
         <a href="/usuarios" class="navbar-brand mx-3" style="font-size:x-large;">DECÒRE</a>
-        <a class="nav-link" id="link" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="height:38px;">
-            <script src="https://cdn.lordicon.com/ritcuqlt.js"></script>
+        <a id="menu" data-bs-toggle="dropdown" aria-expanded="false" style="height:38px;" >
             <lord-icon
                 src="{{ url_for('static', filename='icons/infoIcon.json') }}"
                 trigger="click"
@@ -10,5 +9,6 @@
                 style="width:30px;height:30px">
             </lord-icon>
         </a>
+        {% include "usuarios/menu.jinja" %}
     </nav>
 {% endblock %}

@@ -5,12 +5,13 @@
 
 {% set producto = productos[0] %}
 {% block content %}
+    {% include "usuarios/menu.jinja" %} 
     {% include "usuarios/nav.jinja" %}
     <div class="horizontal-menu position-relative" style="animation-delay:0.3s;" role="tablist" id="tabsMenu">
         <a class="horizontal-menu-hover horizontal-menu-unset active" aria-selected="true" data-bs-target="#inicioDiv" aria-controls="inicioDiv" data-bs-toggle="tab" onclick="horizontalMenuChange(1)" id="inicioMenu" style="border-bottom-left-radius: 10px; border-top-left-radius: 10px;">Inicio</a>
-        <a class="horizontal-menu-unset" aria-selected="false" data-bs-target="#pielDiv" aria-controls="pielDiv" data-bs-toggle="tab" onclick="horizontalMenuChange(2)" id="ojosMenu">Ojos</a>
+        <a class="horizontal-menu-unset" aria-selected="false" data-bs-target="#pielDiv" aria-controls="pielDiv" data-bs-toggle="tab" onclick="horizontalMenuChange(2)" id="ojosMenu">Piel</a>
         <a class="horizontal-menu-unset" aria-selected="false" data-bs-target="#labiosDiv" aria-controls="labiosDiv" data-bs-toggle="tab" onclick="horizontalMenuChange(3)" id="labiosMenu">Labios</a>
-        <a class="horizontal-menu-unset" onclick="horizontalMenuChange(4)" id="pielMenu">Piel</a>
+        <a class="horizontal-menu-unset" onclick="horizontalMenuChange(4)" id="pielMenu">Ojos</a>
         <a class="horizontal-menu-unset" onclick="horizontalMenuChange(5)" id="skincareMenu">Skincare</a>
         <a class="horizontal-menu-unset" onclick="horizontalMenuChange(6)" id="accesoriosMenu">Accesorios</a>
     </div>
@@ -27,8 +28,7 @@
             trigger="click"
             colors="primary:#121331,secondary:#646e78,tertiary:#E5B8F4"
             style="width:50px;height:50px; z-index:2"
-            onclick="ircarrito()"
-            >
+            onclick="ircarrito()">
         </lord-icon>
 
         <div class="position-absolute bg-white" style="top: -2px; right: -2px; width: 25px; height:25px; z-index:3; border: 2px solid rgba(140, 140, 140, 0.807);border-radius:50%; ">

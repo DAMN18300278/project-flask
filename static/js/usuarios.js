@@ -120,19 +120,79 @@ function snapContainerTranslateRight(e) {
 $(document).ready(function ($) {
     
     document.getElementById("body").style.display = "block"; 
-    // Obtener el input de búsqueda y el menú desplegable
-    var $search = $(".dropdown-menu input");
-    var $dropdownMenu = $(".dropdown-menu");
     
     // Filtrar los elementos del menú desplegable al escribir en el input de búsqueda
-    $search.keyup(function() {
+    var originalItemsOjos = $("#dropdownSearchOjosList").find("#itemOjos[data-nombre]").clone();
+    var originalItemsLabios = $("#dropdownSearchLabiosList").find("#itemLabios[data-nombre]").clone();
+    var originalItemsPiel = $("#dropdownSearchPielList").find("#itemPiel[data-nombre]").clone();
+    var originalItemsSkin = $("#dropdownSearchSkinList").find("#itemSkin[data-nombre]").clone();
+    var originalItemsAccesorios = $("#dropdownSearchAccesoriosList").find("#itemAccesorios[data-nombre]").clone();
+
+    $("#searchMenuLabios").keyup(function() {
         var filter = $(this).val().toLowerCase();
-        var $items = $dropdownMenu.find("a");
-        $items.each(function() {
+        var items = $("#dropdownSearchLabiosList").find("#itemLabios[data-nombre]");
+        items.each(function() {
+            var productName = $(this).data('nombre').toLowerCase();
+            var match = productName.indexOf(filter) > -1;
+            $(this).toggle(match);
+        });
+    });
+    $("#searchMenuOjos").keyup(function() {
+        var filter = $(this).val().toLowerCase();
+        var items = $("#dropdownSearchOjosList").find("#itemOjos[data-nombre]");
+        items.each(function() {
             var text = $(this).text().toLowerCase();
             var match = text.indexOf(filter) > -1;
             $(this).toggle(match);
         });
+    });
+    $("#searchMenuPiel").keyup(function() {
+        var filter = $(this).val().toLowerCase();
+        var items = $("#dropdownSearchPielList").find("#itemPiel[data-nombre]");
+        items.each(function() {
+            var text = $(this).text().toLowerCase();
+            var match = text.indexOf(filter) > -1;
+            $(this).toggle(match);
+        });
+    });
+    $("#searchMenuSkin").keyup(function() {
+        var filter = $(this).val().toLowerCase();
+        var items = $("#dropdownSearchSkinList").find("#itemSkin[data-nombre]");
+        items.each(function() {
+            var text = $(this).text().toLowerCase();
+            var match = text.indexOf(filter) > -1;
+            $(this).toggle(match);
+        });
+    });
+    $("#searchMenuAccesorios").keyup(function() {
+        var filter = $(this).val().toLowerCase();
+        var items = $("#dropdownSearchAccesoriosList").find("#itemAccesorios[data-nombre]");
+        items.each(function() {
+            var text = $(this).text().toLowerCase();
+            var match = text.indexOf(filter) > -1;
+            $(this).toggle(match);
+        });
+    });
+
+    $('#dropdownSearchLabios').on('hidden.bs.dropdown', function(){
+        $('#searchMenuLabios').val("");
+        $("#dropdownSearchLabiosList").empty().append(originalItemsLabios.clone());
+    });
+    $('#dropdownSearchOjos').on('hidden.bs.dropdown', function(){
+        $('#searchMenuOjos').val("");
+        $("#dropdownSearchOjosList").empty().append(originalItemsOjos.clone());
+    });
+    $('#dropdownSearchPiel').on('hidden.bs.dropdown', function(){
+        $('#searchMenuPiel').val("");
+        $("#dropdownSearchPielList").empty().append(originalItemsPiel.clone());
+    });
+    $('#dropdownSearchSkin').on('hidden.bs.dropdown', function(){
+        $('#searchMenuSkin').val("");
+        $("#dropdownSearchSkinList").empty().append(originalItemsSkin.clone());
+    });
+    $('#dropdownSearchAccesorios').on('hidden.bs.dropdown', function(){
+        $('#searchMenuAccesorios').val("");
+        $("#dropdownSearchAccesoriosList").empty().append(originalItemsAccesorios.clone());
     });
 
     $('#tabs').tab();
@@ -225,8 +285,6 @@ $(document).ready(function ($) {
         var input = $('#cantidad');
         var value = parseInt(input.val());
         input.val(value + 1);
-
-        var boton = $(this)
     });
 
     $('#btn-addcarrito').click(function() {
@@ -255,6 +313,155 @@ $(document).ready(function ($) {
         });
     });
 
+    //ordenar productos de labios
+    $('#sortA-ZLabios').on('click', function() {
+        var lista = $('.productosLabios');
+        lista.sort(function(a, b) {
+          return $(a).data('nombre').localeCompare($(b).data('nombre'));
+        });
+        $('.productosLabiosContainer').empty().append(lista);
+    });
+    $('#sortZ-ALabios').on('click', function() {
+        var lista = $('.productosLabios');
+        lista.sort(function(a, b) {
+          return $(b).data('nombre').localeCompare($(a).data('nombre'));
+        });
+        $('.productosLabiosContainer').empty().append(lista);
+    });
+    $('#sortPMeLabios').on('click', function() {
+        var lista = $('.productosLabios');
+        lista.sort(function(a, b) {
+          return $(a).data('precio') - $(b).data('precio');
+        });
+        $('.productosLabiosContainer').empty().append(lista);
+    });
+    $('#sortPMaLabios').on('click', function() {
+        var lista = $('.productosLabios');
+        lista.sort(function(a, b) {
+            return $(b).data('precio') - $(a).data('precio');
+        });
+        $('.productosLabiosContainer').empty().append(lista);
+    });
+
+    //ordenar productos de piel
+    $('#sortA-ZPiel').on('click', function() {
+        var lista = $('.productosPiel');
+        lista.sort(function(a, b) {
+          return $(a).data('nombre').localeCompare($(b).data('nombre'));
+        });
+        $('.productosPielContainer').empty().append(lista);
+    });
+    $('#sortZ-APiel').on('click', function() {
+        var lista = $('.productosPiel');
+        lista.sort(function(a, b) {
+          return $(b).data('nombre').localeCompare($(a).data('nombre'));
+        });
+        $('.productosPielContainer').empty().append(lista);
+    });
+    $('#sortPMePiel').on('click', function() {
+        var lista = $('.productosPiel');
+        lista.sort(function(a, b) {
+          return $(a).data('precio') - $(b).data('precio');
+        });
+        $('.productosPielContainer').empty().append(lista);
+    });
+    $('#sortPMaPiel').on('click', function() {
+        var lista = $('.productosPiel');
+        lista.sort(function(a, b) {
+            return $(b).data('precio') - $(a).data('precio');
+        });
+        $('.productosPielContainer').empty().append(lista);
+    });
+
+    //ordenar productos para ojos
+    $('#sortA-ZOjos').on('click', function() {
+        var lista = $('.productosOjos');
+        lista.sort(function(a, b) {
+          return $(a).data('nombre').localeCompare($(b).data('nombre'));
+        });
+        $('.productosOjosContainer').empty().append(lista);
+    });
+    $('#sortZ-AOjos').on('click', function() {
+        var lista = $('.productosOjos');
+        lista.sort(function(a, b) {
+          return $(b).data('nombre').localeCompare($(a).data('nombre'));
+        });
+        $('.productosOjosContainer').empty().append(lista);
+    });
+    $('#sortPMeOjos').on('click', function() {
+        var lista = $('.productosOjos');
+        lista.sort(function(a, b) {
+          return $(a).data('precio') - $(b).data('precio');
+        });
+        $('.productosOjosContainer').empty().append(lista);
+    });
+    $('#sortPMaOjos').on('click', function() {
+        var lista = $('.productosOjos');
+        lista.sort(function(a, b) {
+            return $(b).data('precio') - $(a).data('precio');
+        });
+        $('.productosOjosContainer').empty().append(lista);
+    });
+
+    //ordenar productos de skin
+    $('#sortA-ZSkin').on('click', function() {
+        var lista = $('.productosSkin');
+        lista.sort(function(a, b) {
+          return $(a).data('nombre').localeCompare($(b).data('nombre'));
+        });
+        $('.productosSkinContainer').empty().append(lista);
+    });
+    $('#sortZ-ASkin').on('click', function() {
+        var lista = $('.productosSkin');
+        lista.sort(function(a, b) {
+          return $(b).data('nombre').localeCompare($(a).data('nombre'));
+        });
+        $('.productosSkinContainer').empty().append(lista);
+    });
+    $('#sortPMeSkin').on('click', function() {
+        var lista = $('.productosSkin');
+        lista.sort(function(a, b) {
+          return $(a).data('precio') - $(b).data('precio');
+        });
+        $('.productosSkinContainer').empty().append(lista);
+    });
+    $('#sortPMaSkin').on('click', function() {
+        var lista = $('.productosSkin');
+        lista.sort(function(a, b) {
+            return $(b).data('precio') - $(a).data('precio');
+        });
+        $('.productosSkinContainer').empty().append(lista);
+    });
+
+    //ordenar productos de accesorios
+    $('#sortA-ZAccesorios').on('click', function() {
+        var lista = $('.productosAccesorios');
+        lista.sort(function(a, b) {
+          return $(a).data('nombre').localeCompare($(b).data('nombre'));
+        });
+        $('.productosAccesoriosContainer').empty().append(lista);
+    });
+    $('#sortZ-AAccesorios').on('click', function() {
+        var lista = $('.productosAccesorios');
+        lista.sort(function(a, b) {
+          return $(b).data('nombre').localeCompare($(a).data('nombre'));
+        });
+        $('.productosAccesoriosContainer').empty().append(lista);
+    });
+    $('#sortPMeAccesorios').on('click', function() {
+        var lista = $('.productosAccesorios');
+        lista.sort(function(a, b) {
+          return $(a).data('precio') - $(b).data('precio');
+        });
+        $('.productosAccesoriosContainer').empty().append(lista);
+    });
+    $('#sortPMaAccesorios').on('click', function() {
+        var lista = $('.productosAccesorios');
+        lista.sort(function(a, b) {
+            return $(b).data('precio') - $(a).data('precio');
+        });
+        $('.productosAccesoriosContainer').empty().append(lista);
+    });
 });
 
 $(document).on('click', '.colores-info', function(event){
@@ -267,6 +474,7 @@ $(document).on('click', '.colores-info', function(event){
     
     output.text(nombreColor)
 });
+
 
 const animateCSS = (element, animation, prefix = 'animate__') =>
 // We create a Promise and return it

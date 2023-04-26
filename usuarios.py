@@ -10,6 +10,13 @@ import numpy as np
 usuarios = flask.Blueprint('usuarios', __name__)
 mysql = MySQL()
 
+def asignarNombre():
+    with mysql.connect.cursor() as cursor:
+        cursor.execute('SELECT Nombre FROM usuarios WHERE Id_usuario = %s', (session.get('id_usuario'),))
+        rows = cursor.fetchone()
+        nombre = rows[0]
+        return nombre
+
 @usuarios.record_once
 def on_load(state):
     app = state.app
@@ -88,6 +95,7 @@ def productsApi(id=0):
 
 @usuarios.route("/usuarios")
 def index():
+    nombre = asignarNombre()
     link = url_for('usuarios.productsApi', _external=True)
     response = requests.get(link).json()
     data = response['Productos']
@@ -100,7 +108,9 @@ def index():
         else:
             abubu = fetch[0].split("|")
             numero = len(abubu)
-    return render_template("usuarios/landing.jinja", productos = data, idUsuario = session.get('id_usuario'), carrito = numero)
+
+    
+    return render_template("usuarios/landing.jinja", productos = data, idUsuario = session.get('id_usuario'), carrito = numero,nombre = nombre)
 
 @usuarios.route("/usuarios/addcarrito", methods=['POST'])
 def addcarrito():
@@ -127,6 +137,8 @@ def eliminar_producto(id):
     with mysql.connection.cursor() as cursor:
         cursor.execute("UPDATE usuarios SET Carrito = %s WHERE id_Usuario = %s", (carrito_str, id))
         mysql.connection.commit()
+        mysql.conncetion.close()
+        
         cursor.close()
     return 'OK'
 

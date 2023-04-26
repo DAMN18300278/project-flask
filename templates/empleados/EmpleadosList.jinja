@@ -4,26 +4,23 @@
 {% endblock %}
 
 {% block content %}
-    <div >
-        <div class="row align-items-start"> 
-            <div class="col-2">
-            <a href="../administradores"><button >volver</button> </a>
-            </div>
-            
-            <div class="col-8"><h2>Empleados</h2></div>
-            <span class="col-2"> </span>
+
+    <div class="p-3 py-4">
+        <div class="pt-3 d-flex align-items-center justify-content-center position-relative">
+            <a href="../administradores" class="position-absolute" style="top:0;left:0;" >
+                <i class="text-black bi bi-arrow-left" style="font-size: 25px;"></i>
+            </a>
+
+            <h1 style="font-size: 25px;">Empleados</h1>
         </div>
-        <div class="row align-items-center">
-            <span class="col-2"></span>
-            <div class="col-8 "> <input  type="search"  placeholder="buscar"></div>
-            <div class="col-2 text-left" style="float: left;">
-                <lord-icon
-                     src="https://cdn.lordicon.com/rlizirgt.json"
-                    trigger="click"
-                     style="width:26px;height:26px; ">
-                </lord-icon></div>
-            
-        </div>   
+        <div class="input-group justify-content-center">
+            <div class="form-outline">
+                <input type="search" id="form1" class="form-control" placeholder="search"/>
+            </div>
+            <button type="button" class="btn" style="background-color: transparent; box-shadow:none">
+                <i class="bi bi-search"></i>
+            </button>
+        </div>
         <div class="table table-hover containerEmp ">
         <table >
             <thead style="padding: 5px;">
@@ -32,7 +29,9 @@
                     <th>Nombre</th>
                     <th>Puesto</th>
                     <th>Editar</th>
+                    {%if tipo == 3%}
                     <th>Borrar</th>
+                    {%endif%}
                 </tr>
             </thead>
             <tbody>
@@ -52,6 +51,7 @@
                         
 
             </td>
+            {%if tipo == 3%}
             <td> 
             <a href="BorrarEmpleados/{{row[0]}}">
                 <lord-icon
@@ -60,9 +60,9 @@
                             style="width:26px;height:26px" onclick="">
                     </lord-icon> 
             </a>
-                        
-                        
+        
             </td>
+            {%endif%}
         </tr>
         {% endfor%}
         </tbody>
@@ -70,7 +70,7 @@
         </div> 
         
         <div >
-            <a href="editarEmpleados"><button >Añadir</button></a>
+            <a href="editarEmpleados"><button class="btn btn-success">Añadir</button></a>
             
         </div>
     </div>
