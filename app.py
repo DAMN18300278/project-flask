@@ -210,7 +210,7 @@ def send_correo():
         estado = 'Inactivo'
 
         # Verificar si ya existe un usuario con el mismo correo electrónico
-        with mysql.connection.cursor() as cursor:
+        with mysql.connect.cursor() as cursor:
             cursor.execute("SELECT Correo FROM cuenta WHERE Correo = %s", (email,))
             existing_user = cursor.fetchone()
             cursor.close()
