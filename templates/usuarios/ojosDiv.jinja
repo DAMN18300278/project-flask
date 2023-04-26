@@ -16,17 +16,23 @@
                 colors="primary:#000,secondary:#bfa2db"
                 style="width:35px;height:35px;"
                 id="dropdownSearchOjos"
-                type="button"
                 data-bs-toggle="dropdown"
                 aria-expanded="false">
             </lord-icon>
-            <div class="dropdown-menu px-5 h-50" aria-labelledby="dropdownSearchOjos" style="font-size: 16px; overflow-y:scroll;">
+            <div class="dropdown-menu px-5 mt-menu animate__animated animate__fadeInDown" aria-labelledby="dropdownSearchOjos" style="max-height:50%;font-size: 16px; overflow-y:scroll;">
                 <div class="input-group mb-3" style="font-size: 15px;">
-                    <input type="text" class="form-control border border-2" placeholder="Buscar" aria-label="Search" aria-describedby="basic-addon2">
+                    <input type="text" class="form-control border border-2" placeholder="Buscar" aria-label="Search" aria-describedby="basic-addon2" id="searchMenuOjos">
                 </div>
-                <div class="h-100" style="overflow-y: scroll;">
-                {% for i in range(1, subelementos) %}
-                    <a class="dropdown-item p-2" href="#" data-bs-toggle="modal" data-bs-target="#infoProducto">Pestaña 3D {{ i }}</a>
+                <div class="h-100" style="overflow-y: scroll;" id="dropdownSearchOjosList">
+                {% for producto in productosOjos %}
+                    {% set img = 'src/img' + producto['Id']|string + '_1.jpg' %}
+                    <div id="itemOjos" class="dropdown-item" data-nombre="{{ producto['Nombre'] }}" data-bs-toggle="modal" data-bs-target="#infoProducto" data-producto="{{ producto }}">
+                        <div class="d-flex">
+                            <img style="width: 20%; height:20%" src="{{ url_for('static', filename = img) }}">
+                            <a style="white-space:break-spaces;display:flex;align-items:center">{{ producto['Nombre'] }}</a>
+                        </div>
+                        <hr class="dropdown-divider">
+                    </div>
                 {% endfor %}
                 </div>
             </div>
@@ -68,14 +74,14 @@
                     <div class="tab-content">
                         {% for i in range(0, subelementos, 24) %}
                         <div class="tab-pane fade {% if loop.first %}show active{% endif %}" id="tab{{ loop.index }}">
-                            <div class="row justify-content-start w-100 ms-0">
+                            <div class="row justify-content-start w-100 ms-0 productosOjosContainer">
                             {% for j in range(i+1, i+25)%}
                             {% if productosOjos[j] is defined %}
-                                <div class="col me-auto mb-4">
-                                    {% with producto=productosOjos[j] %}
+                                {% with producto=productosOjos[j] %}
+                                <div class="col me-auto mb-4 productosOjos" data-nombre="{{producto['Nombre']}}" data-precio="{{producto['Precio u.']}}">
                                         {% include "usuarios/productosCard.jinja" %}
-                                    {% endwith %}
                                 </div>
+                                {% endwith %}
                             {% else %}
                             {% endif %}
                             {% endfor %}

@@ -9,17 +9,18 @@ def on_load(state):
     app = state.app
     mysql.init_app(app)
 
-def asignarNombre(idEmpleado):
+def asignarNombre():
     with mysql.connect.cursor() as cursor:
-        cursor.execute('SELECT Nombre_Empleado FROM empleado WHERE Id_Empleado = %s', (idEmpleado,))
+        cursor.execute('SELECT empleado.Nombre_Empleado, cuenta.Rol FROM empleado INNER JOIN cuenta ON empleado.Id_Empleado = cuenta.Id_cuenta WHERE empleado.Id_Empleado = %s', (session.get('id_administrador'),))
         rows = cursor.fetchone()
-        nombre = rows[0]  
-        flash(nombre[:(nombre.index(' '))])
+        nombre = rows[0]
+        tipo = rows[1]
+        return nombre, tipo
 
 @empleados.route("/administradores")
 def indexAdmin():
-    asignarNombre(session.get('id_administrador'))
-    return render_template("empleados/indexAdmin.jinja")
+    nombre, tipo = asignarNombre()
+    return render_template("empleados/indexAdmin.jinja", nombre = nombre, tipo = tipo)
 
 @empleados.route("/administradores/inventario/Agregar")
 def Agregar():
@@ -72,21 +73,23 @@ def añadir_producto():
 
 @empleados.route("/administradores/EmpleadosList")
 def EmpAdmin():
+    nombre, tipo = asignarNombre()
     with mysql.connect.cursor() as cursor:
-        cursor.execute("SELECT empleado.Id_Empleado, empleado.Nombre_Empleado, tipo_empleado.Tipo FROM empleado INNER JOIN tipo_empleado ON empleado.Tipo_Empleado = tipo_empleado.Id_Tipo ORDER BY empleado.Id_Empleado ASC")
+        cursor.execute("SELECT empleado.Id_Empleado, empleado.Nombre_Empleado, rol.Rol FROM empleado INNER JOIN cuenta ON empleado.Id_Empleado = cuenta.Id_cuenta INNER JOIN rol ON cuenta.Rol = rol.Id_Rol ORDER BY empleado.Id_Empleado ASC")
         resultado = cursor.fetchall()
-    return render_template("empleados/EmpleadosList.jinja", resultados = resultado)
+    return render_template("empleados/EmpleadosList.jinja", resultados = resultado, tipo = tipo)
 
 @empleados.route('/administradores/editarEmpleados', methods=['POST', 'GET'])
 @empleados.route('/administradores/editarEmpleados/<int:id>', methods=['POST', 'GET'])
 def Admin_empleados_Edit(id=None):
+    nombre, tipo = asignarNombre()
     if id:
         with mysql.connect.cursor() as cursor:
-            cursor.execute("SELECT empleado.Nombre_Empleado, cuenta.Correo, cuenta.Contraseña ,empleado.RFC, empleado.Direccion, empleado.RFC, empleado.Tipo_Empleado, empleado.Id_Empleado FROM empleado INNER JOIN cuenta ON cuenta.Id_cuenta = empleado.Id_Empleado WHERE cuenta.Id_cuenta = %s", (id,))
+            cursor.execute("SELECT empleado.Nombre_Empleado, cuenta.Correo, cuenta.Contraseña ,empleado.RFC, empleado.Direccion, empleado.RFC, rol.rol, empleado.Id_Empleado FROM empleado INNER JOIN cuenta ON empleado.Id_Empleado = %s INNER JOIN rol ON cuenta.Rol = rol.Id_Rol", (id,))
             resultado = cursor.fetchone()
-        return render_template("empleados/EmpEdit.jinja", empleado = resultado)
+        return render_template("empleados/EmpEdit.jinja", empleado = resultado, tipo=tipo)
     else:
-        return render_template("empleados/EmpEdit.jinja", empleado = "")
+        return render_template("empleados/EmpEdit.jinja", empleado = "",tipo=tipo)
 
 @empleados.route('/administradores/BorrarEmpleados/<int:id>')
 def Admin_empleados_Delete(id):
@@ -101,7 +104,7 @@ def Admin_empleados_Delete(id):
 @empleados.route("/administradores/OrdenesPago")
 def PagosAdmin():
     with mysql.connect.cursor() as cursor:
-        cursor.execute("SELECT OrdenPago.Id_Orden,usuarios.Nombre ,OrdenPago.Fecha, OrdenPago.Status, OrdenPago.Id_Usuario FROM OrdenPago INNER JOIN usuarios ON usuarios.Id_Usuario = OrdenPago.Id_Usuario ORDER BY Id_Orden ASC")
+        cursor.execute("SELECT OrdenPago.Id_Orden, usuarios.Nombre ,OrdenPago.Fecha, OrdenPago.Status, OrdenPago.Id_Usuario FROM OrdenPago INNER JOIN usuarios ON usuarios.Id_Usuario = OrdenPago.Id_Usuario ORDER BY Id_Orden ASC")
         resultado = cursor.fetchall()
     return render_template("empleados/OrdenesPago.jinja", resultados = resultado)
 
@@ -133,9 +136,8 @@ def crearorden(id):
 def OrdenUsuario(id):
     with mysql.connect.cursor() as cursor:
         
-        cursor.execute("SELECT Carrito FROM Usuarios WHERE Id_Usuario = %s",id,)
+        cursor.execute("SELECT Carrito FROM usuarios WHERE Id_Usuario = %s",(id,))
         fetch = cursor.fetchone()
-        print(fetch)
         if not fetch or not fetch[0]:
             numero = 0
             productos = []
@@ -158,7 +160,6 @@ def OrdenUsuario(id):
 
                 productos[i].append(color[indice_color])
 
-
                 cursor.execute("SELECT Nombre,Precio FROM productos WHERE Id_Productos = %s",productos[i][0],)
                 datos = cursor.fetchone()
                 
@@ -166,12 +167,11 @@ def OrdenUsuario(id):
                 
                 i+=1
              
-        cursor.execute("SELECT Nombre FROM Usuarios WHERE Id_Usuario = %s",id,)    
+        cursor.execute("SELECT Nombre FROM Usuarios WHERE Id_Usuario = %s",(id,))    
         nombre = cursor.fetchone()[0]
 
-        cursor.execute("SELECT Id_Orden, Fecha FROM ordenpago WHERE Id_Usuario = %s",id,)
+        cursor.execute("SELECT Id_Orden, Fecha FROM ordenpago WHERE Id_Usuario = %s",(id,))
         orden = cursor.fetchone()
-        print(orden)
     return render_template("empleados/OrdenEspecifica.jinja",id=id,numero = numero,productos=productos, nombre=nombre, orden = orden)
 
 @empleados.route("/administradores/GuardarEmp", methods=['POST', 'GET'])
@@ -198,7 +198,6 @@ def GuardarEmp(id=None):
             id_nuevo = max_id[0]+1
             #Insertar en la tabla cuenta con el id máximo + 1
         with mysql.connection.cursor() as cursor:
-            print(id_nuevo)
             cursor.execute("INSERT INTO cuenta(Id_cuenta, Rol, Correo, Contraseña, estado) VALUES (%s, %s, %s, %s, %s)", (id_nuevo, tipo, email, password, 'Inactivo'))
             mysql.connection.commit()
             # Insertar en la tabla empleado con el mismo id_cuenta

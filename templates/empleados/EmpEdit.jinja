@@ -5,7 +5,6 @@
 
 {% block content %}
 
-
 <div>
     <form {% if not empleado[7] %} action="/administradores/GuardarEmp" {% else %} action="/administradores/GuardarEmp/{{empleado[7]}}" {% endif %} method="post" class="to-left position-absolute p-5 d-flex flex-column justify-content-center align-items-center h-100" style="top: 0; bottom: 0; left: 0; right: 0;">
 
@@ -57,8 +56,10 @@
           <select id="ListaTipo" name="ListaTipo" class="form-control form-control-lg h-25" required>
             <option selected value="{{empleado[6]}}">{{empleado[6]}}</option>
             <option value="" disabled>Elige una opción...</option>
+            {% if tipo == 3 %}
             <option value="3">Administrador</option>
             <option value="2">Supervisor</option>
+            {%endif%}
             <option value="1">Encargado Caja</option>
             <option value="4">Encargado Almacen</option>
           </select>

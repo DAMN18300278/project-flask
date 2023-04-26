@@ -5,25 +5,22 @@
 {% endblock %}
 
 {% block content %}
-    <div>
-        <div class="row align-items-start">
-            <div class="col-2">
-                <a href="../administradores"><button>volver</button> </a>
-            </div>
+    <div class="p-3 py-4">
+        <div class="pt-3 d-flex align-items-center justify-content-center position-relative">
+            <a href="../administradores" class="position-absolute" style="top:0;left:0;" >
+                <i class="text-black bi bi-arrow-left" style="font-size: 25px;"></i>
+            </a>
 
-            <div class="col-8"><h2>Inventario</h2></div>
-            <span class="col-2"> </span>
+            <h1 style="font-size: 25px;">Inventario</h1>
         </div>
-        <div class="row align-items-center">
-            <span class="col-2"></span>
-            <div class="col-8 "> <input type="search" placeholder="buscar"></div>
-            <div class="col-2 text-left" style="float: left;">
-                <lord-icon
-                    src="https://cdn.lordicon.com/rlizirgt.json"
-                    trigger="click"
-                    style="width:26px;height:26px; ">
-                </lord-icon>
+
+        <div class="input-group justify-content-center">
+            <div class="form-outline">
+                <input type="search" id="form1" class="form-control" placeholder="search"/>
             </div>
+            <button type="button" class="btn" style="background-color: transparent; box-shadow:none">
+                <i class="bi bi-search"></i>
+            </button>
         </div>
         <div class="table table-hover containerEmp ">
             <table>

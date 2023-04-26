@@ -8,18 +8,26 @@
         <div>
             <div class="vanish1">
                 <p class="text-center">BIENVENIDO</p>
-                {% with user = get_flashed_messages() %}
-                <p style="font-size: 25px; font-weight: lighter; margin-bottom: 12%;">{{ user[0]|upper }}</p>
-                {% endwith %}
+                <p style="font-size: 25px; font-weight: lighter; margin-bottom: 12%;">{{ nombre|upper }}</p>
             </div>
-            <div class="w-75 d-inline">
-                <a href="/administradores/inventario" class="btn btn-success mt-5 to-left w-75 position-relative">Inventario</a>
-                <a href="/administradores/EmpleadosList" class="btn btn-success mt-5 to-right w-75 position-relative">Empleados</a>
-                <a href="/administradores/OrdenesPago"class="btn btn-success mt-5 to-left w-75 position-relative" style="margin-bottom: 30%;">Ordenes de pago</a>
+            <div class="w-75" style="margin-bottom: 20%; display:inline-block">
+                {% if tipo == 3 or tipo == 2 or tipo == 4 %}
+                <a href="/administradores/inventario" class="btn btn-success mt-5 to-left position-relative">Inventario</a>
+                {% endif %}
+                {% if tipo == 3 or tipo == 2%}
+                <a href="/administradores/EmpleadosList" class="btn btn-success mt-5 to-right position-relative">Empleados</a>
+                {% endif %}
+                {% if tipo == 3 or tipo == 2 or tipo == 1 %}
+                <a href="/administradores/OrdenesPago"class="btn btn-success mt-5 to-left position-relative" >Ordenes de pago</a>
+                {% endif %}
             </div>
             <div style="width: 80px;" class="mx-auto">
-                <a href="/administradores/delete" class="btn btn-success mt-40 to-left w-20 position-relative">Salir</a>
+                <a href="/administradores/delete" class="btn btn-success to-left w-20 position-relative">Salir</a>
             </div>
         </div>
     </div>
+
+    <script>
+    
+    </script>
 {% endblock %}
