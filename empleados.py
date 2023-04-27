@@ -115,16 +115,37 @@ def PagosAdmin():
 
 @empleados.route("/administradores/OrdenEspecifica/RecogerCaja/<string:id>")
 def RecogerCaja(id):
-    with mysql.connection.cursor() as cursor:
-        cursor.execute("INSERT INTO ordenpago(Id_Orden, Id_Usuario, Fecha, Status) VALUES (NULL, %s, NOW(), 'Pagar en caja')", (id,))
-        mysql.connection.commit()
-        mysql.connection.commit()
-    return redirect("/administradores/OrdenesPago")
+
+    with mysql.connect.cursor() as cursor:
+        cursor.execute("SELECT Estatus_Pedido FROM usuarios WHERE Id_Usuario = %s", (id,))
+        result = cursor.fetchone()
+        print(result)
+        if result and result[0] == 'activo':  # Verificar si existe el registro y si el estatus es 'activo'
+            
+            flash('pedido activo.')
+            return redirect("/usuarios/ordencarrito/"+id)
+        else:
+            with mysql.connect.cursor() as cursor:
+                cursor.execute("SELECT carrito From usuarios where Id_Usuario = %s",(id,))
+                carrito = cursor.fetchone()
+            with mysql.connection.cursor() as cursor:
+                cursor.execute("UPDATE usuarios SET carrito = '' WHERE Id_Usuario = %s", (id,))
+                cursor.execute("UPDATE usuarios SET Estatus_Pedido = 'activo' WHERE Id_Usuario = %s", (id,))
+                mysql.connection.commit()
+            with mysql.connection.cursor() as cursor:
+                cursor.execute("INSERT INTO ordenpago( Id_Usuario, Fecha, Status, carrito) VALUES ( %s, NOW(), 'Pagar en caja', %s)", (id,carrito))
+                mysql.connection.commit()
+        return redirect("/usuarios")
+
 
 @empleados.route("/administradores/OrdenEspecifica/statusEntregado/<string:id>")
 def statusEntregado(id):
+    with mysql.connect.cursor() as cursor:
+        cursor.execute("SELECT Id_Usuario FROM ordenpago WHERE Id_Orden = %s",(id,))
+        fetch = cursor.fetchone()
     with mysql.connection.cursor() as cursor:
         cursor.execute("UPDATE ordenpago SET status = 'Entregado' WHERE Id_Orden = %s", (id,))
+        cursor.execute("UPDATE usuarios SET Estatus_Pedido = 'inactivo' WHERE Id_Usuario = %s", (fetch,))
         mysql.connection.commit()
         mysql.connection.close()
     return redirect("/administradores/OrdenesPago")
@@ -132,17 +153,29 @@ def statusEntregado(id):
 @empleados.route("/administradores/OrdenEspecifica/crearorden/<string:id>")
 def crearorden(id):
 
-    with mysql.connection.cursor() as cursor:
-        cursor.execute("INSERT INTO ordenpago(Id_Orden, Id_Usuario, Fecha, Status) VALUES (NULL, %s, NOW(), 'Pagado, recoger en caja')", (id,))
-        mysql.connection.commit()
-        mysql.connection.close()
+    with mysql.connect.cursor() as cursor:
+        cursor.execute("SELECT Estatus_Pedido FROM usuarios WHERE Id_Usuario = %s", (id,))
+        result = cursor.fetchone()
+        print(result)
+        if result and result[0] == 'activo':  # Verificar si existe el registro y si el estatus es 'activo'
+            
+            flash('pedido activo.')
+            return redirect("/usuarios/ordencarrito/"+id)
+        else:
+            print(result)
+            with mysql.connection.cursor() as cursor:
+                cursor.execute("INSERT INTO ordenpago(Id_Orden, Id_Usuario, Fecha, Status) VALUES (NULL, %s, NOW(), 'Pagado, recoger en caja')", (id,))
+                cursor.execute("UPDATE usuarios SET Estatus_Pedido = 'activo' WHERE Id_Usuario = %s", (id,))
+                mysql.connection.commit()
+            flash('Se ha insertado la orden de pago exitosamente.')
     return redirect("/administradores/OrdenesPago")
 
 @empleados.route("/administradores/OrdenEspecifica/<string:id>")
 def OrdenUsuario(id):
+
     with mysql.connect.cursor() as cursor:
         
-        cursor.execute("SELECT Carrito FROM usuarios WHERE Id_Usuario = %s",(id,))
+        cursor.execute("SELECT Carrito, Id_Usuario FROM ordenpago WHERE Id_Orden = %s",(id,))
         fetch = cursor.fetchone()
         if not fetch or not fetch[0]:
             numero = 0
@@ -173,10 +206,10 @@ def OrdenUsuario(id):
                 
                 i+=1
              
-        cursor.execute("SELECT Nombre FROM Usuarios WHERE Id_Usuario = %s",(id,))    
+        cursor.execute("SELECT Nombre FROM Usuarios WHERE Id_Usuario = %s",(fetch[1],))    
         nombre = cursor.fetchone()[0]
 
-        cursor.execute("SELECT Id_Orden, Fecha FROM ordenpago WHERE Id_Usuario = %s",(id,))
+        cursor.execute("SELECT Id_Orden, Fecha FROM ordenpago WHERE Id_Orden = %s",(id,))
         orden = cursor.fetchone()
     return render_template("empleados/OrdenEspecifica.jinja",id=id,numero = numero,productos=productos, nombre=nombre, orden = orden)
 
