@@ -1,13 +1,8 @@
 {% block nav %}
     <nav class="navbar navbar-light bg-white p-2 " style="font-size: 25px;">
         <a href="/usuarios" class="navbar-brand mx-3" style="font-size:x-large;">DECÒRE</a>
-        <a id="menu" data-bs-toggle="dropdown" aria-expanded="false" style="height:38px;" >
-            <lord-icon
-                src="{{ url_for('static', filename='icons/infoIcon.json') }}"
-                trigger="click"
-                colors="primary:#848484"
-                style="width:30px;height:30px">
-            </lord-icon>
+        <a id="menu" data-bs-toggle="dropdown" aria-expanded="false" style="height:38px; color:black" >
+            <i class="bi bi-list" style="font-size: 28px;"></i>
         </a>
         {% include "usuarios/menu.jinja" %}
     </nav>

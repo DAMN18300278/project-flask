@@ -6,7 +6,7 @@
 {% endfor %}
 {% set subelementos = productosLabios|length %}
 
-<div class="container h-100 tab-pane fade animate__animated animate__fadeInUp pb-5" id="labiosDiv" style="padding-left: 0; padding-right: 0;">
+<div class="container h-100 tab-pane fade animate__animated animate__fadeInUp pb-5 tab" id="labiosDiv" style="padding-left: 0; padding-right: 0; padding-bottom:20%">
     <div class="w-100 h-100">
         <div class="d-flex justify-content-end p-2 border-bottom border-3">
             <p class="me-auto ms-2 my-auto">Categoria: labios</p>
@@ -26,10 +26,10 @@
                 <div class="h-100" style="overflow-y: scroll;" id="dropdownSearchLabiosList">
                 {% for producto in productosLabios %}
                     {% set img = 'src/img' + producto['Id']|string + '_1.jpg' %}
-                    <div id="itemLabios" class="dropdown-item" data-nombre="{{ producto['Nombre'] }}" data-bs-toggle="modal" data-bs-target="#infoProducto" data-producto="{{ producto }}">
+                    <div id="itemLabios" class="dropdown-item" data-nombre="{{ producto['Nombre'] }}" data-id="{{ producto['Id'] }}" data-bs-toggle="modal" data-bs-target="#infoProducto" data-producto="{{ producto }}">
                         <div class="d-flex">
                             <img style="width: 20%; height:20%" src="{{ url_for('static', filename = img) }}">
-                            <a style="white-space:break-spaces;display:flex;align-items:center">{{ producto['Nombre'] }}</a>
+                            <a style="white-space:break-spaces;display:flex;align-items:center"><span>{{ producto['Nombre'] }} <span style="color:#808080ab">#{{ producto['Id'] }}</span></span></a>
                         </div>
                         <hr class="dropdown-divider">
                     </div>

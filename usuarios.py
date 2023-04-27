@@ -182,6 +182,24 @@ def ordencarrito(id):
         
     return render_template("usuarios/CarritoCompras.jinja",id=id,numero = numero,productos=productos, nombre=nombre)
 
+@usuarios.route("/usuarios/foro")
+def foro():
+    link = url_for('usuarios.productsApi', _external=True)
+    response = requests.get(link).json()
+    data = response['Productos']
+
+    return render_template("usuarios/foro.jinja", productosLabios = data)
+
+@usuarios.route("/usuarios/guardarPub", methods=['POST'])
+def guardarPub():
+    Id_usuario = session.get('id_usuario')
+    Id_producto = request.form['Id_producto']
+    Descripcion = request.form['Descripcion']
+    Puntuacion = request.form['Puntuacion']
+
+    with mysql.connection.cursor() as cursor:
+        cursor.execute("INSERT INTO foro(Id_usuario, Id_producto, Descripcion, Puntuacion) VALUES(%s,%s,%s,%s)", (Id_usuario, Id_producto, Descripcion, Puntuacion))
+        mysql.connection.commit()
 
 @usuarios.route("/cam")
 def cam():
