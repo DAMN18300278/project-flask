@@ -1,6 +1,6 @@
 import flask
 import requests
-from flask import session, render_template, redirect, jsonify, make_response, url_for, request
+from flask import session, render_template, redirect, jsonify, make_response, url_for, request, flash
 from flask_mysqldb import MySQL
 from collections import OrderedDict
 import base64
@@ -124,7 +124,7 @@ def addcarrito():
     with mysql.connection.cursor() as cursor:
         cursor.execute("UPDATE usuarios SET Carrito = CONCAT(Carrito, %s) WHERE id_Usuario = %s", (carritoData, idUsuario))
         mysql.connection.commit()
-        mysql.connection.close()
+        
     return redirect("/")
 
 @usuarios.route('/usuarios/eliminar_producto/<string:id>', methods=['POST'])
@@ -146,7 +146,7 @@ def eliminar_producto(id):
     with mysql.connection.cursor() as cursor:
         cursor.execute("UPDATE usuarios SET Carrito = %s WHERE id_Usuario = %s", (carrito_str, id))
         mysql.connection.commit()
-        mysql.connection.close()
+        
         
     return 'OK'
 
@@ -164,6 +164,7 @@ def ordencarrito(id):
             
             carrito = fetch[0].split('|') # se elimina el primer elemento vacío de la lista
             
+            print(carrito)
             numero = len(carrito)
             productos = []
             i = 0
@@ -184,7 +185,7 @@ def ordencarrito(id):
                 productos[i].append(color[indice_color])
 
                 #print(color[int(productos[int(productos[i][2])])])
-                cursor.execute("SELECT Nombre,Precio FROM productos WHERE Id_Productos = %s",productos[i][0],)
+                cursor.execute("SELECT Nombre,Precio FROM productos WHERE Id_Productos = %s", (productos[i][0],))
                 datos = cursor.fetchone()
                 
                 productos[i].extend(datos)

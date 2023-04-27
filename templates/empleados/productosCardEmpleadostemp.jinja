@@ -3,7 +3,7 @@
     <img src="{{ url_for('static', filename= imgModal) }}" style="width:7em; height:7em;">
     <div class="position-absolute border border-danger bg-white py-1 px-2" style="bottom: 5%; left: 5%; overflow:hidden; max-width:90%">
         <p class="mb-0 text-start" style="font-size: 12px;letter-spacing:1px;">{{producto[4]}}</p>
-        <p class="mb-0 text-start" style="font-size: 11px;letter-spacing:1px;font-weight: bold;">{{producto[5]}}</p>
+        <p class="mb-0 text-start" style="font-size: 11px;letter-spacing:1px;font-weight: bold;">${{producto[5]}}</p>
     </div>
     <div class="position-absolute colores-info col-3 m-2 "  style="top: 5%; left: 5% ; background-color: #{{producto[3]}};"></div>
 </div>

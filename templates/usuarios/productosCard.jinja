@@ -5,7 +5,7 @@
         data-producto="{{ producto }}" style="width:6.5em; height:6.5em;">
     <img src="{{ url_for('static', filename= img) }}" style="width:6em; height:6em;">
     <div class="position-absolute border border-danger bg-white py-1 px-2" style="bottom: 5%; left: 5%; overflow:hidden; max-width:90%">
-        <p class="mb-0 text-start" style="font-size: 12px;letter-spacing:1px;">{{ producto['Nombre'] }}</p>
+        <p class="mb-0 text-start" style="font-size: 12px;letter-spacing:1px;white-space:break-spaces">{{ producto['Nombre'] }}</p>
         <p class="mb-0 text-start" style="font-size: 11px;letter-spacing:1px;font-weight: bold;">${{ producto['Precio u.'] }}</p>
     </div>
 </div>
