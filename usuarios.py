@@ -116,6 +116,11 @@ def index():
 def addcarrito():
     carritoData = request.form['carritoData']
     idUsuario = request.form['id']
+    with mysql.connect.cursor() as cursor:
+        cursor.execute("SELECT Carrito FROM usuarios WHERE Id_Usuario = %s", (session.get('id_usuario'),))
+        fetch = cursor.fetchone()
+        if fetch is None or not fetch[0]:
+            carritoData = carritoData.replace("|", "")
     with mysql.connection.cursor() as cursor:
         cursor.execute("UPDATE usuarios SET Carrito = CONCAT(Carrito, %s) WHERE id_Usuario = %s", (carritoData, idUsuario))
         mysql.connection.commit()
@@ -128,12 +133,16 @@ def eliminar_producto(id):
     id_producto = int(ids[0])-1
     id = ids[1]
     with mysql.connect.cursor() as cursor:
-        cursor.execute("SELECT Carrito FROM usuarios WHERE Id_Usuario = %s",id,)
+        cursor.execute("SELECT Carrito FROM usuarios WHERE Id_Usuario = %s",(id,))
         fetch = cursor.fetchone()
-        carrito = fetch[0].split('|')[1:] 
+        print(fetch)
+        carrito = fetch[0].split('|')
+
+        if not carrito:
+            flash("Tu carrito esta vacio")
+            return redirect("/usuarios/ordencarrito/"+ id)
         del carrito[id_producto]
         carrito_str = '|'.join(carrito)
-        carrito_str = "|"+carrito_str
     with mysql.connection.cursor() as cursor:
         cursor.execute("UPDATE usuarios SET Carrito = %s WHERE id_Usuario = %s", (carrito_str, id))
         mysql.connection.commit()
@@ -153,7 +162,7 @@ def ordencarrito(id):
             productos = []
         else:
             
-            carrito = fetch[0].split('|')[1:] # se elimina el primer elemento vacío de la lista
+            carrito = fetch[0].split('|') # se elimina el primer elemento vacío de la lista
             
             numero = len(carrito)
             productos = []
@@ -162,9 +171,13 @@ def ordencarrito(id):
                 producto = producto.split(',')
                 productos.append(producto)
 
-                cursor.execute("SELECT Color_RGBA FROM productos WHERE Id_Productos = %s",producto[0],)
-                color = cursor.fetchone()[0].split(',')
-
+                cursor.execute("SELECT Color_RGBA FROM productos WHERE Id_Productos = %s",(producto[0],))
+                fetch = cursor.fetchone()
+                if fetch:
+                    color = fetch[0].split(',')
+                else:
+                    color = []
+                
                 producto[2] = int(producto[2])
                 indice_color = int(producto[2])-1
 

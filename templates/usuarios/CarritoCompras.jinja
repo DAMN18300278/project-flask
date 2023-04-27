@@ -3,12 +3,27 @@
 {% block content %}
 
     <div class="p-5">
+
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <ul class="flash-messages">
+            {% for message in messages %}
+                </div>
+                <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                <strong>Pedido Activo!</strong> Estimado/a cliente, le recordamos que actualmente cuenta con un pedido pendiente. Para poder realizar uno nuevo, le agradeceríamos que antes proceda con el pago correspondiente o la recolección del pedido activo. ¡Muchas gracias por su comprensión y preferencia!
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+            </ul>
+        {% endif %}
+        {% endwith %}
+        <p>{{nombre}}</p>
+        {% if numero != 0%}
         <h1>#{{id}} - <span id="current_date"></span></h1>
         {#jalar los id de los productos dentro de la orden#}
        
         <p>Productos:{{numero}}</p>
-        <p>{{nombre}}</p>
-       
+        
         
         {% set total = 0 %}
 
@@ -35,6 +50,25 @@
         <div>
            <a href="/administradores/OrdenEspecifica/RecogerCaja/{{id}}"><button class="btn btn-outline-warning" style="font-size: 24px; padding: 1em; display:inline-flex; justify-content: center; align-items: center;">Pagar en caja</button></a>
         </div>
+
+        {% else %}
+                
+            <lord-icon
+                src="https://cdn.lordicon.com/rmzhcgbh.json"
+                trigger="loop"
+                delay="2000"
+                colors="primary:#a866ee,secondary:#ebe6ef,tertiary:#f49cc8"
+                style="width:250px;height:250px">
+            </lord-icon>
+            
+            <div class="mt-5">
+                <h1 class="fw-bold display-3">Agrega artículos para comenzar a llenar tu carrito</h1>
+                <h4 class="mt-4" style="font-size: 2rem; color: rgb(146, 43, 146);">Cuando agregues un artículo aparecerá aquí.</h4>
+            </div>
+
+            <a href="/usuarios" class="btn btn-primary mt-5" style="background-color: black; color:white">Comprar ahora</a>
+            
+        {% endif %}
         
     <script>
 
