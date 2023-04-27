@@ -26,13 +26,13 @@ function horizontalMenuChange(element) {
             inicio.classList.add("horizontal-menu-hover");
             break;
         case 2:
-            ojos.classList.add("horizontal-menu-hover");
+            piel.classList.add("horizontal-menu-hover");
             break;
         case 3:
             labios.classList.add("horizontal-menu-hover");
             break;
         case 4:
-            piel.classList.add("horizontal-menu-hover");
+            ojos.classList.add("horizontal-menu-hover");
             break;
         case 5:
             skincare.classList.add("horizontal-menu-hover");
@@ -130,10 +130,12 @@ $(document).ready(function ($) {
 
     $("#searchMenuLabios").keyup(function() {
         var filter = $(this).val().toLowerCase();
-        var items = $("#dropdownSearchLabiosList").find("#itemLabios[data-nombre]");
+        var items = $("#dropdownSearchLabiosList").find("#itemLabios[data-nombre], #itemLabios[data-id]");
         items.each(function() {
-            var productName = $(this).data('nombre').toLowerCase();
-            var match = productName.indexOf(filter) > -1;
+            var productName = $(this).text().toLowerCase();
+            var nombre = $(this).data("nombre").toLowerCase();
+            var id = $(this).data("id");
+            var match = productName.indexOf(filter) > -1 || nombre.indexOf(filter) > -1 || id.toString().indexOf(filter) > -1;
             $(this).toggle(match);
         });
     });
@@ -141,8 +143,8 @@ $(document).ready(function ($) {
         var filter = $(this).val().toLowerCase();
         var items = $("#dropdownSearchOjosList").find("#itemOjos[data-nombre]");
         items.each(function() {
-            var text = $(this).text().toLowerCase();
-            var match = text.indexOf(filter) > -1;
+            var productName = $(this).text().toLowerCase();
+            var match = productName.indexOf(filter) > -1;
             $(this).toggle(match);
         });
     });
@@ -150,8 +152,8 @@ $(document).ready(function ($) {
         var filter = $(this).val().toLowerCase();
         var items = $("#dropdownSearchPielList").find("#itemPiel[data-nombre]");
         items.each(function() {
-            var text = $(this).text().toLowerCase();
-            var match = text.indexOf(filter) > -1;
+            var productName = $(this).text().toLowerCase();
+            var match = productName.indexOf(filter) > -1;
             $(this).toggle(match);
         });
     });
@@ -159,8 +161,8 @@ $(document).ready(function ($) {
         var filter = $(this).val().toLowerCase();
         var items = $("#dropdownSearchSkinList").find("#itemSkin[data-nombre]");
         items.each(function() {
-            var text = $(this).text().toLowerCase();
-            var match = text.indexOf(filter) > -1;
+            var productName = $(this).text().toLowerCase();
+            var match = productName.indexOf(filter) > -1;
             $(this).toggle(match);
         });
     });
@@ -168,8 +170,8 @@ $(document).ready(function ($) {
         var filter = $(this).val().toLowerCase();
         var items = $("#dropdownSearchAccesoriosList").find("#itemAccesorios[data-nombre]");
         items.each(function() {
-            var text = $(this).text().toLowerCase();
-            var match = text.indexOf(filter) > -1;
+            var productName = $(this).text().toLowerCase();
+            var match = productName.indexOf(filter) > -1;
             $(this).toggle(match);
         });
     });
@@ -198,6 +200,8 @@ $(document).ready(function ($) {
     $('#tabs').tab();
 
     $('#tabsMenu').tab();
+    $('#tabsMenu2').tab();
+
     var productoId;
     var contentColores;
     var keySeleccionado;
@@ -239,7 +243,7 @@ $(document).ready(function ($) {
         
         $('#snapInfoProductos').animate({scrollLeft: 0}, 500);
         modal.find('#snapInfoProductos').html(contentImgs);
-        modal.find('#idInfoProductos').text("#" + productoId.toString().padStart(5, "0"));
+        modal.find('#idInfoProductos').text("ID: #" + productoId.toString());
         modal.find('#nombreInfoProductos').text(nombre);
         modal.find('#descInfoProductos').text(descripcion);
         if(tipoPiel == '1'){
@@ -462,6 +466,29 @@ $(document).ready(function ($) {
         });
         $('.productosAccesoriosContainer').empty().append(lista);
     });
+
+});
+
+$(document).on('click', '.bi-star', function(event) {
+    $(event.target).addClass('bi-star-fill');
+    $(event.target).prevAll().addClass('bi-star-fill');
+    $(event.target).nextAll().removeClass('bi-star-fill').removeClass('bi-star');
+    $(event.target).removeClass('bi-star').addClass('bi-star-fill');
+    
+    var puntuacion = $('.bi-star-fill').length;
+    $('input[name="puntuacion"]').val(puntuacion);
+});
+
+// Seleccionar el botón externo y la lista de pestañas
+const $tabs = $('.tab');
+
+// Agregar un controlador de eventos clic al botón externo
+$(document).on('click', '.btn-opm', function(event) {
+    // Obtener el índice del botón clickeado
+    const index = $(event.target).data('index');
+    console.log();
+    // Activar la pestaña correspondiente
+    $('.tab').eq(index).addClass('active').siblings().removeClass('active');
 });
 
 $(document).on('click', '.colores-info', function(event){

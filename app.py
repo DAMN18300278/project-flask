@@ -232,6 +232,7 @@ def send_correo():
             # Insertar el nuevo usuario en la tabla cuenta
             cursor = mysql.connection.cursor()
             cursor.execute("INSERT INTO cuenta (Rol, Correo, Contraseña, estado) VALUES (5, %s, %s, %s)", (email, contraseña, estado))
+            
             mysql.connection.commit()
             cursor.close()
             mysql.connection.close()

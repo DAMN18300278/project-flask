@@ -1,0 +1,93 @@
+{% extends "usuarios/usuariosMaster.jinja" %}
+{% block head %}
+    {{ super() }}
+{% endblock %}
+
+
+{% block content %}
+{% include "usuarios/nav.jinja" %}
+
+<div class="modal fade" tabindex="-1" role="dialog" id="crearPub">
+    <div class="modal-dialog mx-5" style="margin-top: 10%;" role="document">
+        <div class="modal-content p-4" style="border-radius: 15px;">
+            <div class="modal-body">
+                <div class="input-group mb-3" style="font-size: 15px;">
+                    <input type="text" class="form-control border border-2" placeholder="Buscar" aria-label="Search" id="searchMenuLabios">
+                    <i class="bi bi-search" style="font-size: 3rem; padding-left:1rem"></i>
+                </div>
+                <div class="input-group mb-3 my-5" style="font-size: 15px;">
+                    <input type="text" class="form-control border border-2" style="box-shadow: none;" aria-label="Search" readonly placeholder="Nombre del producto" id="searchMenuLabios">
+                </div>
+                <div class="input-group mb-3 my-5" style="font-size: 15px;">
+                    <textarea cols="30" rows="9" style="height: 40%;" class="form-control border border-2" aria-label="Search" placeholder="Descripción" id="searchMenuLabios" maxlength="270"></textarea>
+                </div>
+                <div class="input-group mb-3 my-5 d-flex flex-column" style="font-size: 15px;">
+                    Calificacion:
+                    <div style="font-size: 30px;">
+                        <i class="bi bi-star"></i>
+                        <i class="bi bi-star"></i>
+                        <i class="bi bi-star"></i>
+                        <i class="bi bi-star"></i>
+                        <i class="bi bi-star"></i>
+                    </div>
+                    <input type="number" name="puntuacion" class="d-none">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="h-100">
+    <div class="d-flex justify-content-end p-2 border-bottom border-3">
+        <p class="me-auto ms-2 my-auto d-flex align-items-center">Foro decòre  
+            <lord-icon
+                src="https://cdn.lordicon.com/psaebtij.json"
+                trigger="loop"
+                delay="1000"
+                colors="primary:#a866ee,secondary:#545454"
+                style="width:40px;height:40px">
+            </lord-icon>
+        </p>
+        <lord-icon
+            src="https://cdn.lordicon.com/msoeawqm.json"
+            trigger="click"
+            colors="primary:#000,secondary:#bfa2db"
+            style="width:35px;height:35px;"
+            id="dropdownSearchLabios"
+            data-bs-toggle="dropdown"
+            aria-expanded="false">
+        </lord-icon>
+        <div class="dropdown-menu px-5 mt-foro-search animate__animated animate__fadeInDown" aria-labelledby="dropdownSearchLabios" style="max-height:50%; font-size: 16px; overflow-y:scroll; margin-top:40%">
+            <div class="input-group mb-3" style="font-size: 15px;">
+                <input type="text" class="form-control border border-2" placeholder="Buscar" aria-label="Search" aria-describedby="basic-addon2" id="searchMenuLabios">
+            </div>
+        </div>
+
+        <lord-icon
+            src="https://cdn.lordicon.com/sbiheqdr.json"
+            trigger="click"
+            colors="primary:#000,secondary:#810CA8"
+            style="width:40px;height:40px; margin-top:-2px;"
+            id="dropdownFiltersOjos"
+            type="button"
+            data-bs-toggle="dropdown"
+            aria-expanded="false">
+        </lord-icon>
+        <ul class="dropdown-menu" aria-labelledby="dropdownFiltersOjos" style="font-size: 16px;">
+            <a class="dropdown-item p-3 px-5" id="sortA-ZLabios">Ordenar por nombre (A - Z)</a>
+            <hr class="dropdown-divider">
+            <a class="dropdown-item p-3 px-5" id="sortZ-ALabios">Ordenar por nombre (Z - A)</a>
+            <hr class="dropdown-divider">
+            <a class="dropdown-item p-3 px-5" id="sortPMaLabios">Ordenar por precio <i class="bi bi-arrow-up"></i></a>
+            <hr class="dropdown-divider">
+            <a class="dropdown-item p-3 px-5" id="sortPMeLabios">Ordenar por precio <i class="bi bi-arrow-down"></i></a>
+        </ul>
+    </div>
+
+    <div class="p-3 py-5">
+        <div class="w-100 text-end px-3">
+            <button class="btn btn-outline-danger px-4" data-bs-toggle="modal" data-bs-target="#crearPub">Crear publicacion</button>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -180,6 +180,7 @@ img{
     font-size: 20px;
     letter-spacing: 2px;
     color: #000;
+    white-space: break-spaces;
 }
 
 .colores-info{
@@ -218,4 +219,7 @@ img{
 
 .mt-menu{
     margin-top: 44px !important;
+}
+.mt-foro-search{
+    margin-top: 96px !important;
 }

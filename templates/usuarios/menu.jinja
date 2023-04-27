@@ -1,34 +1,35 @@
 <div class="bg-menu dropdown-menu position-fixed animate__animated animate__fadeInDown w-100" aria-labelledby="menu" 
       style=" color: #000; bottom:0; top:45px; left:0; right:0; height:fit-content" id="menuResult">
   <ul class="menu p-5" style="font-size: 16px;">
-    <a href="/usuarios" class="my-5" style="color: #000; text-decoration:none">Inicio</a>
+    <a href="/usuarios" class="my-5" style="color: #000; text-decoration:none"><i class="bi bi-house"></i>  Inicio</a>
     <hr class="dropdown-divider" style="border-color: black;">
     <a class="dropdown-submenu my-4" style="color: #000;text-decoration:none">
-      <a class="my-4 dropdown-toggle" style="color: #000;text-decoration:none"  href="#">Productos</a>
-      <ul >
-        <li ><a class="my-4" style="color: #000;text-decoration:none" href="#">Ojos</a></li>
-        <li><a class="my-4" style="color: #000;text-decoration:none" href="#">Labios</a></li>
-        <li><a class="my-4" style="color: #000;text-decoration:none"href="#">Rostro</a></li>
-        <li><a  class="my-4" style="color: #000;text-decoration:none"href="#">Cuidado de la piel</a></li>
-        <li><a  class="my-4" style="color: #000;text-decoration:none"href="#">Accesorios</a></li>
-      </ul>
+        <a class="my-4 " style="color: #000;text-decoration:none"  href=""><i class="bi bi-brush"></i>  Productos</a>
+        <ul id="tabsMenu2" role="tablist">
+          <li id="inicioMenuDrop"><a class="my-4 btn-opm" data-index="0" style="color: #000;text-decoration:none" 
+          onclick="horizontalMenuChange(1)"> Recomendaciones</a></li>
+          <li id="pielMenuDrop"><a class="my-4 btn-opm" data-index="1" style="color: #000;text-decoration:none" 
+          onclick="horizontalMenuChange(2)"> Piel</a></li>
+          <li id="labiosMenuDrop"><a class="my-4 btn-opm" data-index="2" style="color: #000;text-decoration:none" 
+          onclick="horizontalMenuChange(3)"> Labios</a></li>
+          <li id="ojosMenuDrop"><a class="my-4 btn-opm" data-index="3" style="color: #000;text-decoration:none" 
+          onclick="horizontalMenuChange(4)"> Ojos</a></li>
+          <li id="skinMenuDrop"><a class="my-4 btn-opm" data-index="4" style="color: #000;text-decoration:none" 
+          onclick="horizontalMenuChange(5)"> Cuidado de la piel</a></li>
+          <li id="accesoriosMenuDrop"><a class="my-4 btn-opm" data-index="5" style="color: #000;text-decoration:none" 
+          onclick="horizontalMenuChange(6)"> Accesorios</a></li>
+        </ul>
     </a>
     <hr class="dropdown-divider" style="border-color: black;">
-    <a href="#" class="my-4" style="color: #000;text-decoration:none">Kits</a>
+    <a href="" class="my-4" style="color: #000;text-decoration:none"><i class="bi bi-bag"></i>  Kits</a>
     <hr class="dropdown-divider" style="border-color: black;">
-    <a href="#" class="my-4" style="color: #000;text-decoration:none">Foro</a>
+    <a href="/usuarios/foro" class="my-4" style="color: #000;text-decoration:none"><i class="bi bi-chat-right-dots"></i>  Foro</a>
     <hr class="dropdown-divider" style="border-color: black;">
-    <a href="" class="my-4" style="color: #000;text-decoration:none">
-      <i class="bi bi-person-circle"></i>
-      {{nombre}}
-    </a>
+    <a href="" class="my-4" style="color: #000;text-decoration:none"><i class="bi bi-person"></i>  {{nombre}}</a>
     <hr class="dropdown-divider" style="border-color: black;">
-    <a href="#" class="my-4" style="color: #000;text-decoration:none">Formas de Maquillarse</a>
+    <a href="" class="my-4" style="color: #000;text-decoration:none"><i class="bi bi-person-badge"></i>  Formas de Maquillarse</a>
     <hr class="dropdown-divider" style="border-color: black;">
-    <a href="" class="my-4" style="color: #000;text-decoration:none">
-      <i class="bi bi-arrow-clockwise"></i>
-      Salir
-    </a>
+    <a href="" class="my-4" style="color: #000;text-decoration:none"><i class="bi bi-box-arrow-left"></i>  Salir</a>
     <hr class="dropdown-divider" style="border-color: black;">
   </ul>
 </div>

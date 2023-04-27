@@ -1,4 +1,4 @@
-<div class="container h-100 tab-pane fade show active animate__animated animate__fadeInUp" id="inicioDiv" style="padding-left: 0; padding-right: 0; overflow-y:scroll;">
+<div class="container h-100 tab-pane fade show active animate__animated animate__fadeInUp tab" id="inicioDiv" style="padding-left: 0; padding-right: 0; overflow-y:scroll; padding-bottom:20%">
     <div>
         <div class="d-flex">
             <p class="p-3 my-auto" style="text-align: left; margin-bottom: 0; margin-left: 3%;">Productos populares</p>
@@ -29,17 +29,17 @@
 
             <div class="snap-container w-100 h-100" id="snapProductosPopulares"> {# snap-container fue otorgado por https://www.silocreativo.com/controla-desplazamiento-web-css-scroll-snap/ #}
                 {% for producto in productos %}
-                    <div class="snap-section position-relative" style="overflow: hidden;">
+                    <div class="snap-section position-relative d-flex align-items-center flex-column" style="overflow: hidden;">
                         {% set img = 'src/img' + producto['Id']|string + '_1.jpg' %}
                         <img src="{{ url_for('static', filename = img) }}">
-                        <div>
+                        <div class="my-auto">
                             <p class="product-text my-4 w-75 mx-auto mb-0">{{ producto['Nombre'] }}</p>
                             <p style="font-size: 13px; color:rgb(70, 70, 70)">{{ producto['Marca'] }}</p>
+                            <button class="btn btn-outline-danger btn-product mx-auto mb-4" type="button" 
+                            data-bs-toggle="modal" 
+                            data-bs-target="#infoProducto" 
+                            data-producto="{{ producto }}">Detalles</button>
                         </div>
-                        <button class="btn btn-outline-danger btn-product mx-auto mb-4" type="button" 
-                        data-bs-toggle="modal" 
-                        data-bs-target="#infoProducto" 
-                        data-producto="{{ producto }}">Detalles</button>
                     </div>
                 {% endfor %}
             </div>
@@ -75,15 +75,17 @@
 
             <div class="snap-container w-100 h-100" id="snapBestSeller"> {# snap-container fue otorgado por https://www.silocreativo.com/controla-desplazamiento-web-css-scroll-snap/ #}
                 {% for producto in productos %}
-                    <div class="snap-section position-relative">
+                    <div class="snap-section position-relative d-flex align-items-center flex-column" style="overflow: hidden;">
                         {% set img = 'src/img' + producto['Id']|string + '_1.jpg' %}
                         <img src="{{ url_for('static', filename = img) }}">
-                        <p class="product-text my-4 w-75 mx-auto">{{ producto['Nombre'] }}</p>
-                        <p style="font-size: 13px; color:rgb(70, 70, 70)">{{ producto['Marca'] }}</p>
-                        <button class="btn btn-outline-danger btn-product mx-auto mb-4" type="button" 
-                        data-bs-toggle="modal" 
-                        data-bs-target="#infoProducto"
-                        data-producto="{{ producto }}">Detalles</button>
+                        <div>
+                            <p class="product-text my-4 w-75 mx-auto">{{ producto['Nombre'] }}</p>
+                            <p style="font-size: 13px; color:rgb(70, 70, 70)">{{ producto['Marca'] }}</p>
+                            <button class="btn btn-outline-danger btn-product mx-auto mb-4" type="button" 
+                            data-bs-toggle="modal" 
+                            data-bs-target="#infoProducto"
+                            data-producto="{{ producto }}">Detalles</button>
+                        </div>
                     </div>
                 {% endfor %}
             </div>
@@ -119,15 +121,17 @@
 
             <div class="snap-container w-100 h-100" id="snapSelectedForUser"> {# snap-container fue otorgado por https://www.silocreativo.com/controla-desplazamiento-web-css-scroll-snap/ #}
                 {% for producto in productos %}
-                    <div class="snap-section position-relative">
+                    <div class="snap-section position-relative d-flex align-items-center flex-column" style="overflow: hidden;">
                         {% set img = 'src/img' + producto['Id']|string + '_1.jpg' %}
                         <img src="{{ url_for('static', filename = img) }}">
-                        <p class="product-text my-4 w-75 mx-auto">{{ producto['Nombre'] }}</p>
-                        <p style="font-size: 13px; color:rgb(70, 70, 70)">{{ producto['Marca'] }}</p>
-                        <button class="btn btn-outline-danger btn-product mx-auto mb-4" type="button"
-                        data-bs-toggle="modal" 
-                        data-bs-target="#infoProducto" 
-                        data-producto="{{ producto }}">Detalles</button>
+                        <div>
+                            <p class="product-text my-4 w-75 mx-auto">{{ producto['Nombre'] }}</p>
+                            <p style="font-size: 13px; color:rgb(70, 70, 70)">{{ producto['Marca'] }}</p>
+                            <button class="btn btn-outline-danger btn-product mx-auto mb-4" type="button"
+                            data-bs-toggle="modal" 
+                            data-bs-target="#infoProducto" 
+                            data-producto="{{ producto }}">Detalles</button>
+                        </div>
                     </div>
                 {% endfor %}
             </div>

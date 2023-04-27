@@ -5,18 +5,18 @@
 
 {% set producto = productos[0] %}
 {% block content %}
-    {% include "usuarios/menu.jinja" %} 
     {% include "usuarios/nav.jinja" %}
+    {% include "usuarios/menu.jinja" %} 
     <div class="horizontal-menu position-relative" style="animation-delay:0.3s;" role="tablist" id="tabsMenu">
-        <a class="horizontal-menu-hover horizontal-menu-unset active" aria-selected="true" data-bs-target="#inicioDiv" aria-controls="inicioDiv" data-bs-toggle="tab" onclick="horizontalMenuChange(1)" id="inicioMenu" style="border-bottom-left-radius: 10px; border-top-left-radius: 10px;">Inicio</a>
-        <a class="horizontal-menu-unset" aria-selected="false" data-bs-target="#pielDiv" aria-controls="pielDiv" data-bs-toggle="tab" onclick="horizontalMenuChange(2)" id="ojosMenu">Piel</a>
-        <a class="horizontal-menu-unset" aria-selected="false" data-bs-target="#labiosDiv" aria-controls="labiosDiv" data-bs-toggle="tab" onclick="horizontalMenuChange(3)" id="labiosMenu">Labios</a>
-        <a class="horizontal-menu-unset" onclick="horizontalMenuChange(4)" id="pielMenu">Ojos</a>
-        <a class="horizontal-menu-unset" onclick="horizontalMenuChange(5)" id="skincareMenu">Skincare</a>
-        <a class="horizontal-menu-unset" onclick="horizontalMenuChange(6)" id="accesoriosMenu">Accesorios</a>
+        <a class="horizontal-menu-hover horizontal-menu-unset btn-opm" data-index="0" onclick="horizontalMenuChange(1)" id="inicioMenu" style="border-bottom-left-radius: 10px; border-top-left-radius: 10px;">Inicio</a>
+        <a class="horizontal-menu-unset btn-opm" data-index="1" onclick="horizontalMenuChange(2)" id="pielMenu">Piel</a>
+        <a class="horizontal-menu-unset btn-opm" data-index="2" onclick="horizontalMenuChange(3)" id="labiosMenu">Labios</a>
+        <a class="horizontal-menu-unset btn-opm" data-index="3" onclick="horizontalMenuChange(4)" id="pielMenu">Ojos</a>
+        <a class="horizontal-menu-unset btn-opm" data-index="4" onclick="horizontalMenuChange(5)" id="skincareMenu">Skincare</a>
+        <a class="horizontal-menu-unset btn-opm" data-index="5" onclick="horizontalMenuChange(6)" id="accesoriosMenu">Accesorios</a>
     </div>
     {% include "usuarios/infoProducto.jinja" %}
-    <div class="container-div-index h-100 tab-content" id="container-div-index">
+    <div class="container-div-index h-100 tab-content position-absolute" style="top: 0; bottom: 0; left:0; right:0; padding-top:20%;z-index:-1;" id="container-div-index">
         {% include "usuarios/inicioDiv.jinja" %}
         {% include "usuarios/pielDiv.jinja" %}
         {% include "usuarios/labiosDiv.jinja" %}
