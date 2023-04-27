@@ -189,7 +189,7 @@ def cambiarcontra():
         with mysql.connection.cursor() as cursor:
             cursor.execute("UPDATE cuenta SET Contraseña = (%s) WHERE Correo = (%s)", (contraseña,correo))
             mysql.connection.commit()
-            mysql.connection.close()
+            
 
 
         return redirect("/")
@@ -235,7 +235,7 @@ def send_correo():
             
             mysql.connection.commit()
             cursor.close()
-            mysql.connection.close()
+            
             # Enviar un correo electrónico de confirmación al nuevo usuario
             token = s.dumps(email, salt='email-confirm')
             subject = 'Confirmación de cuenta Decore'
@@ -258,7 +258,7 @@ def confirm(token):
         with mysql.connection.cursor() as cursor:
             cursor.execute("UPDATE cuenta SET estado = 'Activo' WHERE Correo = (%s)", (email,))
             mysql.connection.commit()
-            mysql.connection.close()
+            
         return redirect("/")
     except SignatureExpired:
         return '<h1>The token is expired!</h1>'
@@ -329,7 +329,7 @@ def guardarDatosUsuario():
     with mysql.connection.cursor() as cursor:
         cursor.execute("INSERT INTO usuarios VALUES(%s, %s, %s, %s, %s, %s, %s, 'Inactivo', '')", (session.get('id_usuario'), nombre, edad, colorOjos, tipoPiel, colorPiel, colorCabello))
         mysql.connection.commit()
-        mysql.connection.close()
+        
 
     return redirect("/usuarios")
     

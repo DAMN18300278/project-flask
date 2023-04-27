@@ -294,9 +294,7 @@ $(document).ready(function ($) {
     $('#btn-addcarrito').click(function() {
       
         var input = $('#cantidad').val();
-        console.log(idUsuario);
         var carritoData = ["|"+productoId, input, keySeleccionado].join(",");
-        console.log(carritoData);
 
         $.ajax({
             url: '/usuarios/addcarrito',
@@ -308,7 +306,7 @@ $(document).ready(function ($) {
                 cantidadCarritoInner+=1;
                 $('#cantidadCarrito').hide()
                 $('#cantidadCarrito').text(cantidadCarritoInner);
-                $('#cantidadCarrito').style
+                $('#cantidadCarrito').show()
                 animateCSS('carrito', 'rotateInDownRight');
             },
             error: function(error) {
@@ -516,7 +514,6 @@ new Promise((resolve, reject) => {
         event.stopPropagation();
         node.classList.remove(`${prefix}animated`, animationName);
         resolve('Animation ended');
-        console.log('ya');
     }
 
     node.addEventListener('animationend', handleAnimationEnd, {once: true});

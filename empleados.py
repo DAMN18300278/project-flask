@@ -39,7 +39,7 @@ def UpCantidad(id):
     with mysql.connection.cursor() as cursor:
         cursor.execute("Update productos SET Cantidad = %s where %s = Id_Productos",(cantidad, id))
         mysql.connection.commit()
-        mysql.connection.close()
+        
     return redirect("/administradores/inventario")
 
 @empleados.route("/administradores/inventario/NuevoProducto", methods=['POST','GET'])
@@ -69,7 +69,7 @@ def añadir_producto():
     with mysql.connection.cursor() as cursor:
             cursor.execute("INSERT INTO productos(Id_Productos, Nombre, Imagen, Descripcion, Precio, Nombre_Color, Color_RGBA, Categoria, Recomendacion, Marca, Cantidad , Tipo_Piel, Imagen_filtro) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,%s)", (id_producto, nombre,num_imagenes, descripcion, precio, nombre_color, color_rgba, categoria, recomendacion, marca, cantidad, tipo_piel,filtronames))
             mysql.connection.commit()
-            mysql.connection.close()
+            
     return redirect("/administradores/inventario")
 
 
@@ -100,7 +100,7 @@ def Admin_empleados_Delete(id):
         mysql.connection.commit()
         cursor.execute("DELETE FROM cuenta WHERE Id_cuenta = %s", (id,))
         mysql.connection.commit()
-        mysql.connection.close()
+        
     return redirect("/administradores/EmpleadosList")
 
 
@@ -147,7 +147,7 @@ def statusEntregado(id):
         cursor.execute("UPDATE ordenpago SET status = 'Entregado' WHERE Id_Orden = %s", (id,))
         cursor.execute("UPDATE usuarios SET Estatus_Pedido = 'inactivo' WHERE Id_Usuario = %s", (fetch,))
         mysql.connection.commit()
-        mysql.connection.close()
+        
     return redirect("/administradores/OrdenesPago")
 
 @empleados.route("/administradores/OrdenEspecifica/crearorden/<string:id>")
@@ -229,7 +229,7 @@ def GuardarEmp(id=None):
             mysql.connection.commit()
             cursor.execute("UPDATE empleado SET RFC = %s, Nombre_Empleado = %s, Telefono = %s, Direccion = %s WHERE Id_Empleado = %s",(rfc, nombre, tel, direccion, tipo, id))
             mysql.connection.commit()
-            mysql.connection.close()
+            
         return redirect("/administradores/EmpleadosList")
     else:
         with mysql.connect.cursor() as cursor:
@@ -243,7 +243,7 @@ def GuardarEmp(id=None):
             # Insertar en la tabla empleado con el mismo id_cuenta
             cursor.execute("INSERT INTO empleado(Id_Empleado, RFC, Nombre_Empleado, Telefono, Direccion) VALUES (%s, %s, %s, %s, %s)", (id_nuevo, rfc, nombre, tel, direccion))
             mysql.connection.commit()
-            mysql.connection.close()
+            
         return redirect("/administradores/EmpleadosList") 
 
 
