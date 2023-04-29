@@ -4,6 +4,7 @@ from flask import session, render_template, redirect, jsonify, make_response, ur
 from flask_mysqldb import MySQL
 from collections import OrderedDict
 import base64
+from datetime import datetime
 import cv2
 import numpy as np
 
@@ -198,22 +199,32 @@ def ordencarrito(id):
 
 @usuarios.route("/usuarios/foro")
 def foro():
+    nombre = asignarNombre()
     link = url_for('usuarios.productsApi', _external=True)
     response = requests.get(link).json()
     data = response['Productos']
 
-    return render_template("usuarios/foro.jinja", productosLabios = data)
+    with mysql.connect.cursor() as cursor:
+        cursor.execute("SELECT foro.*, usuarios.Nombre FROM foro INNER JOIN usuarios ON foro.Id_usuario = usuarios.Id_Usuario")
+        forum = cursor.fetchall()
+        print(forum[0][4])
 
-@usuarios.route("/usuarios/guardarPub", methods=['POST'])
+    return render_template("usuarios/foro.jinja", productos = data, nombre = nombre, forum = forum)
+
+@usuarios.route("/usuarios/guardarPub", methods=['POST', 'GET'])
 def guardarPub():
     Id_usuario = session.get('id_usuario')
     Id_producto = request.form['Id_producto']
     Descripcion = request.form['Descripcion']
     Puntuacion = request.form['Puntuacion']
 
+    print(Id_usuario, Id_producto, Descripcion, Puntuacion)
+
     with mysql.connection.cursor() as cursor:
-        cursor.execute("INSERT INTO foro(Id_usuario, Id_producto, Descripcion, Puntuacion) VALUES(%s,%s,%s,%s)", (Id_usuario, Id_producto, Descripcion, Puntuacion))
+        cursor.execute("INSERT INTO foro(Id_usuario, Id_producto, Descripcion, Calificacion, Fecha) VALUES(%s,%s,%s,%s, CURDATE())", (Id_usuario, Id_producto, Descripcion, Puntuacion))
         mysql.connection.commit()
+    
+    return redirect("/")
 
 @usuarios.route("/cam")
 def cam():

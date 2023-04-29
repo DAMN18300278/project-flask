@@ -123,6 +123,7 @@ $(document).ready(function ($) {
     
     // Filtrar los elementos del menú desplegable al escribir en el input de búsqueda
     var originalItemsOjos = $("#dropdownSearchOjosList").find("#itemOjos[data-nombre]").clone();
+    var originalItemsOjos = $("#dropdownSearchProductsAddPubList").find("#itemAddPub[data-nombre]").clone();
     var originalItemsLabios = $("#dropdownSearchLabiosList").find("#itemLabios[data-nombre]").clone();
     var originalItemsPiel = $("#dropdownSearchPielList").find("#itemPiel[data-nombre]").clone();
     var originalItemsSkin = $("#dropdownSearchSkinList").find("#itemSkin[data-nombre]").clone();
@@ -131,6 +132,17 @@ $(document).ready(function ($) {
     $("#searchMenuLabios").keyup(function() {
         var filter = $(this).val().toLowerCase();
         var items = $("#dropdownSearchLabiosList").find("#itemLabios[data-nombre], #itemLabios[data-id]");
+        items.each(function() {
+            var productName = $(this).text().toLowerCase();
+            var nombre = $(this).data("nombre").toLowerCase();
+            var id = $(this).data("id");
+            var match = productName.indexOf(filter) > -1 || nombre.indexOf(filter) > -1 || id.toString().indexOf(filter) > -1;
+            $(this).toggle(match);
+        });
+    });
+    $("#dropdownSearchProductsPub").keyup(function() {
+        var filter = $(this).val().toLowerCase();
+        var items = $("#dropdownSearchProductsAddPubList").find("#itemAddPub[data-nombre], #itemAddPub[data-id]");
         items.each(function() {
             var productName = $(this).text().toLowerCase();
             var nombre = $(this).data("nombre").toLowerCase();
@@ -257,7 +269,6 @@ $(document).ready(function ($) {
         modal.find('#hexColorInfoProductos').html(contentColores);
         modal.find('.colores-info').on('click', function(){
         var colorSeleccionado = $(this).data('color');
-        keySeleccionado
         for (var key in colores) {
             if (colores[key]['Nombre'] == colorSeleccionado) {
                 keySeleccionado = key;
@@ -269,6 +280,8 @@ $(document).ready(function ($) {
         modal.find('#marcaInfoProductos').text('Marca: ' + marca.toLowerCase().replace(/\b\w/g, function(l){ return l.toUpperCase(); }));
         modal.find('#tipoInfoProductos').text('Tipo: ' + tipo);
         modal.find('#precioInfoProductos').text('$' + precio);
+
+        modal.find('#hexColorInfoProductos').find('.colores-info').first().trigger('click');
     });
 
     $('#infoProducto').on('hidden.bs.modal', function(){
@@ -467,16 +480,102 @@ $(document).ready(function ($) {
 
 });
 
-$(document).on('click', '.bi-star', function(event) {
+$(document).on('click', '.star', function(event) {
+    $items = $('.star')
+    $($items).removeClass('starSelected')
+    $($items).removeClass('bi-star-fill').removeClass('bi-star')
     $(event.target).addClass('bi-star-fill');
+    $(event.target).addClass('starSelected');
     $(event.target).prevAll().addClass('bi-star-fill');
-    $(event.target).nextAll().removeClass('bi-star-fill').removeClass('bi-star');
-    $(event.target).removeClass('bi-star').addClass('bi-star-fill');
+    $(event.target).prevAll().addClass('starSelected');
+    $(event.target).nextAll().addClass('bi-star');
     
-    var puntuacion = $('.bi-star-fill').length;
+    var puntuacion = $('.starSelected').length;
     $('input[name="puntuacion"]').val(puntuacion);
+    console.log($('input[name="puntuacion"]').val());
+
 });
 
+$(document).ready(function () {
+    $('.productAddPub').click(function () {
+        const idProducto = $(this).data('id');
+        const nombre = $(this).data('nombre');
+        
+        $('#nombreProductoAddPub').val(nombre+ " #" + idProducto)
+        $('#idProductoAddPub').val(idProducto)
+    })
+
+    $('#publicar').click(function () {
+        const idProducto = $('#idProductoAddPub').val();
+        const descripcion = $('#descripcionAddPub').val();
+        const puntuacion = $('#puntuacionAddPub').val();
+        console.log(puntuacion);
+
+        $.ajax({
+            url: '/usuarios/guardarPub',
+            data: {'Id_producto': idProducto, 'Descripcion': descripcion, 'Puntuacion': puntuacion},
+            type: 'POST',
+            success: function (response) {
+                $('#crearPub').modal('hide');
+                const alerta = $('<div class="alert animate__animated animate__fadeInDown" style="color: #810CA8; background-color: #F0D9FF" role="alert">Publicación creada exitosamente !</div>');
+                $('#alertas').append(alerta);
+                setTimeout(function () {
+                    location.reload()
+                }, 2500);
+            },
+            error: function(error){
+                console.log(error);
+            }
+        })
+    })
+
+    $("#searchPubs").keyup(function() {
+        var filter = $(this).val().toLowerCase();
+        var items = $("#pubList").find(".pubListItem");
+        items.each(function() {
+            var productName = $(this).data("nombre-producto").toLowerCase();
+            var userName = $(this).data("nombre-usuario").toLowerCase();
+            var id = $(this).data("id-producto");
+            var match = productName.indexOf(filter) > -1 || userName.indexOf(filter) > -1 || id.toString().indexOf(filter) > -1;
+            $(this).toggle(match);
+        });
+    });
+
+    //ordenar productos de accesorios
+    $('#sortDate').on('click', function() {
+        var lista = $('.pubListItem');
+        var fechaActual = new Date(); // obtener la fecha actual
+        lista.sort(function(a, b) {
+            var fechaA = new Date($(a).data('fecha-publicacion'));
+            var fechaB = new Date($(b).data('fecha-publicacion'));
+            var diferenciaA = fechaActual - fechaA; // calcular la diferencia de fecha actual a fechaA
+            var diferenciaB = fechaActual - fechaB; // calcular la diferencia de fecha actual a fechaB
+            return diferenciaA - diferenciaB; // ordenar por la diferencia desde la más reciente a la más vieja
+        });
+        $('#pubList').empty().append(lista);
+    });
+    $('#sortBestRated').on('click', function() {
+        var lista = $('.pubListItem');
+        lista.sort(function(a, b) {
+            return $(b).data('calificacion') - $(a).data('calificacion');
+        });
+        $('#pubList').empty().append(lista);
+    });
+    $('#sortWorstRated').on('click', function() {
+        var lista = $('.pubListItem');
+        lista.sort(function(a, b) {
+            return $(a).data('calificacion') - $(b).data('calificacion');
+        });
+        $('#pubList').empty().append(lista);
+    });
+    $('#sortId').on('click', function() {
+        var lista = $('.pubListItem');
+        lista.sort(function(a, b) {
+            return $(a).data('id-producto') - $(b).data('id-producto');
+        });
+        $('#pubList').empty().append(lista);
+    });
+})
 // Seleccionar el botón externo y la lista de pestañas
 const $tabs = $('.tab');
 
@@ -484,7 +583,6 @@ const $tabs = $('.tab');
 $(document).on('click', '.btn-opm', function(event) {
     // Obtener el índice del botón clickeado
     const index = $(event.target).data('index');
-    console.log();
     // Activar la pestaña correspondiente
     $('.tab').eq(index).addClass('active').siblings().removeClass('active');
 });

@@ -223,3 +223,19 @@ img{
 .mt-foro-search{
     margin-top: 96px !important;
 }
+
+.star{
+    transition: 0.2s ease-in-out;
+}
+
+.bi-star-fill{
+    transition: 0.2s ease-in-out;
+    color: yellow;
+}
+
+hr{
+    border: 0;
+    height: 1px;
+    background: #333;
+    background-image: linear-gradient(to right, #7f7f7f, #000000, #7f7f7f);
+}
