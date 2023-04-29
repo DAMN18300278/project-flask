@@ -11,27 +11,45 @@
     <div class="modal-dialog mx-5" style="margin-top: 10%;" role="document">
         <div class="modal-content p-4" style="border-radius: 15px;">
             <div class="modal-body">
+                <h1 class="mb-5" style="font-size: 25px">Crear publicacion</h1>
                 <div class="input-group mb-3" style="font-size: 15px;">
-                    <input type="text" class="form-control border border-2" placeholder="Buscar" aria-label="Search" id="searchMenuLabios">
+                    <input type="text" class="form-control border border-2" placeholder="Buscar" data-bs-toggle="dropdown" aria-expanded="false" id="dropdownSearchProductsPub" autocomplete="off">
                     <i class="bi bi-search" style="font-size: 3rem; padding-left:1rem"></i>
+
+                    <div class="dropdown-menu px-5 mt-menu animate__animated animate__fadeInDown" aria-labelledby="dropdownSearchProductsPub" style="max-height:1000%; font-size: 16px; overflow-y:scroll; ">
+                        <div class="h-100" style="overflow-y: scroll;" id="dropdownSearchProductsAddPubList">
+                        {% for producto in productos %}
+                            {% set img = 'src/img' + producto['Id']|string + '_1.jpg' %}
+                            <div id="itemAddPub" class="dropdown-item productAddPub" data-nombre="{{ producto['Nombre'] }}" data-id="{{ producto['Id'] }}">
+                                <div class="d-flex">
+                                    <img style="width: 20%; height:20%" src="{{ url_for('static', filename = img) }}">
+                                    <a style="white-space:break-spaces;display:flex;align-items:center"><span>{{ producto['Nombre'] }} <span style="color:#808080ab">#{{ producto['Id'] }}</span></span></a>
+                                </div>
+                                <hr>
+                            </div>
+                        {% endfor %}
+                        </div>
+                    </div>
                 </div>
                 <div class="input-group mb-3 my-5" style="font-size: 15px;">
-                    <input type="text" class="form-control border border-2" style="box-shadow: none;" aria-label="Search" readonly placeholder="Nombre del producto" id="searchMenuLabios">
+                    <input type="text" class="form-control border border-info text-center" style="box-shadow: none;" aria-label="Search" readonly placeholder="Nombre del producto" id="nombreProductoAddPub">
                 </div>
+                <input type="number" class="d-none" id="idProductoAddPub">
                 <div class="input-group mb-3 my-5" style="font-size: 15px;">
-                    <textarea cols="30" rows="9" style="height: 40%;" class="form-control border border-2" aria-label="Search" placeholder="Descripción" id="searchMenuLabios" maxlength="270"></textarea>
+                    <textarea cols="30" rows="9" style="height: 40%;" class="form-control border border-2" aria-label="Search" placeholder="Descripción" id="descripcionAddPub" maxlength="270"></textarea>
                 </div>
                 <div class="input-group mb-3 my-5 d-flex flex-column" style="font-size: 15px;">
                     Calificacion:
                     <div style="font-size: 30px;">
-                        <i class="bi bi-star"></i>
-                        <i class="bi bi-star"></i>
-                        <i class="bi bi-star"></i>
-                        <i class="bi bi-star"></i>
-                        <i class="bi bi-star"></i>
+                        <i class="bi bi-star-fill star starSelected"></i>
+                        <i class="bi bi-star star"></i>
+                        <i class="bi bi-star star"></i>
+                        <i class="bi bi-star star"></i>
+                        <i class="bi bi-star star"></i>
                     </div>
-                    <input type="number" name="puntuacion" class="d-none">
+                    <input type="number" name="puntuacion" value="1" class="d-none" id="puntuacionAddPub">
                 </div>
+                <button class="btn btn-outline-danger px-5 mt-4" id="publicar">Publicar</button>
             </div>
         </div>
     </div>
@@ -53,13 +71,14 @@
             trigger="click"
             colors="primary:#000,secondary:#bfa2db"
             style="width:35px;height:35px;"
-            id="dropdownSearchLabios"
+            id="dropdownSearchPubs"
             data-bs-toggle="dropdown"
             aria-expanded="false">
         </lord-icon>
-        <div class="dropdown-menu px-5 mt-foro-search animate__animated animate__fadeInDown" aria-labelledby="dropdownSearchLabios" style="max-height:50%; font-size: 16px; overflow-y:scroll; margin-top:40%">
+        <div class="dropdown-menu px-5 mt-foro-search animate__animated animate__fadeInDown" aria-labelledby="dropdownSearchPubs" style="max-height:50%; font-size: 16px; overflow-y:scroll; margin-top:40%">
             <div class="input-group mb-3" style="font-size: 15px;">
-                <input type="text" class="form-control border border-2" placeholder="Buscar" aria-label="Search" aria-describedby="basic-addon2" id="searchMenuLabios">
+                <input type="text" class="form-control border border-2" placeholder="Buscar" aria-label="Search" aria-describedby="basic-addon2" id="searchPubs">
+                <h4>Buscar por Id de producto, nombre de usuario o nombre de producto </h4>
             </div>
         </div>
 
@@ -68,26 +87,74 @@
             trigger="click"
             colors="primary:#000,secondary:#810CA8"
             style="width:40px;height:40px; margin-top:-2px;"
-            id="dropdownFiltersOjos"
+            id="dropdownFilterPubs"
             type="button"
             data-bs-toggle="dropdown"
             aria-expanded="false">
         </lord-icon>
-        <ul class="dropdown-menu" aria-labelledby="dropdownFiltersOjos" style="font-size: 16px;">
-            <a class="dropdown-item p-3 px-5" id="sortA-ZLabios">Ordenar por nombre (A - Z)</a>
+        <ul class="dropdown-menu" aria-labelledby="dropdownFilterPubs" style="font-size: 16px;">
+            <a class="dropdown-item p-3 px-5" id="sortDate">Publicados recientemente</a>
             <hr class="dropdown-divider">
-            <a class="dropdown-item p-3 px-5" id="sortZ-ALabios">Ordenar por nombre (Z - A)</a>
+            <a class="dropdown-item p-3 px-5" id="sortBestRated">Calificacion más alta <i class="bi bi-arrow-up"></i></a>
             <hr class="dropdown-divider">
-            <a class="dropdown-item p-3 px-5" id="sortPMaLabios">Ordenar por precio <i class="bi bi-arrow-up"></i></a>
+            <a class="dropdown-item p-3 px-5" id="sortWorstRated">Calificacion más baja <i class="bi bi-arrow-down"></i></a>
             <hr class="dropdown-divider">
-            <a class="dropdown-item p-3 px-5" id="sortPMeLabios">Ordenar por precio <i class="bi bi-arrow-down"></i></a>
+            <a class="dropdown-item p-3 px-5" id="sortId">Ordenar por id de producto </a>
         </ul>
     </div>
 
-    <div class="p-3 py-5">
-        <div class="w-100 text-end px-3">
-            <button class="btn btn-outline-danger px-4" data-bs-toggle="modal" data-bs-target="#crearPub">Crear publicacion</button>
-        </div>
+    <div id="alertas"></div>
+    <div style="overflow-y: scroll; max-height:88vh;">
+        <ul class="ps-0" id="pubList">
+        {% if forum is defined %}
+        {% for publicacion in forum %}
+            {% set producto = productos | selectattr('Id', '==', publicacion[1]) | first %}
+            {% set nombreUsuarioDes = publicacion[6].split()[:2] %}
+            {% set nombreUsuario = ' '.join(nombreUsuarioDes) %}
+            {% set fechaPub = publicacion[5].strftime('%d-%m-%Y') %}
+            <div class="p-3 pubListItem" 
+            data-nombre-producto="{{ producto['Nombre'] }}"
+            data-id-producto="{{ producto['Id'] }}"
+            data-nombre-usuario="{{ nombreUsuario }}"
+            data-fecha-publicacion="{{ publicacion[5] }}"
+            data-calificacion="{{ publicacion[4] }}">
+                <h1 class="p-3" style="font-size: 20px; font-weight:bold">{{ producto['Nombre'] }} <span style="font-size: 18px; color: gray; font-weight:100">#{{ publicacion[1] }}</span></h1>
+                <div class="d-flex align-items-center">
+                    {% set img = 'src/img' + publicacion[1]|string + '_1.jpg' %}
+                    <img style="width: 40%; height:60%" src="{{ url_for('static', filename = img) }}">
+                    <div class="d-flex flex-column align-items-start">
+                        <h1 class="text-start">{{ nombreUsuario }}:</h1>
+                        <h2 class="text-start">{{ publicacion[3] }}</h2>
+                        <div class="input-group mb-3 my-3 d-flex flex-column align-items-start" style="font-size: 15px;">
+                            <h2>Calificacion: </h2>
+                            <div style="font-size: 20px;">
+                                <i class="bi {% if publicacion[4] >= 1 %}bi-star-fill{% endif %}"></i>
+                                <i class="bi {% if publicacion[4] >= 2 %}bi-star-fill{% endif %}"></i>
+                                <i class="bi {% if publicacion[4] >= 3 %}bi-star-fill{% endif %}"></i>
+                                <i class="bi {% if publicacion[4] >= 4 %}bi-star-fill{% endif %}"></i>
+                                <i class="bi {% if publicacion[4] >= 5 %}bi-star-fill{% endif %}"></i>
+                            </div>
+                            <input type="number" name="puntuacion" class="d-none" id="puntuacionAddPub">
+                        </div>
+                        <h4>Fecha de publicacion: {{ fechaPub }}</h4>
+                    </div>
+                </div>
+                <hr>
+            </div>
+        {% endfor %}
+        {% endif %}
+        </ul>
+    </div>
+
+    </button>
+    <div class="position-absolute d-flex align-items-center p-2 m-5" data-bs-toggle="modal" data-bs-target="#crearPub" style="border: 2px solid rgba(140, 140, 140, 0.586); background-color:rgba(251, 229, 255, 0.789); border-radius:50%; bottom:0; right:0; z-index:2">
+        <lord-icon
+            src="https://cdn.lordicon.com/bxxnzvfm.json"
+            trigger="loop"
+            delay="1000"
+            colors="primary:#3a3347,secondary:#c69cf4,tertiary:#fad1e6,quaternary:#ebe6ef"
+            style="width:50px;height:50px">
+        </lord-icon>
     </div>
 </div>
 {% endblock %}

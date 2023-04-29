@@ -182,7 +182,7 @@ def OrdenUsuario(id):
             productos = []
         else:
             
-            carrito = fetch[0].split('|')[1:] # se elimina el primer elemento vacío de la lista
+            carrito = fetch[0].split('|') # se elimina el primer elemento vacío de la lista
             
             numero = len(carrito)
             productos = []
