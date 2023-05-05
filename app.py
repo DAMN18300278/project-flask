@@ -15,6 +15,8 @@ app = Flask(__name__)
 
 app.jinja_env.add_extension(ext.do)
 
+app.config['UPLOAD_FOLDER'] = '/static/src'
+
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
 app.config['MYSQL_PASSWORD'] = ''

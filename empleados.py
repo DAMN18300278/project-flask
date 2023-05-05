@@ -1,5 +1,7 @@
 from flask_mysqldb import MySQL
 from flask import render_template, session, redirect, flash, Blueprint, request, url_for
+import os
+from werkzeug.utils import secure_filename
 
 empleados = Blueprint('empleados', __name__)
 mysql = MySQL()
@@ -47,8 +49,18 @@ def añadir_producto():
     if request.method == 'POST':
         id_producto = request.form['IdProducto']
         nombre = request.form['Nombre']
-        imagen = request.files.getlist('Imagen[]')
-        num_imagenes = len(imagen)
+        imagenes = request.files.getlist('Imagen[]')
+        num_imagenes = len(imagenes)
+
+        index = 1
+        os.chdir('/static/src')
+        for imagen in imagenes:
+            imagen.filename = "img" + str(id_producto) + "_" + str(index) + ".jpg"
+            filename = secure_filename(imagen.filename)
+            with open(imagen.name, 'wb') as f:
+                f.write
+                imagen.save(os.path.join('/static/src', filename))
+
         descripcion = request.form['Descripcion']
         precio = request.form['Precio']
         
@@ -111,31 +123,6 @@ def PagosAdmin():
         resultado = cursor.fetchall()
     return render_template("empleados/OrdenesPago.jinja", resultados = resultado)
 
-
-
-@empleados.route("/usuarios/OrdenEspecifica/RecogerCaja/<string:id>", methods=['GET'])
-def RecogerCaja(id):
-
-    with mysql.connect.cursor() as cursor:
-        cursor.execute("SELECT Estatus_Pedido FROM usuarios WHERE Id_Usuario = %s", (id,))
-        result = cursor.fetchone()
-        if result and result[0] == 'activo':  # Verificar si existe el registro y si el estatus es 'activo'
-            
-            flash('pedido activo.')
-            return redirect("/usuarios/ordencarrito/"+id)
-        else:
-            with mysql.connect.cursor() as cursor:
-                cursor.execute("SELECT carrito From usuarios where Id_Usuario = %s",(id,))
-                carrito = cursor.fetchone()
-            with mysql.connection.cursor() as cursor:
-                cursor.execute("UPDATE usuarios SET carrito = '' WHERE Id_Usuario = %s", (id,))
-                cursor.execute("UPDATE usuarios SET Estatus_Pedido = 'activo' WHERE Id_Usuario = %s", (id,))
-                mysql.connection.commit()
-            with mysql.connection.cursor() as cursor:
-                cursor.execute("INSERT INTO ordenpago( Id_Usuario, Fecha, Status, carrito) VALUES ( %s, NOW(), 'Pagar en caja', %s)", (id,carrito))
-                mysql.connection.commit()
-
-    return redirect("/usuarios")
 
 
 @empleados.route("/administradores/OrdenEspecifica/statusEntregado/<string:id>")
