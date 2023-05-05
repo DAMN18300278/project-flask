@@ -222,13 +222,13 @@ def RecogerCaja(id):
                     producto = producto.split(',')
                     productos.append(producto)
                     print(producto[0])
-                    print(producto[2])
+                    print(producto[1])
                     with mysql.connect.cursor() as cursor:
                         cursor.execute("SELECT Cantidad From productos where Id_Productos = %s",(producto[0],))
                         cantidad = int(cursor.fetchone()[0])
                         print(cantidad)
-                        if cantidad > int(producto[2]) :
-                            cantidad = cantidad - int(producto[2])
+                        if cantidad > int(producto[1]) :
+                            cantidad = cantidad - int(producto[1])
 
                             with mysql.connection.cursor() as cursor:
                                 cursor.execute("UPDATE productos SET Cantidad = %s WHERE Id_Productos = %s", (cantidad,producto[0]))

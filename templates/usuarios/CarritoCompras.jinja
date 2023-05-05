@@ -12,11 +12,15 @@
         {% if messages %}
             <ul class="flash-messages">
             {% for message in messages %}
+
+                
                 </div>
                 <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                <strong>{{message}}</strong> Estimado/a cliente, le recordamos que actualmente cuenta con un pedido pendiente. Para poder realizar uno nuevo, le agradeceríamos que antes proceda con el pago correspondiente o la recolección del pedido activo. ¡Muchas gracias por su comprensión y preferencia!
+                <strong>{{message}}</strong> {% if message != "No hay suficiente cantidad del producto solicitado"%}Estimado/a cliente, le recordamos que actualmente cuenta con un pedido pendiente. Para poder realizar uno nuevo, le agradeceríamos que antes proceda con el pago correspondiente o la recolección del pedido activo. ¡Muchas gracias por su comprensión y preferencia!{% endif %}
+                
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
+                
             {% endfor %}
             </ul>
         {% endif %}
