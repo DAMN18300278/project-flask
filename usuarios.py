@@ -163,7 +163,7 @@ def ordencarrito(id):
             productos = []
         else:
             
-            carrito = fetch[0].split('|') # se elimina el primer elemento vacío de la lista
+            carrito = fetch[0].split('|') 
             
             print(carrito)
             numero = len(carrito)
@@ -196,6 +196,41 @@ def ordencarrito(id):
         nombre = cursor.fetchone()[0]
         
     return render_template("usuarios/CarritoCompras.jinja",id=id,numero = numero,productos=productos, nombre=nombre)
+
+@usuarios.route("/usuarios/OrdenEspecifica/RecogerCaja/<string:id>", methods=['GET'])
+def RecogerCaja(id):
+    productos = []
+    with mysql.connect.cursor() as cursor:
+        cursor.execute("SELECT Estatus_Pedido FROM usuarios WHERE Id_Usuario = %s", (id,))
+        result = cursor.fetchone()
+      
+        if result and result[0] == 'activo':  # Verificar si existe el registro y si el estatus es 'activo'
+            
+            flash('pedido activo.')
+            return redirect("/usuarios/ordencarrito/"+id)
+        else:
+            with mysql.connect.cursor() as cursor:
+                cursor.execute("SELECT carrito From usuarios where Id_Usuario = %s",(id,))
+                fetch = cursor.fetchone()
+                carrito = fetch[0].split('|') 
+                
+                print(carrito)
+                numero = len(carrito)
+                
+                i = 0
+                for producto in carrito:
+                    producto = producto.split(',')
+                    productos.append(producto)
+                    print(productos)
+            with mysql.connection.cursor() as cursor:
+                cursor.execute("UPDATE usuarios SET carrito = '' WHERE Id_Usuario = %s", (id,))
+                cursor.execute("UPDATE usuarios SET Estatus_Pedido = 'activo' WHERE Id_Usuario = %s", (id,))
+                mysql.connection.commit()
+            with mysql.connection.cursor() as cursor:
+                cursor.execute("INSERT INTO ordenpago( Id_Usuario, Fecha, Status, carrito) VALUES ( %s, NOW(), 'Pagar en caja', %s)", (id,fetch))
+                mysql.connection.commit()
+
+    return redirect("/usuarios")
 
 @usuarios.route("/usuarios/foro")
 def foro():
@@ -272,7 +307,7 @@ def updateDatosUsuario():
 
 global capture,rec_frame, grey, switch, neg, face, rec, out , camera
 switch = 1
-camera = cv2.VideoCapture(0)
+camera = cv2.VideoCapture(1)
 
 def gen_frames():  # generate frame by frame from camera
     global out, capture,rec_frame, switch

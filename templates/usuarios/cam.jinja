@@ -4,14 +4,25 @@
 {% endblock %}
 
 {% block content %}
-{# <div>
-    <img src="{{ url_for('videoFeed') }}" class="h-100 w-100" style="position: absolute; top:0;left:0;right:0;bottom:0;">
-    <video></video>
-</div> #}
-<div style="height: 100%;">
-  <form action="{{ url_for('usuarios.tasks') }}" method="POST">
-    <img src="{{ url_for('usuarios.videoFeed') }}" class="h-100 w-100" style="position: absolute; top:0;left:0;right:0;bottom:0;object-fit:cover">
-    <input id="capture" class="btn btn-success position-absolute" style="bottom:20%" type="submit" value="Capturar" name="capture"/>
-  </form>
+<script src="{{ url_for('static', filename='js/opencv.min.js') }}"></script>
+<div style="height: 100%;" class="h-100 d-flex align-items-center justify-content-center">
+    <video id="videoInput" height="100%"></video>
+    <canvas id="canvas-output" height="100%" style="z-index:3"></canvas>
+    <button class="position-absolute w-50" style="bottom: 20%;" >Capturar</button>
 </div>
+
+<script>
+const video = document.getElementById("videoInput");
+const canvas = document.getElementById("canvas-output");
+
+(async () => {
+  const stream = await navigator.mediaDevices.getUserMedia({
+    video: true,
+    audio: false,
+  });
+
+
+})();
+</script>
+
 {% endblock %}
