@@ -165,14 +165,14 @@ def ordencarrito(id):
             
             carrito = fetch[0].split('|') 
             
-            print(carrito)
+            
             numero = len(carrito)
             productos = []
             i = 0
             for producto in carrito:
+                
                 producto = producto.split(',')
                 productos.append(producto)
-
                 cursor.execute("SELECT Color_RGBA FROM productos WHERE Id_Productos = %s",(producto[0],))
                 fetch = cursor.fetchone()
                 if fetch:
@@ -190,7 +190,7 @@ def ordencarrito(id):
                 datos = cursor.fetchone()
                 
                 productos[i].extend(datos)
-                
+
                 i+=1
         cursor.execute("SELECT Nombre FROM usuarios WHERE Id_Usuario = %s",(id,))    
         nombre = cursor.fetchone()[0]
@@ -221,7 +221,20 @@ def RecogerCaja(id):
                 for producto in carrito:
                     producto = producto.split(',')
                     productos.append(producto)
-                    print(productos)
+                    print(producto[0])
+                    print(producto[2])
+                    with mysql.connect.cursor() as cursor:
+                        cursor.execute("SELECT Cantidad From productos where Id_Productos = %s",(producto[0],))
+                        cantidad = int(cursor.fetchone()[0])
+                        print(cantidad)
+                        if cantidad > int(producto[2]) :
+                            cantidad = cantidad - int(producto[2])
+
+                            with mysql.connection.cursor() as cursor:
+                                cursor.execute("UPDATE productos SET Cantidad = %s WHERE Id_Productos = %s", (cantidad,producto[0]))
+                        else:
+                                flash('No hay suficiente cantidad del producto solicitado')
+                                return redirect("/usuarios/ordencarrito/"+id)
             with mysql.connection.cursor() as cursor:
                 cursor.execute("UPDATE usuarios SET carrito = '' WHERE Id_Usuario = %s", (id,))
                 cursor.execute("UPDATE usuarios SET Estatus_Pedido = 'activo' WHERE Id_Usuario = %s", (id,))
