@@ -246,6 +246,7 @@ $(document).ready(function ($) {
         var colores = productJson['Colores'];
         var marca = productJson['Marca'];
         var tipo = productJson['Tipo'];
+        var stock = productJson['Stock'];
         var precio = productJson['Precio u.'];
         
         for (var i = 0; i < cantidadImgs; i++) {
@@ -280,6 +281,7 @@ $(document).ready(function ($) {
         modal.find('#marcaInfoProductos').text('Marca: ' + marca.toLowerCase().replace(/\b\w/g, function(l){ return l.toUpperCase(); }));
         modal.find('#tipoInfoProductos').text('Tipo: ' + tipo);
         modal.find('#precioInfoProductos').text('$' + precio);
+        modal.find('#cantidad').prop('max', stock)
 
         modal.find('#hexColorInfoProductos').find('.colores-info').first().trigger('click');
     });
@@ -294,15 +296,18 @@ $(document).ready(function ($) {
         var input = $('#cantidad');
         var value = parseInt(input.val());
         if (value > 1) {
-            input.val(value - 1);
+          input.val(value - 1);
         }
-    });
-
-    $('#btn-plus').click(function() {
+      });
+      
+      $('#btn-plus').click(function() {
         var input = $('#cantidad');
         var value = parseInt(input.val());
-        input.val(value + 1);
-    });
+        var max = parseInt(input.attr('max')); // Obtener el valor de max
+        if (value < max || isNaN(max)) { // Verificar si value es menor a max
+          input.val(value + 1);
+        }
+      });
 
     $('#btn-addcarrito').click(function() {
       
