@@ -53,13 +53,13 @@ def añadir_producto():
         num_imagenes = len(imagenes)
 
         index = 1
-        os.chdir('/static/src')
+        ruta_completa = os.path.join(os.getcwd(), 'static', 'src')
         for imagen in imagenes:
             imagen.filename = "img" + str(id_producto) + "_" + str(index) + ".jpg"
             filename = secure_filename(imagen.filename)
-            with open(imagen.name, 'wb') as f:
-                f.write
-                imagen.save(os.path.join('/static/src', filename))
+            with open(os.path.join(ruta_completa, filename), 'wb') as f:
+                f.write(imagen.read())
+            index+= 1
 
         descripcion = request.form['Descripcion']
         precio = request.form['Precio']
