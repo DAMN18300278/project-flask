@@ -19,12 +19,10 @@
     <script src="{{ url_for('static', filename = 'bootstrap/dist/js/bootstrap.bundle.min.js') }}"></script>
     {% endblock %}
 </head>
-<body id="body">
+<body class="h-100 w-100 bg-white animate__animated animate__fadeIn" id="body">
 
-<div class="h-100 w-100 bg-white animate__animated animate__fadeIn">
-    {% block nav %}{% endblock %}
-    {% block content %}{% endblock %}
-</div>
+{% block nav %}{% endblock %}
+{% block content %}{% endblock %}
 
 </body>
 </html>
