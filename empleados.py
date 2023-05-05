@@ -113,13 +113,12 @@ def PagosAdmin():
 
 
 
-@empleados.route("/administradores/OrdenEspecifica/RecogerCaja/<string:id>")
+@empleados.route("/usuarios/OrdenEspecifica/RecogerCaja/<string:id>", methods=['GET'])
 def RecogerCaja(id):
 
     with mysql.connect.cursor() as cursor:
         cursor.execute("SELECT Estatus_Pedido FROM usuarios WHERE Id_Usuario = %s", (id,))
         result = cursor.fetchone()
-        print(result)
         if result and result[0] == 'activo':  # Verificar si existe el registro y si el estatus es 'activo'
             
             flash('pedido activo.')
@@ -135,7 +134,8 @@ def RecogerCaja(id):
             with mysql.connection.cursor() as cursor:
                 cursor.execute("INSERT INTO ordenpago( Id_Usuario, Fecha, Status, carrito) VALUES ( %s, NOW(), 'Pagar en caja', %s)", (id,carrito))
                 mysql.connection.commit()
-        return redirect("/usuarios")
+
+    return redirect("/usuarios")
 
 
 @empleados.route("/administradores/OrdenEspecifica/statusEntregado/<string:id>")
@@ -191,7 +191,7 @@ def OrdenUsuario(id):
                 producto = producto.split(',')
                 productos.append(producto)
 
-                cursor.execute("SELECT Color_RGBA FROM productos WHERE Id_Productos = %s",producto[0],)
+                cursor.execute("SELECT Color_RGBA FROM productos WHERE Id_Productos = %s",(producto[0],))
                 color = cursor.fetchone()[0].split(',')
 
                 producto[2] = int(producto[2])
@@ -199,7 +199,7 @@ def OrdenUsuario(id):
 
                 productos[i].append(color[indice_color])
 
-                cursor.execute("SELECT Nombre,Precio FROM productos WHERE Id_Productos = %s",productos[i][0],)
+                cursor.execute("SELECT Nombre,Precio FROM productos WHERE Id_Productos = %s",(productos[i][0],))
                 datos = cursor.fetchone()
                 
                 productos[i].extend(datos)

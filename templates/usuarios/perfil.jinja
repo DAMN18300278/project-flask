@@ -1,0 +1,53 @@
+{% extends "usuarios/usuariosMaster.jinja" %}
+{% block head %}
+    {{ super() }}
+{% endblock %}
+
+{% block content %}
+    <style>
+        h1{
+            font-size: 28px;
+        }
+        h2{
+            font-size: 25px;
+        }
+        h3{
+            font-size: 22px;
+        }
+        body{
+            display: contents;
+        }
+    </style>
+<div class="animate__animated animate__fadeIn border h-100 container-div-index" style="animation-delay: 1s; ">
+    <div style="height: 100%; width:100%">
+        <a class="position-absolute text-dark" style="top: 3%; left: 5%; z-index: 3" href="/usuarios">
+            <i class="bi bi-arrow-left" style="font-size: 25px;"></i>
+        </a>
+        <div class="h-25 bg-menu position-relative">
+            <div class="box-shadow1 position-absolute bg-info p-5" style="border:3px solid rgb(91, 0, 98); height: 120px; width: 120px; border-radius: 100%; bottom: -60px; left: calc(50% - 60px);">
+                <div class="h-100 w-100" style="background-image:url({{ url_for('static', filename='favicon.svg') }})">
+                </div>
+            </div>
+        </div>
+        <div class="h-75 d-flex flex-column align-items-center" style="padding-top: 80px;">
+            <h1>INFORMACION</h1>
+            <h2 class="mt-5">Bienvenid@ {{ profileInfo[1].split()[0] }}</h2>
+            <a class="btn btn-info profile-border w-75" style="margin-top: 2vh;height: fit-content;" href="/usuarios/updateProfile">
+                <span style="z-index: 2; height:fit-content">Datos personales</span>
+            </a>
+            <ul class="w-75">
+                <hr class="my-5">
+            </ul>
+            <button class="btn btn-info profile-border w-75 d-flex flex-column" style="height: fit-content;">
+            {% if profileInfo[7] == 'activo' %}
+                <span style="z-index: 2; height:fit-content; font-weight:bold">Pedido pendiente:</span>
+                <span style="z-index: 2; height:fit-content">ID: #{{ id_orden[0] }}</span>
+                <span style="z-index: 2; height:fit-content">Tiempo restante:</span>
+            {% else %}
+                <span style="z-index: 2; height:fit-content">Por el momento no tiene ningun pedido activo</span>
+            {% endif %}
+            </button>
+        </div>
+    </div>
+</div>
+{% endblock %}

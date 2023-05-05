@@ -4,7 +4,11 @@
 {% endblock %}
 
 {% block content %}
+    {% if profileInfo is defined %}
+    <form action="/usuarios/updateDatosUsuario" class="w-100" method="post">
+    {% else %}
     <form action="/guardarDatosUsuario" class="w-100" method="post">
+    {% endif %}
     <div class="position-absolute w-100 h-100" id="alertaOjos" style="z-index: 2; display: none; background-color: rgba(0, 0, 0, 0.152); top: 0;">
         <div class="to-left position-relative justify-content-center align-items-center d-flex" style="top: 30%; animation-duration: 0.7s;">
             <div>
@@ -53,7 +57,7 @@
                 <p class="display-4">Tipo de piel</p>
                 <div class="w-50 d-inline-block" style="font-size: larger;">
                     <div class="form-check" onclick="textoPiel('Normal')">
-                        <input class="form-check-input" type="radio" name="tipoPiel" id="normal" checked value="1">
+                        <input class="form-check-input" type="radio" name="tipoPiel" id="normal" value="1">
                         <label class="form-check-label" for="normal">Normal</label>
                     </div>
                     <div class="form-check" onclick="textoPiel('Seca')">
@@ -192,15 +196,21 @@
         </div>
     </div>
 
+    {% if profileInfo is defined %}
+    <a class="position-absolute text-dark" style="top: 3%; left: 5%; z-index: 3" href="/usuarios/perfil">
+        <i class="bi bi-arrow-left" style="font-size: 25px;"></i>
+    </a>
+    {% endif %}
     <div class="container-forms position-absolute align-items-center" style="top: 0; bottom: 0; left: 0; right: 0;">
         <p class="to-left">FORMULARIO</p>
+
 
         <div class="d-flex flex-column justify-content-between" style="font-size: 18px; height: 85%;">
             <div>
                 <div class="form-group d-flex flex-row mb-3 align-items-center to-left" style="animation-delay: 0.4s;">
-                    <label for="nombre" class="col-form-label w-25" style="margin-right: 5%;">Nombre:</label>
+                    <label for="nombre" class="col-form-label w-25" style="margin-right: 5%;" >Nombre:</label>
                     <div style="flex: auto;">
-                        <input type="text" class="form-control" placeholder="Inserte su nombre completo..." name="nombre" id="nombre">
+                        <input type="text" class="form-control" placeholder="Inserte su nombre completo..." name="nombre" id="nombre" {% if profileInfo is defined %}value="{{ profileInfo[1] }}"{% endif %}>
                     </div>
                 </div>
             </div>
@@ -210,21 +220,44 @@
                     <label for="nombre" class="col-form-label w-25" style="margin-right: 5%; padding-top: 2.5em;">Edad:</label>
                     <div class="range-slider" style="flex: auto;">
                         <span class="rs-mark" id="rs-mark"></span>
-                        <input type="range" class="rs-line" min="0" max="99" value="18" name="edad" id="edad">
+                        <input type="range" class="rs-line" min="18" max="99" name="edad" id="edad" {% if profileInfo is defined %}value="{{ profileInfo[2] }}"{% else %}value="18"{% endif %}>
                     </div>
                 </div>
             </div>
 
             <div>
                 <div class="to-left mb-5" style="animation-delay: 0.8s;">
-                    <button class="btn btn-outline-danger w-75" id="btnColorOjos" onclick="selectEyes()" type="button" style="transition: ease all 1s;">Color de ojos</button>
-                    <input type="text" id="colorOjos" name="colorOjos" style="display: none;">
+                    <button class="btn btn-outline-danger w-75" id="btnColorOjos" onclick="selectEyes()" type="button" style="transition: ease all 1s;">Color de ojos
+                        {% if profileInfo is defined %}
+                            : {{ coloresOjos[0] }}
+                        {% endif %}
+                    </button>
+                    {% if profileInfo is defined %}
+                        <input type="text" id="colorOjos" value="{{ profileInfo[3] }}" name="colorOjos" style="display: none;">
+                        <script>
+                        $('#btnColorOjos').css('background-color', '#{{ coloresOjos[1] }}'); 
+                        if($('#colorOjos').val() < 6 && $('#colorOjos').val() > 2){
+                            $('#btnColorOjos').css('color', '#000'); 
+                        }else{
+                            $('#btnColorOjos').css('color', '#fff'); 
+                        }
+                        </script>
+                    {% else %}
+                        <input type="text" id="colorOjos" name="colorOjos" style="display: none;">
+                    {% endif %}
                 </div>
             </div>
 
             <div>
                 <div class="to-left mb-5" style="animation-delay: 1s;">
+                    {% if profileInfo is defined %}
+                    <button class="btn btn-outline-danger w-75" onclick="selectSkin()" id="btnTipoPiel" type="button">Tipo de piel: {{ tiposPiel[0] }}</button>
+                    <script>
+                        $('#{{ tiposPiel[0]|lower }}').attr('checked', true);
+                    </script>
+                    {% else %}
                     <button class="btn btn-outline-danger w-75" onclick="selectSkin()" id="btnTipoPiel" type="button">Tipo de piel</button>
+                    {% endif %}
                 </div>
             </div>
             
@@ -232,8 +265,13 @@
                 <div class="form-group d-flex flex-row mb-5 align-items-center to-left" style="animation-delay: 1.2s;">
                     <label for="colorPiel" class="col-form-label w-50" style="margin-right: 5%;">Tono de piel:</label>
                     <div style="flex: auto; margin-left: 10px;" onclick="document.getElementById('alertaColorPiel').style.display = 'block'">
+                        {% if profileInfo is defined %}
+                        <div id="divColorPiel" class="input-color" style="background-color: {{profileInfo[5]}};"></div>
+                        <input type="text" name="colorPiel" id="inputColorPiel" value="{{profileInfo[5]}}" style="display: none;">
+                        {% else %}
                         <div id="divColorPiel" class="input-color" style="background-color: #fdddca;"></div>
                         <input type="text" name="colorPiel" id="inputColorPiel" value="#fdddca" style="display: none;">
+                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -242,7 +280,11 @@
                 <div class="form-group d-flex flex-row mb-5 align-items-center to-left" style="animation-delay: 1.4s;">
                     <label for="colorPiel" class="col-form-label w-50" style="margin-right: 5%;">Color de cabello:</label>
                     <div style="flex: auto; margin-left: 10px;">
+                    {% if profileInfo is defined %}
+                        <input type="color" name="colorCabello" id="inputColorCabello" value="{{profileInfo[6]}}" class="input-color">
+                    {% else %}
                         <input type="color" name="colorCabello" id="inputColorCabello" value="#633a34" class="input-color">
+                    {% endif %}
                     </div>
                 </div>
             </div>
