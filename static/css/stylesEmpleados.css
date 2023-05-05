@@ -49,3 +49,11 @@ th {
     font-size: 12px;
     padding: 1rem;
 }
+
+.colores-info{
+    width: 4rem;
+    height: 4rem;
+    border: 3px solid rgb(0, 0, 0);
+    border-radius: 50%;
+    transition: ease-in all 0.2s;
+}

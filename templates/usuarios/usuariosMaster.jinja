@@ -19,9 +19,9 @@
     <script src="{{ url_for('static', filename = 'bootstrap/dist/js/bootstrap.bundle.min.js') }}"></script>
     {% endblock %}
 </head>
-<body class="bg-white animate__animated animate__backInRight"  id="body">
+<body id="body">
 
-<div class="overflow-hidden">
+<div class="h-100 w-100 bg-white animate__animated animate__fadeIn">
     {% block nav %}{% endblock %}
     {% block content %}{% endblock %}
 </div>

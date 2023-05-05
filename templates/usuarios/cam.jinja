@@ -8,38 +8,10 @@
     <img src="{{ url_for('videoFeed') }}" class="h-100 w-100" style="position: absolute; top:0;left:0;right:0;bottom:0;">
     <video></video>
 </div> #}
-<div>
-    <video id="video" autoplay class="h-100 w-100" style="position: absolute; top:0;left:0;right:0;bottom:0;object-fit:cover"></video>
-    <canvas id="canvas" class="h-100 w-100" style="position: absolute; top:0;left:0;right:0;bottom:0;object-fit:cover"></canvas>
-    <button id="capture" class="btn btn-success position-absolute" style="bottom:20%">Capture</button>
+<div style="height: 100%;">
+  <form action="{{ url_for('usuarios.tasks') }}" method="POST">
+    <img src="{{ url_for('usuarios.videoFeed') }}" class="h-100 w-100" style="position: absolute; top:0;left:0;right:0;bottom:0;object-fit:cover">
+    <input id="capture" class="btn btn-success position-absolute" style="bottom:20%" type="submit" value="Capturar" name="capture"/>
+  </form>
 </div>
-
-  <script>
-    const video = document.getElementById('video');
-    const canvas = document.getElementById('canvas');
-    const captureButton = document.getElementById('capture');
-    const context = canvas.getContext('2d');
-
-    // Acceder a la cámara del usuario
-    navigator.mediaDevices.getUserMedia({ video: true })
-      .then((stream) => {
-        video.srcObject = stream;
-      });
-
-    // Tomar una foto cuando se hace clic en el botón de captura
-    captureButton.addEventListener('click', () => {
-      // Dibujar el fotograma actual en el canvas
-      context.drawImage(video, 0, 0, video.width, video.height);
-      // Obtener la imagen como un objeto base64
-      const image = canvas.toDataURL();
-      // Enviar la imagen al servidor mediante una solicitud POST
-      fetch('/cam2', {
-        method: 'POST',
-        body: JSON.stringify({ image: image }),
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      });
-    });
-  </script>
 {% endblock %}

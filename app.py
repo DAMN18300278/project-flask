@@ -198,6 +198,27 @@ def cambiarcontra():
 def recover():
     return render_template("index/recover.jinja")
 
+#correocon es para recuperar la contraseña
+@app.route("/send_correocon", methods=['POST'])
+def send_correocon():
+    if request.method == "POST":
+        email = request.form['correorecover']
+
+        token = s.dumps(email, salt='email-confirm')
+        subject = 'Cambio de contraseña Decore'
+        
+        # en el sender hay que poner un correo de decore
+        message = Message(subject,sender="decore.makeup@gmail.com", recipients=[email])
+        
+        link = url_for('confirmrecover',token=token, _external=True)
+
+        message.body = 'Porfavor ingresa al siguiente link para confirmar el cambio de contraseña en su cuenta {}'.format(link)
+
+        mail.send(message)
+
+        success = "Correo enviado"
+        return redirect("/")
+
 @app.route("/register")
 def registrar():
     return render_template("index/register.jinja")
@@ -279,7 +300,7 @@ def login():
     correo = request.form["correo"]
     contraseña = request.form["contraseña"]
     
-    cursor.execute("SELECT cuenta.Id_cuenta, cuenta.Correo, cuenta.Contraseña, cuenta.Rol\
+    cursor.execute("SELECT cuenta.Id_cuenta, cuenta.Correo, cuenta.Contraseña, cuenta.Rol, cuenta.estado\
                     FROM cuenta \
                     WHERE cuenta.Correo = %s", (correo,))
     
@@ -291,6 +312,10 @@ def login():
 
     if contraseña != rows[2]:
         flash("Contraseña incorrecta")
+        return redirect("/")
+    
+    if rows[4] != 'Activo':
+        flash("Su cuenta todavia no se encuentra activa")
         return redirect("/")
     
     session['id_usuario'] = rows[0]
@@ -332,14 +357,6 @@ def guardarDatosUsuario():
         
 
     return redirect("/usuarios")
-    
-@app.route("/videoFeed")
-def videoFeed():
-    return Response(generate(), mimetype="multipart/x-mixed-replace; boundary=frame")
-
-@app.route("/camara")
-def camara():
-    return render_template("usuarios/cam.jinja")
 
 @app.before_request
 def before_request():

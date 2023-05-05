@@ -1,6 +1,6 @@
 import flask
 import requests
-from flask import session, render_template, redirect, jsonify, make_response, url_for, request, flash
+from flask import session, render_template, redirect, jsonify, make_response, url_for, request, flash, Response
 from flask_mysqldb import MySQL
 from collections import OrderedDict
 import base64
@@ -113,7 +113,7 @@ def index():
     
     return render_template("usuarios/landing.jinja", productos = data, idUsuario = session.get('id_usuario'), carrito = numero,nombre = nombre)
 
-@usuarios.route("/usuarios/addcarrito", methods=['POST'])
+@usuarios.route("/usuarios/addcarrito", methods=['POST', 'GET'])
 def addcarrito():
     carritoData = request.form['carritoData']
     idUsuario = request.form['id']
@@ -226,25 +226,81 @@ def guardarPub():
     
     return redirect("/")
 
-@usuarios.route("/cam")
-def cam():
-    return render_template("usuarios/cam.jinja")
+def takeProfileInfo():
+    with mysql.connect.cursor() as cursor:
+        cursor.execute("SELECT * FROM usuarios WHERE Id_Usuario = %s", (session.get("id_usuario"),))
+        profileInfo = cursor.fetchone()
 
-@usuarios.route('/cam2', methods=['POST'])
-def upload():
-  # Obtener la imagen como un objeto base64
-  data = request.get_json()
-  image = data['image']
-  # Decodificar la imagen de base64
-  imgdata = base64.b64decode(image.split(',')[1])
-  # Convertir la imagen en un array de numpy
-  nparr = np.frombuffer(imgdata, np.uint8)
-  img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
-  # Aplicar un filtro a la imagen
-  gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-  cv2.imshow('prueba', gray)
-  # Convertir la imagen de nuevo en base64
-  retval, buffer = cv2.imencode('.jpg', gray)
-  gray_base64 = base64.b64encode(buffer).decode('utf-8')
-  # Devolver la imagen procesada como una respuesta HTTP en formato JSON
-  return jsonify(image=gray_base64)
+    return profileInfo
+
+@usuarios.route("/usuarios/perfil")
+def perfil():
+    profileInfo = takeProfileInfo()
+    
+    if profileInfo[7] == 'activo':
+        with mysql.connect.cursor() as cursor:
+            cursor.execute("SELECT Id_Orden FROM ordenpago WHERE Id_Usuario = %s ORDER BY Id_Orden DESC", (session.get('id_usuario'),))
+            id_orden = cursor.fetchone()
+        return render_template("usuarios/perfil.jinja", profileInfo = profileInfo, id_orden = id_orden)
+    return render_template("usuarios/perfil.jinja", profileInfo = profileInfo)
+
+@usuarios.route("/usuarios/updateProfile")
+def updateProfile():
+    profileInfo = takeProfileInfo()
+    with mysql.connect.cursor() as cursor:
+        cursor.execute("SELECT Color_Ojos, Hex FROM color_ojos WHERE Id_ColorOjos = %s", (profileInfo[3],))
+        coloresOjos = cursor.fetchone()
+        cursor.execute("SELECT Tipo_Piel FROM tipo_piel WHERE Id_TipoPiel = %s", (profileInfo[4],))
+        tiposPiel = cursor.fetchone()
+        
+    return render_template("usuarios/formulario.jinja", profileInfo = profileInfo, coloresOjos = coloresOjos, tiposPiel = tiposPiel)
+
+@usuarios.route("/usuarios/updateDatosUsuario", methods=['POST'])
+def updateDatosUsuario():
+    nombre = request.form["nombre"]
+    edad = request.form["edad"]
+    colorOjos = request.form["colorOjos"]
+    tipoPiel = request.form["tipoPiel"]
+    colorPiel = request.form["colorPiel"]
+    colorCabello = request.form["colorCabello"]
+    with mysql.connection.cursor() as cursor:
+        cursor.execute("UPDATE usuarios SET Nombre = %s, Edad = %s, Color_Ojos = %s, Tipo_Piel = %s, Tono_Piel = %s, Color_Pelo = %s WHERE Id_Usuario = %s",
+                       (nombre, edad, colorOjos, tipoPiel, colorPiel, colorCabello, session.get('id_usuario')))
+        mysql.connection.commit()
+
+    return redirect("/usuarios/perfil")
+
+global capture,rec_frame, grey, switch, neg, face, rec, out , camera
+switch = 1
+camera = cv2.VideoCapture(0)
+
+def gen_frames():  # generate frame by frame from camera
+    global out, capture,rec_frame, switch
+    while True:
+        success, frame = camera.read() 
+        if success:
+                
+            try:
+                ret, buffer = cv2.imencode('.jpg', cv2.flip(frame,1))
+                frame = buffer.tobytes()
+                yield (b'--frame\r\n'
+                       b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
+            except Exception as e:
+                pass
+            if switch == 0:
+                break
+                
+        else:
+            pass
+
+@usuarios.route("/videoFeed")
+def videoFeed():
+    return Response(gen_frames(), mimetype="multipart/x-mixed-replace; boundary=frame")
+
+@usuarios.route("/tasks", methods=["POST", "GET"])
+def tasks():
+    global switch, camera
+    if request.form.get('capture') == 'Capturar':
+        switch = not switch
+    
+    return render_template("usuarios/cam.jinja")
