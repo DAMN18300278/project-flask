@@ -1,0 +1,104 @@
+{% set productosAccesorios = [] %}
+{% for producto in productos %}
+    {% if producto['Categoria'] == 'accesorios' %}
+        {% set _ = productosAccesorios.append(producto) %}
+    {% endif %}
+{% endfor %}
+{% set subelementos = productosAccesorios|length %}
+
+<div class="container h-100 tab-pane fade animate__animated animate__fadeInUp pb-5 tab" id="accesoriosDiv" style="padding-left: 0; padding-right: 0; padding-bottom:20%">
+    <div class="w-100 h-100">
+        <div class="d-flex justify-content-end p-2 border-bottom border-3">
+            <p class="me-auto ms-2 my-auto">Categoria: Accesorios</p>
+            <lord-icon
+                src="https://cdn.lordicon.com/msoeawqm.json"
+                trigger="click"
+                colors="primary:#000,secondary:#bfa2db"
+                style="width:35px;height:35px;"
+                id="dropdownSearchAccesorios"
+                data-bs-toggle="dropdown"
+                aria-expanded="false">
+            </lord-icon>
+            <div class="dropdown-menu px-5 mt-menu animate__animated animate__fadeInDown" aria-labelledby="dropdownSearchAccesorios" style="max-height:50%; font-size: 16px; overflow-y:scroll; ">
+                <div class="input-group mb-3" style="font-size: 15px;">
+                    <input type="text" class="form-control border border-2" placeholder="Buscar" aria-label="Search" aria-describedby="basic-addon2" id="searchMenuAccesorios">
+                </div>
+                <div class="h-100" style="overflow-y: scroll;" id="dropdownSearchAccesoriosList">
+                {% for producto in productosAccesorios %}
+                    {% set img = 'src/img' + producto['Id']|string + '_1.jpg' %}
+                    <div id="itemAccesorios" class="dropdown-item" data-nombre="{{ producto['Nombre'] }}" data-id="{{ producto['Id'] }}" data-bs-toggle="modal" data-bs-target="#infoProducto" data-producto="{{ producto }}">
+                        <div class="d-flex">
+                            <img style="width: 20%; height:20%" src="{{ url_for('static', filename = img) }}">
+                            <a style="white-space:break-spaces;display:flex;align-items:center"><span>{{ producto['Nombre'] }} <span style="color:#808080ab">#{{ producto['Id'] }}</span></span></a>
+                        </div>
+                        <hr>
+                    </div>
+                {% endfor %}
+                </div>
+            </div>
+
+            <lord-icon
+                src="https://cdn.lordicon.com/sbiheqdr.json"
+                trigger="click"
+                colors="primary:#000,secondary:#810CA8"
+                style="width:40px;height:40px; margin-top:-2px;"
+                id="dropdownFiltersOjos"
+                type="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false">
+            </lord-icon>
+            <ul class="dropdown-menu" aria-labelledby="dropdownFiltersOjos" style="font-size: 16px;">
+                <a class="dropdown-item p-3 px-5" id="sortA-ZAccesorios">Ordenar por nombre (A - Z)</a>
+                <hr class="dropdown-divider">
+                <a class="dropdown-item p-3 px-5" id="sortZ-AAccesorios">Ordenar por nombre (Z - A)</a>
+                <hr class="dropdown-divider">
+                <a class="dropdown-item p-3 px-5" id="sortPMaAccesorios">Ordenar por precio <i class="bi bi-arrow-up"></i></a>
+                <hr class="dropdown-divider">
+                <a class="dropdown-item p-3 px-5" id="sortPMeAccesorios">Ordenar por precio <i class="bi bi-arrow-down"></i></a>
+            </ul>
+        </div>
+
+        <div class="h-100" style="overflow-y: scroll;">
+            {% with producto=productosAccesorios[0] %}
+            {% set img = 'src/img' + producto['Id']|string + '_1.jpg' %}
+                <div class="position-relative border-bottom border-3">
+                    <img class="img-principal" src="{{ url_for('static', filename = img) }}">
+                    <div class="position-absolute bg-white border border-1 border-danger p-1 py-3 w-50" style="bottom: 35px; left: 20px;">
+                        <p class="mb-4" style="font-size: 20px; display:inline; white-space:break-spaces;">{{ producto['Nombre'] }}</p>
+                        <button class="btn btn-product border-1 text-danger" type="button" data-bs-toggle="modal" data-bs-target="#infoProducto"
+                            data-bs-target="#infoProducto" 
+                            data-producto="{{ producto }}">Detalles ></button>
+                    </div>
+                </div>
+            {% endwith %}
+            <div class="m-3 row pb-5 mb-5">
+                <div id="content">
+                    <div class="tab-content">
+                        {% for i in range(0, subelementos, 24) %}
+                        <div class="tab-pane fade {% if loop.first %}show active{% endif %}" id="tab{{ loop.index }}">
+                            <div class="row justify-content-start w-100 ms-0 productosAccesoriosContainer">
+                            {% for j in range(i+1, i+25)%}
+                            {% if productosAccesorios[j] is defined %}
+                                {% with producto=productosAccesorios[j] %}
+                                <div class="col me-auto mb-4 productosAccesorios" data-nombre="{{producto['Nombre']}}" data-precio="{{producto['Precio u.']}}">
+                                        {% include "usuarios/productosCard.jinja" %}
+                                </div>
+                                {% endwith %}
+                            {% else %}
+                            {% endif %}
+                            {% endfor %}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div id="tabs" class="nav nav-tabs" role="tablist">
+                    {% for i in range(0, subelementos, 24) %}
+                    <button class="btn btn-outline-danger m-3 {% if loop.first %}active" aria-selected="true" {%else%}" aria-selected="false" {% endif %} id="tablink{{ loop.index }}" data-bs-target="#tab{{ loop.index }}" aria-controls="tab{{ loop.index }}" data-bs-toggle="tab" style="font-size: 15px;">{{ loop.index }}</button>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

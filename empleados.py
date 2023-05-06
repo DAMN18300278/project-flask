@@ -67,6 +67,8 @@ def añadir_producto():
         nombre_color = request.form.getlist('nombre_color') # Obtener la lista de nombres de colores
         color_rgba = request.form.getlist('color') # Obtener la lista de valores hexadecimales de colores
         # Convertir las listas en strings separados por comas
+        for i in range(len(color_rgba)):
+            color_rgba[i] = color_rgba[i].replace('#', '')
         nombre_color = ','.join(nombre_color)
         color_rgba = ','.join(color_rgba)
        
@@ -74,12 +76,13 @@ def añadir_producto():
         cantidad = request.form['Cantidad']
         marca = request.form['Marca']
         tipo_piel = request.form['TipoPiel']
+        tipo = request.form['Tipo']
         recomendacion = request.form['Recomendacion']
         imagen_filtro = request.files.getlist('Imagen_fil[]')
         filtronames = ','.join([file.filename for file in imagen_filtro])
 
     with mysql.connection.cursor() as cursor:
-            cursor.execute("INSERT INTO productos(Id_Productos, Nombre, Imagen, Descripcion, Precio, Nombre_Color, Color_RGBA, Categoria, Recomendacion, Marca, Cantidad , Tipo_Piel, Imagen_filtro) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,%s)", (id_producto, nombre,num_imagenes, descripcion, precio, nombre_color, color_rgba, categoria, recomendacion, marca, cantidad, tipo_piel,filtronames))
+            cursor.execute("INSERT INTO productos(Id_Productos, Nombre, Imagen, Descripcion, Precio, Nombre_Color, Color_RGBA, Categoria, Recomendacion, Marca, Cantidad , Tipo_Piel, Imagen_filtro, Tipo) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", (id_producto, nombre,num_imagenes, descripcion, precio, nombre_color, color_rgba, categoria, recomendacion, marca, cantidad, tipo_piel, filtronames, tipo))
             mysql.connection.commit()
             
     return redirect("/administradores/inventario")

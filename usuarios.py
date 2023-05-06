@@ -128,6 +128,23 @@ def addcarrito():
         
     return redirect("/")
 
+@usuarios.route('/usuarios/kits')
+def kits():
+    nombre = asignarNombre()
+    link = url_for('usuarios.productsApi', _external=True)
+    response = requests.get(link).json()
+    data = response['Productos']
+
+    with mysql.connect.cursor() as cursor:
+        cursor.execute("SELECT Carrito FROM usuarios WHERE Id_Usuario = %s", (session.get('id_usuario'),))
+        fetch = cursor.fetchone()
+        if fetch is None or not fetch[0]:
+            numero = 0
+        else:
+            abubu = fetch[0].split("|")
+            numero = len(abubu)
+    return render_template("usuarios/kits.jinja", productos = data, idUsuario = session.get('id_usuario'), carrito = numero,nombre = nombre)
+
 @usuarios.route('/usuarios/eliminar_producto/<string:id>', methods=['POST'])
 def eliminar_producto(id):
     ids = id.split('_')
