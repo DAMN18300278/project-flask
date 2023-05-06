@@ -7,11 +7,9 @@
 
 
 <div>
-    <form action="./NuevoProducto" id="form-nuevo-producto" method="post" class="to-left position-absolute p-5 d-flex flex-column justify-content-center align-items-center h-100" style="top: 0; bottom: 0; left: 0; right: 0;" enctype="multipart/form-data">
+    <form action="./NuevoProducto" id="form-nuevo-producto" method="post" class="to-left p-5 d-flex flex-column justify-content-center align-items-center h-100" enctype="multipart/form-data">
 
-      <div class="mb-3">
         <p>Nuevo Producto</p>
-      </div>
       <div class="mb-3 w-100 form-group d-flex align-items-center flex-column">
         <label for="IdProducto" class="form-label">ID del Producto</label>
         <input type="text" class="form-control" id="IdProducto" name="IdProducto" value="" requiered>
@@ -45,7 +43,7 @@
 
         <div class="mb-3 w-100 form-group d-flex align-items-center flex-column">
             <label for="Precio" class="form-label">Precio</label>
-            <input type="number" inputmode="numeric" class="form-control" id="Precio" name="Precio" value="" required>
+            <input type="number" class="form-control" id="Precio" name="Precio" value="" required>
             <small class="text-danger hidden">Este campo es requerido</small>  
         </div>
 
@@ -82,8 +80,14 @@
 
         <div class="mb-3 w-100 form-group d-flex align-items-center flex-column">
           <label for="Recomendacion" class="form-label">Recomendacion</label>
-          <input type="text" class="form-control" id="Recomendacion" name="Recomendacion" value=""required>
+          <input type="text" class="form-control" id="Recomendacion" name="Recomendacion" value="" required>
           <small class="text-danger hidden">Este campo es requerido</small>  
+        </div>
+
+        <div class="mb-3 w-100 form-group d-flex align-items-center flex-column">
+          <label for="Tipo" class="form-label">Tipo de producto</label>
+          <input type="text" class="form-control" id="Tipo" name="Tipo" value="" required>
+          <small class="text-danger hidden">Este campo es requerido</small>
         </div>
 
         <div class="mb-3 w-100 form-group d-flex align-items-center flex-column">
@@ -111,7 +115,7 @@
 
         <div  class="mb-3 w-100 form-group d-flex align-items-center flex-column">
           <label for="Imagen_fil" class="form-label w-100">Imagenes para filtro</label>
-          <input  type="file" class="form-control-file" id="Imagen_fil" name="Imagen_fil[]" multiple accept="image/png, image/jpeg, image/jpg" value="" required>
+          <input  type="file" class="form-control-file" id="Imagen_fil" name="Imagen_fil[]" multiple accept="image/png, image/jpeg, image/jpg" value="" >
           <small class="text-danger hidden">Este campo es requerido</small>  
         </div>
         
