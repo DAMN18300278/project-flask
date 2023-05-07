@@ -5,17 +5,17 @@
 
 {% set producto = productos[0] %}
 {% block content %}
-    
+    {% include "usuarios/infoKit.jinja" %}
     {% include "usuarios/nav.jinja" %}
     {% include "usuarios/menu.jinja" %} 
-    <h1>Kits</h1>
-    {% include "usuarios/infoProducto.jinja" %}
-    <div class="container-div-index h-100 tab-content" style="z-index:-1;" id="container-div-index">
-        {% include "usuarios/inicioDiv.jinja" %}
-        {% include "usuarios/pielDiv.jinja" %}
-        {% include "usuarios/labiosDiv.jinja" %}
-        {% include "usuarios/ojosDiv.jinja" %}
-    </div>
+
+{% set productosLabios = [] %}
+{% for producto in productos %}
+    {% if producto['Categoria'] == 'labios' %}
+        {% set _ = productosLabios.append(producto) %}
+    {% endif %}
+{% endfor %}
+{% set subelementos = productosLabios|length %}
 
     <div class="position-absolute d-flex align-items-center p-2 m-5" id="carrito" style="border: 2px solid rgba(140, 140, 140, 0.586); background-color:rgba(251, 229, 255, 0.789); border-radius:50%; bottom:0; right:0; z-index:2">
         <lord-icon
@@ -30,8 +30,58 @@
             <p class="mb-0 ms-1" id="cantidadCarrito" style="font-size: 14px; text-align:center;font-weight:500; letter-spacing:1px">{{ carrito }}</p>
         </div>
     </div>
-
     
+    <div class="container h-100 tab-pane fade animate__animated animate__fadeInUp pb-5 tab" id="labiosDiv" style="padding-left: 0; padding-right: 0; padding-bottom:20%">
+    <div class="w-100 h-100">
+
+        <div class="d-flex justify-content-end p-2 border-bottom border-3 text-center">
+            <p class="me-auto ms-2 my-auto align-items-center">Kits</p>
+        </div>
+
+        <div class="h-100" style="overflow-y: scroll;">
+            {% with producto=productosLabios[0] %}
+            {% set img = 'src/img' + producto['Id']|string + '_1.jpg' %}
+                <div class="position-relative border-bottom border-3">
+                    <img class="img-principal" src="{{ url_for('static', filename = img) }}">
+                    <div class="position-absolute bg-white border border-1 border-danger p-1 py-3 w-50" style="bottom: 35px; left: 20px;">
+                        <p class="mb-4" style="font-size: 20px; display:inline; white-space:break-spaces;">Kit 1</p>
+                        <button class="btn btn-product border-1 text-danger" type="button" data-bs-toggle="modal" data-bs-target="#infoProducto"
+                            data-bs-target="#infoProducto" 
+                            data-producto="{{ producto }}">Detalles ></button>
+                    </div>
+                </div>
+            {% endwith %}
+            <div class="m-3 row pb-5 mb-5">
+                <div id="content">
+                    <div class="tab-content">
+                        {% for i in range(0, subelementos, 24) %}
+                        <div class="tab-pane fade {% if loop.first %}show active{% endif %}" id="tab{{ loop.index }}">
+                            <div class="row justify-content-start w-100 ms-0 productosLabiosContainer">
+                            {% for j in range(i+1, i+25)%}
+                            {% if productosLabios[j] is defined %}
+                                {% with producto=productosLabios[j] %}
+                                <div class="col me-auto mb-4 productosLabios" data-nombre="{{producto['Nombre']}}" data-precio="{{producto['Precio u.']}}">
+                                        {% include "usuarios/productosCard.jinja" %}
+                                </div>
+                                {% endwith %}
+                            {% else %}
+                            {% endif %}
+                            {% endfor %}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div id="tabs" class="nav nav-tabs" role="tablist">
+                    {% for i in range(0, subelementos, 24) %}
+                    <button class="btn btn-outline-danger m-3 {% if loop.first %}active" aria-selected="true" {%else%}" aria-selected="false" {% endif %} id="tablink{{ loop.index }}" data-bs-target="#tab{{ loop.index }}" aria-controls="tab{{ loop.index }}" data-bs-toggle="tab" style="font-size: 15px;">{{ loop.index }}</button>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
     <script>
     var idUsuario = {{ idUsuario }};
