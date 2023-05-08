@@ -4,25 +4,88 @@
 {% endblock %}
 
 {% block content %}
-<script src="{{ url_for('static', filename='js/opencv.min.js') }}"></script>
-<div style="height: 100%;" class="h-100 d-flex align-items-center justify-content-center">
-    <video id="videoInput" height="100%"></video>
-    <canvas id="canvas-output" height="100%" style="z-index:3"></canvas>
-    <button class="position-absolute w-50" style="bottom: 20%;" >Capturar</button>
+<div class="d-flex flex-column align-items-center justify-content-center">
+
+  <video id="video" width="640" height="480" autoplay></video>
+  <div class="my-5">
+    <button id="capture-btn" class="btn btn-danger">Tomar/Retomar</button>
+    <button id="pestañas-btn" class="btn btn-danger">colocar pestañas</button>
+    <button id="sombras-btn" class="btn btn-danger">colocar sombras</button>
+    <button id="labial-btn" class="btn btn-danger">colocar labial</button>
+  </div>
+  <canvas id="canvasFoto" class="position-absolute" style="top: 0; z-index: 2" width="640" height="480"></canvas>
+  <canvas id="canvasResult" class="position-absolute" style="top: 0; z-index: 3" width="640" height="480"></canvas>
 </div>
 
 <script>
-const video = document.getElementById("videoInput");
-const canvas = document.getElementById("canvas-output");
+  // Acceder al video y al botón de captura
+  const video = document.getElementById('video');
 
-(async () => {
-  const stream = await navigator.mediaDevices.getUserMedia({
-    video: true,
-    audio: false,
+  // Acceder al lienzo (canvas)
+  const canvas1 = document.getElementById('canvasFoto');
+  const canvas2 = document.getElementById('canvasResult');
+  const context1 = canvas1.getContext('2d');
+  const context2 = canvas2.getContext('2d');
+  var imageData = canvas1.toDataURL('image/jpeg');
+  let capture = true;
+
+  // Obtener acceso a la cámara
+  navigator.mediaDevices.getUserMedia({ video: true })
+      .then(stream => {
+          // Mostrar el flujo de la cámara en el elemento de video
+          video.srcObject = stream;
+      })
+      .catch(error => {
+          console.error('Error al acceder a la cámara: ', error);
+      });
+
+  // Capturar foto cuando se hace clic en el botón
+  $('#capture-btn').on('click', function(){
+    if(capture){
+      // Dibujar la imagen del video en el lienzo
+      context1.drawImage(video, 0, 0, canvas1.width, canvas1.height);
+      $('#canvasFoto').show();
+      // Obtener la imagen como base64
+      imageData = canvas1.toDataURL('image/jpeg');
+
+      $.ajax({
+        contentType: 'application/json',
+        dataType: 'json',
+        data: JSON.stringify({ image: imageData }),
+        url: '/revisar_foto',
+        type: 'post',
+        success: function(response){
+          console.log(response.Orientado);
+        }
+      });
+
+      capture = !capture;
+    }else{
+      $('#canvasFoto').hide();
+      $('#canvasResult').hide();
+      imageData = '0';  
+      capture = !capture;
+    }
   });
 
-
-})();
+  $('#pestañas-btn').on('click', function(){
+    $('#canvasResult').show();
+    $.ajax({
+      contentType: 'application/json',
+      dataType: 'json',
+      data: JSON.stringify({ image: imageData }),
+      url: '/procesar',
+      type: 'post',
+      success: function(response){
+        // Mostrar la imagen procesada al usuario
+        const processedImage = new Image();
+        processedImage.onload = function(){
+          context2.drawImage(processedImage, 0, 0, canvas1.width, canvas1.height)
+        }
+        processedImage.src = 'data:image/png;base64,' + response.processedImageUrl;
+      }
+    });
+  });
 </script>
 
 {% endblock %}
