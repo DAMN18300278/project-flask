@@ -359,6 +359,13 @@ def calcular_angulo(landmarks, frame):
 
     return oriented
 
+@usuarios.route("/revisar_foto2", methods=["POST"])
+def revisar_foto2():
+    data = request.get_json()
+    imagen_data = data['popo']
+
+    return jsonify({ 'respuesta': imagen_data })
+
 @usuarios.route("/revisar_foto", methods=["POST"])
 def revisar_foto():
     data = request.get_json()
