@@ -292,6 +292,49 @@ $(document).ready(function ($) {
         modal.find('#nombreColorInfoProductos').text('Color');
     });
 
+
+    $('#infokit').on('show.bs.modal', function(event){
+
+        const button = event.relatedTarget; // elemento que dispara el modal
+        const productos = button.getAttribute('data-producto');
+        const productosLabioschido = button.getAttribute('data-productos-labios');
+        const productosPiel = button.getAttribute('data-productos-piel');
+        const productosOjos = button.getAttribute('data-productos-ojos');
+        const productosSkinCare = button.getAttribute('data-productos-skincare');
+        // // haz algo con los arreglos, por ejemplo:
+        var modal = $(this);
+        
+        var textProduct = productosLabioschido;
+        var sinComillas = textProduct.replace('\n\n', " ");
+        var sinTabs = sinComillas.replace(/'/g, "\"");
+        
+        productosLabios = JSON.parse(sinTabs); 
+        
+        var productoId = productosLabios['Id'];
+        var nombre = productosLabios['Nombre'];
+        var precio = productosLabios['Precio u.'];
+        
+        var colores = productosLabios['Colores'];
+
+        for (var key in colores) {
+            if (colores[key]['Nombre'] == colorSeleccionado) {
+                keySeleccionado = key;
+                break;
+            }
+        }
+
+        modal.find('#precioprod').text(nombre);
+
+
+        //console.log(productos);
+        console.log("nuevo kit");
+        console.log(productosLabios);
+        console.log(productosPiel);
+        console.log(productosOjos);
+        console.log(productosSkinCare);
+    });
+
+
     $('#btn-minus').click(function() {
         var input = $('#cantidad');
         var value = parseInt(input.val());
@@ -621,10 +664,3 @@ new Promise((resolve, reject) => {
 
     node.addEventListener('animationend', handleAnimationEnd, {once: true});
 });
-
-// let i = 0;
-// setInterval(function(){
-//     i++;
-//     document.getElementById('cantidadCarrito').textContent = i;
-//     animateCSS('carrito', 'rotateInDownRight');
-// }, 2000)

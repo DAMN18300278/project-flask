@@ -1,19 +1,30 @@
-<div class="modal fade" tabindex="-1" role="dialog" id="infoProducto">
+
+
+<div class="modal fade" tabindex="-1" role="dialog" id="infokit">
     <div class="modal-dialog mx-5" style="margin-top: 10%;" role="document">
         <div class="modal-content">
             <div class="bg-white p-3 border-bottom border-dark position-relative" style="border-radius: 5px;">
             
-                <h1>Ojos</h1>
+                <h1>Ojos </h1>
                 <div class="row p-5">
                     <div class="col">
-                        {% include "empleados/productosCardEmpleadostemp.jinja" %}
+                                <div class="border border-1 box-shadow1 position-relative" style="width:9em; height:9em;">
+                                {% set imgModal = 'src/img' + '1' + '_' + '1' + '.jpg' %}
+                                <img src="{{ url_for('static', filename= imgModal) }}" style="width:7em; height:7em;">
+                                <div class="position-absolute border border-danger bg-white py-1 px-2" style="bottom: 5%; left: 5%; overflow:hidden; max-width:90%">
+                                    <p class="mb-0 text-start" style="font-size: 12px;letter-spacing:1px;">{{producto[4]}}</p>
+                                    <p id="precioprod" class="normal-text mb-0 text-start" style="font-size: 11px;letter-spacing:1px;font-weight: bold;">${{producto[5]}}</p>
+                                </div>
+                                <div class="position-absolute colores-info col-3 m-2"  style="top: 5%; left: 5% ; background-color: #{{producto[3]}};"></div>
+                                </div>
+
                     </div>
                     <div class="position-relative col">
                     
                         <div class="position-absolute text-start" style="bottom: 5px;">
                             
                             <p class="px-5" style="font-size: 14px; display:contents"> 
-                                <span class="subtotal" style="font-weight:bold;font-size:13px">Algun dato</span>
+                                <span class="subtotal" style="font-weight:bold;font-size:13px">Algo</span>
                             </p>
                             <button id="{{index}}_{{id}}" class="btn btn-warning px-5 eliminar-producto" style="font-size: 14px; height: 25px; border-radius: 0px;">Cambiar</button>
                         </div>
@@ -98,7 +109,7 @@
             <div class="d-flex px-4 pb-4">
                 <button type="button" class="btn btn-danger me-auto px-4 py-2 d-flex align-items-center" data-bs-dismiss="modal" style="border-radius: 0px; font-size:15px">Cancelar</button>
 
-                <button id="btn-addcarrito" type="button" class="btn btn-danger ms-auto px-4 py-2 d-flex align-items-center" style="border-radius: 0px; font-size:15px" >Comprar   
+                <button id="btn-addcarrito" type="button" class="btn btn-danger ms-auto px-4 py-2 d-flex align-items-center" style="border-radius: 0px; font-size:15px" >Probar   
                     <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-shopping-cart-plus ms-3" width="30" height="30" viewBox="0 0 24 24" stroke-width="1.5" stroke="#fff" fill="none" stroke-linecap="round" stroke-linejoin="round">
                         <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
                         <circle cx="6" cy="19" r="2" />

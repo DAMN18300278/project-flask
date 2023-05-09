@@ -135,6 +135,16 @@ def kits():
     response = requests.get(link).json()
     data = response['Productos']
 
+    for producto in data:
+        del producto['Descripcion']
+        del producto['Imagenes']
+        del producto['Marca']
+        del producto['Tipo de piel']
+        del producto['Imagenes filtro']
+        del producto['Tipo']
+        del producto['Recomendacion']
+
+
     with mysql.connect.cursor() as cursor:
         cursor.execute("SELECT Carrito FROM usuarios WHERE Id_Usuario = %s", (session.get('id_usuario'),))
         fetch = cursor.fetchone()
