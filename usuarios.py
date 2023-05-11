@@ -352,19 +352,12 @@ def calcular_angulo(landmarks, frame):
     angulo_deg = math.degrees(angulo_rad)
 
     # Verificar si el ángulo cumple con tu criterio de orientación
-    if angulo_deg <= 95 and angulo_deg >= 85:
+    if angulo_deg <= 93 and angulo_deg >= 87:
         oriented = 1
     else:
         oriented = 0
 
     return oriented
-
-@usuarios.route("/revisar_foto2", methods=["POST"])
-def revisar_foto2():
-    data = request.get_json()
-    imagen_data = data['popo']
-
-    return jsonify({ 'respuesta': imagen_data })
 
 @usuarios.route("/revisar_foto", methods=["POST"])
 def revisar_foto():
@@ -394,31 +387,65 @@ def revisar_foto():
 
     return jsonify(response)
 
+def capMakeup(image, landmarks, hexColor, layer = 0):
+
+    if layer == 0:
+        points = (61, 146, 91, 181, 84, 17, 314, 405, 321, 375, 291, 306, 292, 308, 324, 318, 402, 317, 14, 87, 178, 88, 95, 78, 62, 76)
+        points2 = (61, 185, 40, 39, 37, 0, 267, 269, 270, 409, 291, 306, 292, 308, 415, 310, 311, 312, 13, 82, 81, 80, 191, 78, 62, 76)
+        opacity = -0.5
+        gauss = (5, 5)
+    elif layer == 1:
+        points = ( 190, 157, 158, 159, 160, 161, 246, 33, 130, 226, 113, 225, 224, 223, 222, 190)
+        points2 = ( 414, 384, 385, 386, 387, 388, 466, 263, 359, 446, 342, 445, 444, 443, 442, 414)
+        opacity = -0.25
+        gauss = (9, 9)
+
+    suject1 = np.array([(landmarks.landmark[i].x * image.shape[1], landmarks.landmark[i].y * image.shape[0]) for i in points])
+    suject2 = np.array([(landmarks.landmark[i].x * image.shape[1], landmarks.landmark[i].y * image.shape[0]) for i in points2])
+
+    r, g, b = tuple(int(hexColor[i:i+2], 16) for i in (0, 2, 4))
+    r, g, b = 255 - r, 255 - g, 255 - b
+
+    mask = np.zeros_like(image)
+    mask2 = np.zeros_like(image)
+    color = (b, g, r)
+    cv2.fillPoly(mask, [suject1.astype(np.int32)], color)
+    cv2.fillPoly(mask2, [suject2.astype(np.int32)], color)
+
+    mask3 = cv2.add(mask, mask2)
+    mask3 = cv2.GaussianBlur(mask3, gauss, 0) # Aplicamos un desenfoque gaussiano para suavizar los bordes de la máscar
+    cv2.imshow('prueba', mask3)
+
+    result = cv2.addWeighted(image, 1, mask3, opacity, 0)
+    
+    return result
 
 @usuarios.route("/procesar", methods=['POST'])
 def procesar_imagen():
     data = request.get_json()
     imagen_data = data['image'] 
 
-    # imagen_data = ""
-
-    # # Aquí realizas el procesamiento de la imagen utilizando OpenCV
+    # Aquí realizas el procesamiento de la imagen utilizando OpenCV
     imagen_base64 = imagen_data.split(',')[1]  # Eliminar el encabezado 'data:image/jpeg;base64,'
     imagen_bytes = base64.b64decode(imagen_base64)
     nparr = np.frombuffer(imagen_bytes, np.uint8)
     imagen = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
 
-    # Convertir la imagen a escala de grises
-    imagen_gris = cv2.cvtColor(imagen, cv2.COLOR_BGR2GRAY)
+    # Procesar la imagen para poner el maquillaje
+    imagen_rgb = cv2.cvtColor(imagen, cv2.COLOR_BGR2RGB)
+    results = face_mesh.process(imagen_rgb)
 
-    # Invertir la imagen (negativo)
-    imagen_negativa = cv2.bitwise_not(imagen_gris)
+    if results.multi_face_landmarks:
+        face_landmarks = results.multi_face_landmarks[0]
 
-    # # Convertir la imagen procesada de nuevo a base64
-    _, imagen_procesada_encoded = cv2.imencode('.jpeg', imagen_negativa)
+        imagen = capMakeup(imagen, face_landmarks, 'eb6369', 1)
+        imagen = capMakeup(imagen, face_landmarks, 'bc0f28', 0)
+
+    # Convertir la imagen procesada de nuevo a base64
+    _, imagen_procesada_encoded = cv2.imencode('.jpeg', imagen)
     imagen_procesada_base64 = base64.b64encode(imagen_procesada_encoded).decode('utf-8')
 
-    # # Construir la respuesta con la imagen procesada
+    # Construir la respuesta con la imagen procesada
     response = {
         'processedImageUrl': imagen_procesada_base64
     }

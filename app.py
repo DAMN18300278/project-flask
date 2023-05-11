@@ -192,8 +192,6 @@ def cambiarcontra():
             cursor.execute("UPDATE cuenta SET Contraseña = (%s) WHERE Correo = (%s)", (contraseña,correo))
             mysql.connection.commit()
             
-
-
         return redirect("/")
 
 @app.route("/recover")

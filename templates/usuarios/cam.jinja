@@ -1,20 +1,47 @@
 {% extends "usuarios/usuariosMaster.jinja" %}
 {% block head %}
     {{ super() }}
+    <style>
+    video, canvas {
+      -webkit-transform: scaleX(-1);
+      transform: scaleX(-1);
+    }
+    </style>
 {% endblock %}
 
 {% block content %}
+
+<div id="modal-alerts" style="display: none;" class="modal fade p-5">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title ">Alertas</h1>
+        <h3 class="close" data-dismiss="modal"><i class="bi bi-x-lg"></i></s>
+      </div>
+      <div class="modal-body">
+        <h2 id="modal-text"></h2>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="d-flex flex-column align-items-center justify-content-center">
 
-  <video id="video" width="640" height="480" autoplay></video>
-  <div class="my-5">
-    <button id="capture-btn" class="btn btn-danger">Tomar/Retomar</button>
-    <button id="pestañas-btn" class="btn btn-danger">colocar pestañas</button>
-    <button id="sombras-btn" class="btn btn-danger">colocar sombras</button>
-    <button id="labial-btn" class="btn btn-danger">colocar labial</button>
+  <video id="video" style="z-index: 0;object-fit:cover;"></video>
+  <canvas id="canvasFoto" class="position-absolute" style="top: 0; z-index: 2;object-fit:cover"></canvas>
+  <canvas id="canvasResult" class="position-absolute" style="top: 0; z-index: 3;object-fit:cover"></canvas>
+  
+  <button id="capture-btn" class="btn btn-danger position-absolute " style="border-radius: 50%; border: 2px solid rgb(205, 205, 205); background-color:rgba(231, 231, 231, 0.532); height: 80px; width:80px; bottom: 10%; left: calc(50% - 40px); z-index: 4;"></button>
+  
+  <div id="options" class="position-absolute w-50 " style="bottom: 15%; left: 25%; display: none; z-index: 5;">
+    <button class="btn btn-outline-danger" id="retomar">Retomar</button>
+    <button class="btn btn-outline-danger" id="continuar">Continuar</button>
   </div>
-  <canvas id="canvasFoto" class="position-absolute" style="top: 0; z-index: 2" width="640" height="480"></canvas>
-  <canvas id="canvasResult" class="position-absolute" style="top: 0; z-index: 3" width="640" height="480"></canvas>
+  <div id="options2" class="position-absolute w-50 " style="bottom: 15%; left: 25%; display: none; z-index: 5;">
+    <button class="btn btn-outline-danger" id="sombras">Colocar sombras</button>
+    <button class="btn btn-outline-danger" id="labial">Colocar labial</button>
+  </div>
+
 </div>
 
 <script>
@@ -28,12 +55,37 @@
   const context2 = canvas2.getContext('2d');
   var imageData = canvas1.toDataURL('image/jpeg');
   let capture = true;
+  var cameraHeight = 0;
+  var cameraWidth = 0;
+
+  var jsonProductos = {
+    "Labial": "0:0",
+    "Sombras": "0:0"
+  }
+
+  video.setAttribute('autoplay', '');
+  video.setAttribute('muted', '');
+  video.setAttribute('playsinline', '');
+
+  navigator.getMedia = ( 
+    navigator.mediaDevices ||
+    navigator.webkit ||
+    navigator.mozGetUserMedia ||
+    navigator.msGetUserMedia
+  );
 
   // Obtener acceso a la cámara
-  navigator.mediaDevices.getUserMedia({ video: true })
+  navigator.getMedia.getUserMedia({video:true})
       .then(stream => {
           // Mostrar el flujo de la cámara en el elemento de video
           video.srcObject = stream;
+
+          video.height = screen.height;
+          video.width = screen.width;
+
+          let stream_data = stream.getVideoTracks()[0].getSettings();
+          cameraHeight = stream_data.height;
+          cameraWidth = stream_data.width;
       })
       .catch(error => {
           console.error('Error al acceder a la cámara: ', error);
@@ -43,10 +95,12 @@
   $('#capture-btn').on('click', function(){
     if(capture){
       // Dibujar la imagen del video en el lienzo
+      canvas1.height = cameraHeight;
+      canvas1.width = cameraWidth;
       context1.drawImage(video, 0, 0, canvas1.width, canvas1.height);
-      $('#canvasFoto').show();
       // Obtener la imagen como base64
       imageData = canvas1.toDataURL('image/jpeg');
+      $('#canvasFoto').show();
 
       $.ajax({
         contentType: 'application/json',
@@ -55,11 +109,34 @@
         url: '/revisar_foto',
         type: 'post',
         success: function(response){
-          console.log(response.Orientado);
+          if (response.Orientado){
+            capture = !capture;
+            // Mostrar el modal
+            $('#modal-text').text("Foto tomada exitosamente!");
+            $('#modal-alerts').modal('show');
+            $('#capture-btn').hide();
+            $('#options').show();
+          
+            // Establecer el temporizador para ocultar el modal después de 3 segundos (3000 ms)
+            setTimeout(function() {
+              $('#modal-alerts').modal('hide');
+            }, 3000);
+          }else{
+            imageData = '';
+            $('#canvasFoto').hide();
+            
+            // Mostrar el modal
+            $('#modal-text').text("Por favor intente colocar su cabeza un poco más derecha para facilitar el sistema de probado");
+            $('#modal-alerts').modal('show');
+          
+            // Establecer el temporizador para ocultar el modal después de 3 segundos (3000 ms)
+            setTimeout(function() {
+              $('#modal-alerts').modal('hide');
+            }, 3000);
+          }
         }
       });
 
-      capture = !capture;
     }else{
       $('#canvasFoto').hide();
       $('#canvasResult').hide();
@@ -68,7 +145,16 @@
     }
   });
 
-  $('#pestañas-btn').on('click', function(){
+  $('#retomar').on('click', function(){
+      $('#canvasFoto').hide();
+      $('#canvasResult').hide();
+      $('#options').hide();
+      $('#capture-btn').show();
+      imageData = '0';  
+      capture = !capture;
+  });
+
+  $('#continuar').on('click', function(){
     $('#canvasResult').show();
     $.ajax({
       contentType: 'application/json',
@@ -80,6 +166,8 @@
         // Mostrar la imagen procesada al usuario
         const processedImage = new Image();
         processedImage.onload = function(){
+          canvas2.height = video.clientHeight
+          canvas2.width = video.clientWidth
           context2.drawImage(processedImage, 0, 0, canvas1.width, canvas1.height)
         }
         processedImage.src = 'data:image/png;base64,' + response.processedImageUrl;
