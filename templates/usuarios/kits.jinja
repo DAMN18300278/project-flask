@@ -5,17 +5,37 @@
 
 {% set producto = productos[0] %}
 {% block content %}
-    
+    {% include "usuarios/infoKit.jinja" %}
     {% include "usuarios/nav.jinja" %}
     {% include "usuarios/menu.jinja" %} 
-    <h1>Kits</h1>
-    {% include "usuarios/infoProducto.jinja" %}
-    <div class="container-div-index h-100 tab-content" style="z-index:-1;" id="container-div-index">
-        {% include "usuarios/inicioDiv.jinja" %}
-        {% include "usuarios/pielDiv.jinja" %}
-        {% include "usuarios/labiosDiv.jinja" %}
-        {% include "usuarios/ojosDiv.jinja" %}
-    </div>
+
+{%set productosOjos =[]%}
+{%set productosPiel =[]%}
+{%set productosSkinCare =[]%}
+{%set productosAccesorios =[]%}
+{% set productosLabios = [] %}
+{% for producto in productos %}
+    
+    <script>
+        console.log("Valor de producto: {{ producto }}");
+    </script>
+    {% if producto['Categoria'] == 'labios' %}
+        {% set _ = productosLabios.append(producto) %}
+    {% endif %}
+    {% if producto['Categoria'] == 'piel' %}
+        {% set _ = productosPiel.append(producto) %}
+    {% endif %}
+    {% if producto['Categoria'] == 'ojos' %}
+        {% set _ = productosOjos.append(producto) %}
+    {% endif %}
+    {% if producto['Categoria'] == 'accesorios' %}
+        {% set _ = productosAccesorios.append(producto) %}
+    {% endif %}
+    {% if producto['Categoria'] == 'skinCare' %}
+        {% set _ = productosSkinCare.append(producto) %}
+    {% endif %}
+{% endfor %}
+{% set subelementos = productosLabios|length %}
 
     <div class="position-absolute d-flex align-items-center p-2 m-5" id="carrito" style="border: 2px solid rgba(140, 140, 140, 0.586); background-color:rgba(251, 229, 255, 0.789); border-radius:50%; bottom:0; right:0; z-index:2">
         <lord-icon
@@ -30,11 +50,126 @@
             <p class="mb-0 ms-1" id="cantidadCarrito" style="font-size: 14px; text-align:center;font-weight:500; letter-spacing:1px">{{ carrito }}</p>
         </div>
     </div>
-
     
+    <div class="container h-100 tab-pane fade animate__animated animate__fadeInUp pb-5 tab" id="kitsDiv" style="padding-left: 0; padding-right: 0; padding-bottom:20%">
+    <div class="w-100 h-100">
+
+        <div class="d-flex justify-content-end p-2 border-bottom border-3 text-center">
+            <p class="me-auto ms-2 my-auto align-items-center">Kits</p>
+        </div>
+
+        <div class="h-100" style="overflow-y: scroll;">
+            {% with producto=productosLabios[0] %}
+
+            {% set producto2 = productosPiel[0]%}
+            {% set producto3 = productosOjos[0]%}
+            {% set producto4 = productosSkinCare[0]%}
+            
+
+            {% set img1 = 'src/img' + producto['Id']|string + '_1.jpg' %}
+            {% set img2 = 'src/img' + producto2['Id']|string + '_1.jpg' %}
+            {% set img3 = 'src/img' + producto3['Id']|string + '_1.jpg' %}
+            {% set img4 = 'src/img' + producto4['Id']|string + '_1.jpg' %}
+
+
+                <div class="position-relative border-bottom border-3">
+                    
+                    <div class="fila">
+                        <div class="columna">
+                            <img src="{{ url_for('static', filename = img1) }}">
+                        </div>
+                        <div class="columna">
+                            <img src="{{ url_for('static', filename = img2) }}">
+                        </div>
+                    </div>
+                    <div class="fila">
+                        <div class="columna">
+                            <img src="{{ url_for('static', filename = img4) }}">
+                        </div>
+                        <div class="columna">
+                            <img src="{{ url_for('static', filename = img3) }}">
+                        </div>
+                    </div>
+                    <div class="position-absolute bg-white border border-1 border-danger p-1 py-3 w-50" style="bottom: 35px; left: 20px;">
+                        <p class="mb-4" style="font-size: 20px; display:inline; white-space:break-spaces;">Kit 1</p>
+                        <button class="btn btn-product border-1 text-danger" type="button" data-bs-toggle="modal" data-bs-target="#infokit"
+                            data-bs-target="#infokit" 
+                            data-producto="{{ productos }}">Detalles ></button>
+                    </div>
+                </div>
+            {% endwith %}
+            <div class="m-3 row pb-5 mb-5">
+                <div id="content">
+                    <div class="tab-content">
+                        {% for i in range(0, subelementos, 24) %}
+                        <div class="tab-pane fade {% if loop.first %}show active{% endif %}" id="tab{{ loop.index }}">
+                            <div class="row justify-content-start w-100 ms-0 productosLabiosContainer">
+                            {% for j in range(i+2, i+25)%}
+                            {% if productosLabios[j] is defined and productosOjos[j] is defined and productosSkinCare[j] is defined and productosPiel[j] is defined%}
+                                {% with producto=productosLabios[j] %}
+                                {% set producto2 = productosPiel[j]%}
+                                {% set producto3 = productosOjos[j]%}
+                                {% set producto4 = productosSkinCare[j]%}
+                                <div class="col me-auto mb-4 productosLabios" >
+                                     
+                                        {% set img1 = 'src/img' + producto['Id']|string + '_1.jpg' %}
+                                        {% set img2 = 'src/img' + producto2['Id']|string + '_1.jpg' %}
+                                        {% set img3 = 'src/img' + producto3['Id']|string + '_1.jpg' %}
+                                        {% set img4 = 'src/img' + producto4['Id']|string + '_1.jpg' %}
+
+                                        <div class="border border-1 box-shadow1 position-relative"
+                                                data-bs-toggle="modal" 
+                                                data-bs-target="#infokit" 
+                                                data-producto="{{ productos }}"
+                                                data-productos-labios="{{  productosLabios[j] }}"
+                                                data-productos-piel="{{ productosPiel[j]  }}"
+                                                data-productos-ojos="{{ productosOjos[j] }}"
+                                                data-productos-skincare="{{ productosSkinCare[j]  }}" 
+                                                style="width:6.5em; height:6.5em;">
+                                                <div class="fila">
+                                                <div class="columna">
+                                                    <img src="{{ url_for('static', filename = img1) }}" style="width:3em; height:3em;">
+                                                </div>
+                                                <div class="columna">
+                                                    <img src="{{ url_for('static', filename = img2) }}" style="width:3em; height:3em;">
+                                                </div>
+                                                </div>
+                                                <div class="fila">
+                                                    <div class="columna">
+                                                        <img src="{{ url_for('static', filename = img4) }}" style="width:3em; height:3em;">
+                                                    </div>
+                                                    <div class="columna">
+                                                        <img src="{{ url_for('static', filename = img3) }}" style="width:3em; height:3em;">
+                                                    </div>
+                                                </div>
+                                            <div class="position-absolute border border-danger bg-white py-1 px-2" style="bottom: 5%; left: 5%; overflow:hidden; max-width:90%">
+                                                <p class="mb-0 text-start" style="font-size: 12px;letter-spacing:1px;white-space:break-spaces">Kit  {{j }}</p>
+                                                <p class="mb-0 text-start" style="font-size: 11px;letter-spacing:1px;font-weight: bold;"></p>
+                                            </div>
+                                        </div>
+                                </div>
+                                {% endwith %}
+                            {% endif %}
+                            {% endfor %}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div id="tabs" class="nav nav-tabs" role="tablist">
+                    {% for i in range(0, subelementos, 24) %}
+                    <button class="btn btn-outline-danger m-3 {% if loop.first %}active" aria-selected="true" {%else%}" aria-selected="false" {% endif %} id="tablink{{ loop.index }}" data-bs-target="#tab{{ loop.index }}" aria-controls="tab{{ loop.index }}" data-bs-toggle="tab" style="font-size: 15px;">{{ loop.index }}</button>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
     <script>
     var idUsuario = {{ idUsuario }};
+    
     </script>
 
 {% endblock %}
