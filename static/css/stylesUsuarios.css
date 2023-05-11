@@ -27,6 +27,20 @@ body{
     overflow-y: hidden;
 }
 
+
+  
+  .columna {
+    float: left;
+    width: 50%;
+    padding-right: 5px;
+  }
+  
+  .fila::after {
+    content: "";
+    clear: both;
+    display: table;
+  }
+
 .container-forms{
     margin-top: 5%;
     height: 100%;
