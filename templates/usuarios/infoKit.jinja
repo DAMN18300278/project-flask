@@ -10,12 +10,12 @@
                     <div class="col">
                                 <div class="border border-1 box-shadow1 position-relative" style="width:9em; height:9em;">
                                 {% set imgModal = 'src/img' + '1' + '_' + '1' + '.jpg' %}
-                                <img src="{{ url_for('static', filename= imgModal) }}" style="width:7em; height:7em;">
+                                <img id="imagenojos" src="{{ url_for('static', filename= imgModal) }}" style="width:7em; height:7em;">
                                 <div class="position-absolute border border-danger bg-white py-1 px-2" style="bottom: 5%; left: 5%; overflow:hidden; max-width:90%">
-                                    <p class="mb-0 text-start" style="font-size: 12px;letter-spacing:1px;">{{producto[4]}}</p>
-                                    <p id="precioprod" class="normal-text mb-0 text-start" style="font-size: 11px;letter-spacing:1px;font-weight: bold;">${{producto[5]}}</p>
+                                    <p id="nombreprodojos" class="mb-0 text-start" style="font-size: 12px;letter-spacing:1px;"></p>
+                                    <p id="precioprodojos" class="normal-text mb-0 text-start" style="font-size: 11px;letter-spacing:1px;font-weight: bold;">$</p>
                                 </div>
-                                <div class="position-absolute colores-info col-3 m-2"  style="top: 5%; left: 5% ; background-color: #{{producto[3]}};"></div>
+                                <div id="colorhexojos" class="position-absolute colores-info col-3 m-2"  style="top: 5%; left: 5% ; background-color: #;"></div>
                                 </div>
 
                     </div>
@@ -24,77 +24,113 @@
                         <div class="position-absolute text-start" style="bottom: 5px;">
                             
                             <p class="px-5" style="font-size: 14px; display:contents"> 
-                                <span class="subtotal" style="font-weight:bold;font-size:13px">Algo</span>
+                                <span id="stockojos"class="subtotal" style="font-weight:bold;font-size:13px">Algo</span>
                             </p>
-                            <button id="{{index}}_{{id}}" class="btn btn-warning px-5 eliminar-producto" style="font-size: 14px; height: 25px; border-radius: 0px;">Cambiar</button>
+                            <button id="cambiarojos" class="btn btn-warning px-5 eliminar-producto" style="font-size: 14px; height: 25px; border-radius: 0px;">Cambiar</button>
                         </div>
                     </div>
                 </div>
 
-                <h1>Pestaña</h1>
+                <h1>Piel</h1>
                 <div class="row p-5">
                     <div class="col">
-                        {% include "empleados/productosCardEmpleadostemp.jinja" %}
+                                <div class="border border-1 box-shadow1 position-relative" style="width:9em; height:9em;">
+                                {% set imgModal = 'src/img' + '1' + '_' + '1' + '.jpg' %}
+                                <img id="imagenpiel" src="{{ url_for('static', filename= imgModal) }}" style="width:7em; height:7em;">
+                                <div class="position-absolute border border-danger bg-white py-1 px-2" style="bottom: 5%; left: 5%; overflow:hidden; max-width:90%">
+                                    <p id="nombreprodpiel" class="mb-0 text-start" style="font-size: 12px;letter-spacing:1px;"></p>
+                                    <p id="precioprodpiel" class="normal-text mb-0 text-start" style="font-size: 11px;letter-spacing:1px;font-weight: bold;">$</p>
+                                </div>
+                                <div id="colorhexpiel" class="position-absolute colores-info col-3 m-2"  style="top: 5%; left: 5% ; background-color: #;"></div>
+                                </div>
+
                     </div>
                     <div class="position-relative col">
                     
                         <div class="position-absolute text-start" style="bottom: 5px;">
                             
                             <p class="px-5" style="font-size: 14px; display:contents"> 
-                                <span class="subtotal" style="font-weight:bold;font-size:13px">Algun dato</span>
+                                <span id="stockpiel"class="subtotal" style="font-weight:bold;font-size:13px">Algo</span>
                             </p>
-                            <button id="{{index}}_{{id}}" class="btn btn-warning px-5 eliminar-producto" style="font-size: 14px; height: 25px; border-radius: 0px;">Cambiar</button>
+                            <button id="cambiarojos" class="btn btn-warning px-5 eliminar-producto" style="font-size: 14px; height: 25px; border-radius: 0px;">Cambiar</button>
                         </div>
                     </div>
                 </div>
 
                 <h1>Labios</h1>
-                <div class="row p-5">
+                                <div class="row p-5">
                     <div class="col">
-                        {% include "empleados/productosCardEmpleadostemp.jinja" %}
+                                <div class="border border-1 box-shadow1 position-relative" style="width:9em; height:9em;">
+                                {% set imgModal = 'src/img' + '1' + '_' + '1' + '.jpg' %}
+                                <img id="imagenlabios" src="{{ url_for('static', filename= imgModal) }}" style="width:7em; height:7em;">
+                                <div class="position-absolute border border-danger bg-white py-1 px-2" style="bottom: 5%; left: 5%; overflow:hidden; max-width:90%">
+                                    <p id="nombreprodlabios" class="mb-0 text-start" style="font-size: 12px;letter-spacing:1px;"></p>
+                                    <p id="precioprodlabios" class="normal-text mb-0 text-start" style="font-size: 11px;letter-spacing:1px;font-weight: bold;">$</p>
+                                </div>
+                                    <div id="colorhexlabios" class="position-absolute colores-info col-3 m-2"  style="top: 5%; left: 5% ; background-color: #;">
+                                    <ul id="lista-colores"></ul>
+                                    </div>
+                                </div>
+
                     </div>
                     <div class="position-relative col">
                     
                         <div class="position-absolute text-start" style="bottom: 5px;">
                             
                             <p class="px-5" style="font-size: 14px; display:contents"> 
-                                <span class="subtotal" style="font-weight:bold;font-size:13px">Algun dato</span>
+                                <span id="stocklabios"class="subtotal" style="font-weight:bold;font-size:13px">Algo</span>
                             </p>
-                            <button id="{{index}}_{{id}}" class="btn btn-warning px-5 eliminar-producto" style="font-size: 14px; height: 25px; border-radius: 0px;">Cambiar</button>
+                            <button id="cambiarojos" class="btn btn-warning px-5 eliminar-producto" style="font-size: 14px; height: 25px; border-radius: 0px;">Cambiar</button>
                         </div>
                     </div>
                 </div>
 
-                <h1>Skin Care</h1>
-                <div class="row p-5">
+                <h1>SkinCare</h1>
+                    <div class="row p-5">
                     <div class="col">
-                        {% include "empleados/productosCardEmpleadostemp.jinja" %}
+                        <div class="border border-1 box-shadow1 position-relative" style="width:9em; height:9em;">
+                            {% set imgModal = 'src/img' + '1' + '_' + '1' + '.jpg' %}
+                            <img id="imagenskincare" src="{{ url_for('static', filename= imgModal) }}" style="width:7em; height:7em;">
+                            <div class="position-absolute border border-danger bg-white py-1 px-2" style="bottom: 5%; left: 5%; overflow:hidden; max-width:90%">
+                                <p id="nombreprodskincare" class="mb-0 text-start" style="font-size: 12px;letter-spacing:1px;"></p>
+                                <p id="precioprodskincare" class="normal-text mb-0 text-start" style="font-size: 11px;letter-spacing:1px;font-weight: bold;">$</p>
+                            </div>
+                            <div id="colorhexskincare" class="position-absolute colores-info col-3 m-2"  style="top: 5%; left: 5% ; background-color: #;"></div>
+                        </div>
                     </div>
                     <div class="position-relative col">
                     
                         <div class="position-absolute text-start" style="bottom: 5px;">
                             
                             <p class="px-5" style="font-size: 14px; display:contents"> 
-                                <span class="subtotal" style="font-weight:bold;font-size:13px">Algun dato</span>
+                                <span id="stockskincare"class="subtotal" style="font-weight:bold;font-size:13px">Algo</span>
                             </p>
-                            <button id="{{index}}_{{id}}" class="btn btn-warning px-5 eliminar-producto" style="font-size: 14px; height: 25px; border-radius: 0px;">Cambiar</button>
+                            <button id="cambiarojos" class="btn btn-warning px-5 eliminar-producto" style="font-size: 14px; height: 25px; border-radius: 0px;">Cambiar</button>
                         </div>
                     </div>
                 </div>
 
                 <h1>Accesorios</h1>
-                <div class="row p-5">
+                    <div class="row p-5">
                     <div class="col">
-                        {% include "empleados/productosCardEmpleadostemp.jinja" %}
+                        <div class="border border-1 box-shadow1 position-relative" style="width:9em; height:9em;">
+                            {% set imgModal = 'src/img' + '1' + '_' + '1' + '.jpg' %}
+                            <img id="imagenaccesorios" src="{{ url_for('static', filename= imgModal) }}" style="width:7em; height:7em;">
+                            <div class="position-absolute border border-danger bg-white py-1 px-2" style="bottom: 5%; left: 5%; overflow:hidden; max-width:90%">
+                                <p id="nombreprodaccesorios" class="mb-0 text-start" style="font-size: 12px;letter-spacing:1px;"></p>
+                                <p id="precioprodaccesorios" class="normal-text mb-0 text-start" style="font-size: 11px;letter-spacing:1px;font-weight: bold;">$</p>
+                            </div>
+                            <div id="colorhexaccesorios" class="position-absolute colores-info col-3 m-2"  style="top: 5%; left: 5% ; background-color: #;"></div>
+                        </div>
                     </div>
                     <div class="position-relative col">
                     
                         <div class="position-absolute text-start" style="bottom: 5px;">
                             
                             <p class="px-5" style="font-size: 14px; display:contents"> 
-                                <span class="subtotal" style="font-weight:bold;font-size:13px">Algun dato</span>
+                                <span id="stockaccesorios"class="subtotal" style="font-weight:bold;font-size:13px">Algo</span>
                             </p>
-                            <button id="{{index}}_{{id}}" class="btn btn-warning px-5 eliminar-producto" style="font-size: 14px; height: 25px; border-radius: 0px;">Cambiar</button>
+                            <button id="cambiarojos" class="btn btn-warning px-5 eliminar-producto" style="font-size: 14px; height: 25px; border-radius: 0px;">Cambiar</button>
                         </div>
                     </div>
                 </div>
@@ -107,9 +143,9 @@
             
             
             <div class="d-flex px-4 pb-4">
-                <button type="button" class="btn btn-danger me-auto px-4 py-2 d-flex align-items-center" data-bs-dismiss="modal" style="border-radius: 0px; font-size:15px">Cancelar</button>
+                <button type="button" class="btn btn-danger me-auto px-4 py-2 d-flex align-items-center" data-bs-dismiss="modal" style="border-radius: 0px; font-size:15px">Probar</button>
 
-                <button id="btn-addcarrito" type="button" class="btn btn-danger ms-auto px-4 py-2 d-flex align-items-center" style="border-radius: 0px; font-size:15px" >Probar   
+                <button id="btn-kit" type="button" class="btn btn-danger ms-auto px-4 py-2 d-flex align-items-center" style="border-radius: 0px; font-size:15px" >Comprar   
                     <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-shopping-cart-plus ms-3" width="30" height="30" viewBox="0 0 24 24" stroke-width="1.5" stroke="#fff" fill="none" stroke-linecap="round" stroke-linejoin="round">
                         <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
                         <circle cx="6" cy="19" r="2" />

@@ -178,23 +178,6 @@ form.addEventListener('submit', function(event) {
     }
   }
 
-  document.getElementById("form-nuevo-producto").addEventListener("submit", function(event) {
-    event.preventDefault(); // Evita que el formulario se envíe automáticamente
-
-    // Recorre todos los elementos del formulario
-    var campos = document.querySelectorAll("#form-nuevo-producto input");
-    console.log(campos);
-    campos.forEach(function(campo) {
-      var mensaje = campo.nextElementSibling; // Obtiene el siguiente elemento después del campo (el elemento <small> en este caso)
-      if (campo.value == "") {
-        mensaje.classList.remove("hidden"); // Muestra el mensaje si el campo está vacío
-      } else {
-        mensaje.classList.add("hidden"); // Oculta el mensaje si el campo tiene contenido
-      }
-    });
-  });
-
-
 </script>
 
 {% endblock %}

@@ -113,15 +113,17 @@ def index():
     
     return render_template("usuarios/landing.jinja", productos = data, idUsuario = session.get('id_usuario'), carrito = numero,nombre = nombre)
 
+
 @usuarios.route("/usuarios/addcarrito", methods=['POST', 'GET'])
 def addcarrito():
     carritoData = request.form['carritoData']
-    idUsuario = request.form['id']
+    print(carritoData)
+    idUsuario = session.get('id_usuario')
     with mysql.connect.cursor() as cursor:
         cursor.execute("SELECT Carrito FROM usuarios WHERE Id_Usuario = %s", (session.get('id_usuario'),))
         fetch = cursor.fetchone()
         if fetch is None or not fetch[0]:
-            carritoData = carritoData.replace("|", "")
+            carritoData = carritoData.replace("|", "",1)
     with mysql.connection.cursor() as cursor:
         cursor.execute("UPDATE usuarios SET Carrito = CONCAT(Carrito, %s) WHERE id_Usuario = %s", (carritoData, idUsuario))
         mysql.connection.commit()
