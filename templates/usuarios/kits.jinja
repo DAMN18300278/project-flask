@@ -16,9 +16,6 @@
 {% set productosLabios = [] %}
 {% for producto in productos %}
     
-    <script>
-        console.log("Valor de producto: {{ producto }}");
-    </script>
     {% if producto['Categoria'] == 'labios' %}
         {% set _ = productosLabios.append(producto) %}
     {% endif %}
@@ -94,7 +91,13 @@
                         <p class="mb-4" style="font-size: 20px; display:inline; white-space:break-spaces;">Kit 1</p>
                         <button class="btn btn-product border-1 text-danger" type="button" data-bs-toggle="modal" data-bs-target="#infokit"
                             data-bs-target="#infokit" 
-                            data-producto="{{ productos }}">Detalles ></button>
+                            data-bs-toggle="modal" 
+                            data-producto="{{ productos }}"
+                            data-productos-labios="{{ productosLabios[0] }}"
+                            data-productos-piel="{{ productosPiel[0] }}"
+                            data-productos-ojos="{{ productosOjos[0] }}"
+                            data-productos-accesorios="{{ productosAccesorios[0] }}"
+                            data-productos-skincare="{{ productosSkinCare[0]  }}" >Detalles ></button>
                     </div>
                 </div>
             {% endwith %}
@@ -121,9 +124,10 @@
                                                 data-bs-toggle="modal" 
                                                 data-bs-target="#infokit" 
                                                 data-producto="{{ productos }}"
-                                                data-productos-labios="{{  productosLabios[j] }}"
+                                                data-productos-labios="{{ productosLabios[j] }}"
                                                 data-productos-piel="{{ productosPiel[j]  }}"
                                                 data-productos-ojos="{{ productosOjos[j] }}"
+                                                data-productos-accesorios="{{ productosAccesorios[j] }}"
                                                 data-productos-skincare="{{ productosSkinCare[j]  }}" 
                                                 style="width:6.5em; height:6.5em;">
                                                 <div class="fila">
@@ -159,7 +163,7 @@
 
                 <div id="tabs" class="nav nav-tabs" role="tablist">
                     {% for i in range(0, subelementos, 24) %}
-                    <button class="btn btn-outline-danger m-3 {% if loop.first %}active" aria-selected="true" {%else%}" aria-selected="false" {% endif %} id="tablink{{ loop.index }}" data-bs-target="#tab{{ loop.index }}" aria-controls="tab{{ loop.index }}" data-bs-toggle="tab" style="font-size: 15px;">{{ loop.index }}</button>
+                    <button class="btn btn-outline-danger m-3 {% if loop.first %}active" aria-selected="true" {%else%} aria-selected="false" {% endif %} id="tablink{{ loop.index }}" data-bs-target="#tab{{ loop.index }}" aria-controls="tab{{ loop.index }}" data-bs-toggle="tab" style="font-size: 15px;">{{ loop.index }}</button>
                     {% endfor %}
                 </div>
             </div>

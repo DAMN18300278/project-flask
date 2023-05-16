@@ -294,45 +294,142 @@ $(document).ready(function ($) {
 
 
     $('#infokit').on('show.bs.modal', function(event){
-
         const button = event.relatedTarget; // elemento que dispara el modal
-        const productos = button.getAttribute('data-producto');
-        const productosLabioschido = button.getAttribute('data-productos-labios');
-        const productosPiel = button.getAttribute('data-productos-piel');
-        const productosOjos = button.getAttribute('data-productos-ojos');
-        const productosSkinCare = button.getAttribute('data-productos-skincare');
+        const productos = button.getAttribute('data-producto'); // JSON principal
+        const Labios = button.getAttribute('data-productos-labios'); // JSON de labios
+        const Piel = button.getAttribute('data-productos-piel'); // JSON de piel
+        const Ojos =button.getAttribute('data-productos-ojos'); // JSON de ojos
+        const SkinCare = button.getAttribute('data-productos-skincare'); // JSON de cuidado de piel
+        const Accesorios = button.getAttribute('data-productos-accesorios');
+
         // // haz algo con los arreglos, por ejemplo:
         var modal = $(this);
         
-        var textProduct = productosLabioschido;
-        var sinComillas = textProduct.replace('\n\n', " ");
-        var sinTabs = sinComillas.replace(/'/g, "\"");
-        
-        productosLabios = JSON.parse(sinTabs); 
-        
-        var productoId = productosLabios['Id'];
-        var nombre = productosLabios['Nombre'];
-        var precio = productosLabios['Precio u.'];
-        
-        var colores = productosLabios['Colores'];
+        const labiosconcomillas = Labios.replace(/'/g, '"');
+        const productosLabios = JSON.parse(labiosconcomillas);
 
-        for (var key in colores) {
-            if (colores[key]['Nombre'] == colorSeleccionado) {
-                keySeleccionado = key;
-                break;
-            }
-        }
+        const pielconcomillas = Piel.replace(/'/g, '"');
+        const productosPiel = JSON.parse(pielconcomillas);
 
-        modal.find('#precioprod').text(nombre);
+        const ojosconcomillas = Ojos.replace(/'/g, '"');
+        const productosOjos = JSON.parse(ojosconcomillas);
 
+        const skincareconcomillas = SkinCare.replace(/'/g, '"');
+        const productosSkinCare = JSON.parse(skincareconcomillas);
 
-        //console.log(productos);
-        console.log("nuevo kit");
-        console.log(productosLabios);
-        console.log(productosPiel);
+        const accesoriosconcomillas = Accesorios.replace(/'/g, '"');
+        const productosAccesorios = JSON.parse(accesoriosconcomillas);
+
+        let indexcoloraccesorios = 1;
+        let indexcolorojos = 1;
+        let indexcolorpiel = 1;
+        let indexcolorlabios = 1;
+        let indexcolorskincare = 1;
         console.log(productosOjos);
-        console.log(productosSkinCare);
+
+        //Accesorios
+        modal.find('#imagenaccesorios').attr('src', '../static/src/img'+productosAccesorios['Id']+'_1.jpg');
+        modal.find('#nombreprodaccesorios').text(productosAccesorios['Nombre']);
+        modal.find('#precioprodaccesorios').text(productosAccesorios['Precio u.']);
+        modal.find('#stockaccesorios').text(productosAccesorios['Stock'] + " disponibles");
+        modal.find('#colorhexaccesorios').css('background-color','#'+productosAccesorios.Colores[indexcoloraccesorios].Hex);
+
+
+        //Ojos
+        modal.find('#imagenojos').attr('src', '../static/src/img'+productosOjos['Id']+'_1.jpg');
+        modal.find('#nombreprodojos').text(productosOjos['Nombre']);
+        modal.find('#precioprodojos').text(productosOjos['Precio u.']);
+        modal.find('#stockojos').text(productosOjos['Stock'] + " disponibles");
+        modal.find('#colorhexojos').css('background-color','#'+productosOjos.Colores[indexcolorojos].Hex);
+
+        //Piel
+        modal.find('#imagenpiel').attr('src', '../static/src/img'+productosPiel['Id']+'_1.jpg');
+        modal.find('#nombreprodpiel').text(productosPiel['Nombre']);
+        modal.find('#precioprodpiel').text(productosPiel['Precio u.']);
+        modal.find('#stockpiel').text(productosPiel['Stock'] + " disponibles");
+        modal.find('#colorhexpiel').css('background-color','#'+productosPiel.Colores[indexcolorpiel].Hex);
+
+        //Labios
+      
+        modal.find('#imagenlabios').attr('src', '../static/src/img'+productosLabios['Id']+'_1.jpg');
+        modal.find('#nombreprodlabios').text(productosLabios['Nombre']);
+        modal.find('#precioprodlabios').text(productosLabios['Precio u.']);
+        modal.find('#stocklabios').text(productosLabios['Stock'] + " disponibles");
+        modal.find('#colorhexlabios').css('background-color','#'+productosLabios.Colores[indexcolorlabios].Hex);
+
+        //Skin Care
+        modal.find('#imagenskincare').attr('src', '../static/src/img'+productosSkinCare['Id']+'_1.jpg');
+        modal.find('#nombreprodskincare').text(productosSkinCare['Nombre']);
+        modal.find('#precioprodskincare').text(productosSkinCare['Precio u.']);
+        modal.find('#stockskincare').text(productosSkinCare['Stock'] + " disponibles");
+        modal.find('#colorhexskincare').css('background-color','#'+productosSkinCare.Colores[indexcolorskincare].Hex);
+
+        
+        let String = "|"+productosOjos['Id'] + ',1,' + indexcolorojos + '|' + 
+            productosPiel['Id'] + ',1,' + indexcolorpiel + '|' + 
+            productosLabios['Id'] + ',1,' + indexcolorlabios + '|' + 
+            productosSkinCare['Id'] + ',1,' + indexcolorskincare + '|' + 
+            productosAccesorios['Id'] + ',1,' + indexcoloraccesorios;
+            console.log(String);
+        
+        const btnAddCarrito = document.querySelector('#btn-kit');
+        btnAddCarrito.addEventListener('click', function() {
+
+            fetch('/usuarios/addcarrito', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+                },
+            body: 'carritoData=' + encodeURIComponent(String)
+            })
+              .then(response => {
+                console.log('Respuesta del servidor:', response);
+            })
+              .catch(error => {
+                console.error('Error al enviar la solicitud:', error);
+            });   
+        });
+        // console.log(productosSkinCare);
+
+        // $('#colorhexlabios').on('click', function() {
+        //     $('#spinner').show(); // Muestra el spinner
+          
+        //     // Obtiene los colores disponibles y los agrega a la lista
+        //     const colores = productosLabios.Colores;
+        //     const listaColores = $('#lista-colores');
+        //     listaColores.empty();
+        //     colores.forEach(function(color) {
+        //       const li = $('<li>').text(color.Hex);
+        //       listaColores.append(li);
+        //     });
+          
+        //     $('#spinner').hide(); // Oculta el spinner
+        //   });
+
+
+
+
     });
+
+    
+
+    // $('#colorhexlabios').click(function() {
+    //     // Obtener los colores disponibles del JSON que se ha cargado previamente
+    //     const productosLabios = JSON.parse($('#infokit [data-productos-labios]').attr('data-productos-labios'));
+    //     const coloresDisponibles = Object.values(productosLabios.Colores).map(c => c.Nombre);
+        
+    //     // Mostrar el spinner y ocultar los colores
+    //     $('#spinner').show();
+    //     $('#colores-disponibles').hide();
+        
+    //     // Mostrar los colores disponibles en el spinner después de un corto retraso
+    //     setTimeout(function() {
+    //       $('#spinner').hide();
+    //       $('#colores-disponibles').html(coloresDisponibles.join(', ')).show();
+    //     }, 500);
+    //   });
+
+
 
 
     $('#btn-minus').click(function() {
