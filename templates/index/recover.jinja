@@ -4,7 +4,7 @@
 {% endblock %}
 
 {% block content %}
-    <p class="display-1 to-right">Recuperar Contraseña</p>
+    <p class="display-1 to-right" >Recuperar Contraseña</p>
 
     <div class="vanish1">
         <svg class="path mb-5" width="50%" viewBox="0 0 1280 1280">
@@ -16,14 +16,16 @@
 
     <form action="{{url_for('send_correocon')}}" id="formrecover" method="post" class="input-group input-group-lg d-flex justify-content-between flex-column">
         <div class="input-group">
-            <input type="text" id="correorecover" class="form-control mt-2 to-left" placeholder="Correo" name="correorecover">
+            <input type="email" id="correorecover" class="form-control mt-2 to-left" placeholder="Correo" name="correorecover" required>
         </div>
         <br>
         <p style="font-size: 12px;" id="msg"></p>
-       
+        <button name="Recuperar" class="btn btn-success vanish1 mt-5" style="color:black; font-size: 18px; border-radius: 10px; height: 36px; animation-duration: 4s; ">Enviar correo</button>
     </form> 
 
-    <button name="Recuperar" onclick="button_recover()" class="btn btn-success vanish1 mt-5" style="font-size: 18px; border-radius: 10px; height: 36px; animation-duration: 4s;">Enviar correo</button>
+    
    
     <a href="/" class="link-success mt-5" style="font-size: 15px;">Regresar</a>
+
+
 {% endblock %}

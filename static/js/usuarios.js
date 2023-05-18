@@ -219,6 +219,10 @@ $(document).ready(function ($) {
     var keySeleccionado;
     
     $('#infoProducto').on('show.bs.modal', function(event){
+
+
+        
+
         var boton = $(event.relatedTarget);
         var modal = $(this);
         var contentImgs = '';
@@ -249,6 +253,8 @@ $(document).ready(function ($) {
         var tipo = productJson['Tipo'];
         var stock = productJson['Stock'];
         var precio = productJson['Precio u.'];
+
+        
         
         for (var i = 0; i < cantidadImgs; i++) {
             var imgModal = 'static/src/img' + productoId + '_' + (i+1) + '.jpg';
@@ -318,6 +324,19 @@ $(document).ready(function ($) {
             var inner = "<button type='button' class='btn btn-danger me-auto px-4 py-2 d-flex align-items-center' data-bs-dismiss='modal' style='border-radius: 0px; font-size:15px' id='btnProbar'>Cancelar</button>"
             $('#btn-addcarrito').before(inner);
         }
+    
+        
+        $.ajax({
+            url: '/actualizarvistas',
+            type: 'POST',
+            data: { productoid: productoId },
+            success: function(response) {
+                console.log('Actualización de vistas realizada');
+            },
+            error: function(error) {
+                console.log('Error al realizar la actualización de vistas');
+            }
+        });
     });
 
     $('#infoProducto').on('hidden.bs.modal', function(){
@@ -446,8 +465,6 @@ $(document).ready(function ($) {
 
 
     });
-
-    
 
     // $('#colorhexlabios').click(function() {
     //     // Obtener los colores disponibles del JSON que se ha cargado previamente

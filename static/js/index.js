@@ -57,26 +57,8 @@ const validarPass2 = () => {
 contraA.addEventListener('keyup', ValidarForm);
 contraB.addEventListener('keyup', ValidarForm); 
 
-function button_cambiarcontra(){
-    if(contraseña.value == contraseñaC.value){
-        document.getElementById("formcambiarcontra").submit()
-    }else{
-        alert('error');
-    }
-}
 
-function button_recover(){
-    var expReg= /^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/;
-    let correoRec = correoreco.value
-    let esvalido = expReg.test(correoRec)
 
-    if(esvalido ==true){
-        document.getElementById("formrecover").submit()
-    }
-    else{
-        msg.textContent = "Este es un correo invalido"
-    }
 
-}
 
 
