@@ -8,10 +8,21 @@ from flask_mail import Mail, Message
 from datetime import datetime
 import cv2
 import numpy as np
+import base64
+import mediapipe as mp
+import math
 
 usuarios = flask.Blueprint('usuarios', __name__)
 mysql = MySQL()
 mail = Mail()
+
+# Inicializar el modelo FaceMesh de MediaPipe
+mp_face_mesh = mp.solutions.face_mesh
+face_mesh = mp_face_mesh.FaceMesh()
+
+# Inicializar el modelo FaceMesh de MediaPipe
+mp_face_mesh = mp.solutions.face_mesh
+face_mesh = mp_face_mesh.FaceMesh()
 
 def asignarNombre():
     with mysql.connect.cursor() as cursor:
@@ -352,40 +363,88 @@ def updateDatosUsuario():
 
     return redirect("/usuarios/perfil")
 
-global capture,rec_frame, grey, switch, neg, face, rec, out , camera
-switch = 1
-camera = cv2.VideoCapture(1)
+# Función para calcular el ángulo entre dos puntos
+def calcular_angulo(landmarks, frame):
+    # Obtener las coordenadas de los puntos clave relevantes
+    # Aquí puedes ajustar los índices de los puntos clave según tus necesidades
+    p1 = (int(landmarks[10].x * frame.shape[1]), int(landmarks[10].y * frame.shape[0]))
+    p2 = (int(landmarks[200].x * frame.shape[1]), int(landmarks[200].y * frame.shape[0]))
+    angulo_rad = math.atan2(p2[1] - p1[1], p2[0] - p1[0])
+    angulo_deg = math.degrees(angulo_rad)
 
-def gen_frames():  # generate frame by frame from camera
-    global out, capture,rec_frame, switch
-    while True:
-        success, frame = camera.read() 
-        if success:
-                
-            try:
-                ret, buffer = cv2.imencode('.jpg', cv2.flip(frame,1))
-                frame = buffer.tobytes()
-                yield (b'--frame\r\n'
-                       b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
-            except Exception as e:
-                pass
-            if switch == 0:
-                break
-                
-        else:
-            pass
+    # Verificar si el ángulo cumple con tu criterio de orientación
+    if angulo_deg <= 95 and angulo_deg >= 85:
+        oriented = 1
+    else:
+        oriented = 0
 
-@usuarios.route("/videoFeed")
-def videoFeed():
-    return Response(gen_frames(), mimetype="multipart/x-mixed-replace; boundary=frame")
+    return oriented
 
-@usuarios.route("/tasks", methods=["POST", "GET"])
-def tasks():
-    global switch, camera
-    if request.form.get('capture') == 'Capturar':
-        switch = not switch
-    
+@usuarios.route("/revisar_foto2", methods=["POST"])
+def revisar_foto2():
+    data = request.get_json()
+    imagen_data = data['popo']
+
+    return jsonify({ 'respuesta': imagen_data })
+
+@usuarios.route("/revisar_foto", methods=["POST"])
+def revisar_foto():
+    data = request.get_json()
+    imagen_data = data['image']
+
+    # Aquí realizas el procesamiento de la imagen utilizando OpenCV
+    imagen_base64 = imagen_data.split(',')[1]  # Eliminar el encabezado 'data:image/jpeg;base64,'
+    imagen_bytes = base64.b64decode(imagen_base64)
+    nparr = np.frombuffer(imagen_bytes, np.uint8)
+    imagen = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+
+    imagen_rgb = cv2.cvtColor(imagen, cv2.COLOR_BGR2RGB)
+    results = face_mesh.process(imagen_rgb)
+
+    # Verificar la orientación de los puntos clave relevantes
+    if results.multi_face_landmarks:
+        landmarks = results.multi_face_landmarks[0].landmark
+        # Calcular los ángulos entre los puntos clave relevantes
+        oriented = calcular_angulo(landmarks, imagen)
+
+        if oriented == 1:
+            response = { 'Orientado': True }
+            return jsonify(response)
+
+    response = { 'Orientado': False }
+
+    return jsonify(response)
+
+
+@usuarios.route("/procesar", methods=['POST'])
+def procesar_imagen():
+    data = request.get_json()
+    imagen_data = data['image'] 
+
+    # imagen_data = ""
+
+    # # Aquí realizas el procesamiento de la imagen utilizando OpenCV
+    imagen_base64 = imagen_data.split(',')[1]  # Eliminar el encabezado 'data:image/jpeg;base64,'
+    imagen_bytes = base64.b64decode(imagen_base64)
+    nparr = np.frombuffer(imagen_bytes, np.uint8)
+    imagen = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+
+    # Convertir la imagen a escala de grises
+    imagen_gris = cv2.cvtColor(imagen, cv2.COLOR_BGR2GRAY)
+
+    # Invertir la imagen (negativo)
+    imagen_negativa = cv2.bitwise_not(imagen_gris)
+
+    # # Convertir la imagen procesada de nuevo a base64
+    _, imagen_procesada_encoded = cv2.imencode('.jpeg', imagen_negativa)
+    imagen_procesada_base64 = base64.b64encode(imagen_procesada_encoded).decode('utf-8')
+
+    # # Construir la respuesta con la imagen procesada
+    response = {
+        'processedImageUrl': imagen_procesada_base64
+    }
     return render_template("usuarios/cam.jinja")
+    return jsonify(response)
 
 def numeroorden(id):
     subject = 'Pedido Realizado con éxito'
@@ -409,4 +468,9 @@ def actualizar_promedios():
             with mysql.connection.cursor() as cursor:
                 cursor.execute("UPDATE recomendacion SET Promedio_Calificacion = %s WHERE Id_Producto = %s", (promedio_calificacion, id_producto))
                 mysql.connection.commit()
-        
+
+
+@usuarios.route("/tasks")
+def tasks():
+    return render_template("usuarios/cam.jinja")
+
