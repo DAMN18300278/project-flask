@@ -1,10 +1,35 @@
 
+{# {% for producto in productosLabios %}
+    <!-- Aquí puedes mostrar la información del producto -->
+    
+    {{ producto }}
+{% endfor %}
 
-<div class="modal fade" tabindex="-1" role="dialog" id="infokit">
+{% for producto in productosPiel %}
+    <!-- Aquí puedes mostrar la información del producto -->
+    {{ producto }}
+{% endfor %}
+
+{% for producto in productosOjos %}
+    <!-- Aquí puedes mostrar la información del producto -->
+    {{ producto }}
+{% endfor %}
+
+{% for producto in productosAccesorios %}
+    <!-- Aquí puedes mostrar la información del producto -->
+    {{ producto }}
+{% endfor %}
+
+{% for producto in productosSkinCare %}
+    <!-- Aquí puedes mostrar la información del producto -->
+    {{ producto }}
+{% endfor %} #}
+<div class="modal fade" tabindex="-1" role="dialog" id="infokit" data-bs-backdrop="static">
+
     <div class="modal-dialog mx-5" style="margin-top: 10%;" role="document">
         <div class="modal-content">
             <div class="bg-white p-3 border-bottom border-dark position-relative" style="border-radius: 5px;">
-            
+                
                 <h1>Ojos </h1>
                 <div class="row p-5">
                     <div class="col">
@@ -21,12 +46,31 @@
                     </div>
                     <div class="position-relative col">
                     
-                        <div class="position-absolute text-start" style="bottom: 5px;">
+                        <div class="position-relative text-start" style="bottom: 5px;">
                             
                             <p class="px-5" style="font-size: 14px; display:contents"> 
                                 <span id="stockojos"class="subtotal" style="font-weight:bold;font-size:13px">Algo</span>
                             </p>
-                            <button id="cambiarojos" class="btn btn-warning px-5 eliminar-producto" style="font-size: 14px; height: 25px; border-radius: 0px;">Cambiar</button>
+                            <button data-bs-toggle="dropdown" id="dropdownSearchOjos" trigger="click" class="btn btn-warning px-5 eliminar-producto" style="font-size: 14px; height: 25px; border-radius: 0px;">Cambiar</button>
+                            
+                            <div class="dropdown-menu position-absolute px-5 mt-menu animate__animated animate__fadeInDown" aria-labelledby="dropdownSearchOjos" style="max-height:1000%;font-size: 16px; top: 100%;overflow-y:scroll;">
+                                <div class="input-group mb-3" style="font-size: 15px;">
+                                    <input type="text" class="form-control border border-2" placeholder="Buscar" aria-label="Search" aria-describedby="basic-addon2" id="searchMenuOjos">
+                                </div>
+                                <div class="h-100" style="overflow-y: scroll;" id="dropdownSearchOjosList">
+                                {% for producto in productosOjos %}
+                                    {% set img = 'src/img' + producto['Id']|string + '_1.jpg' %}
+                                    <div id="itemOjos" class="dropdown-item" >
+                                        <div class="d-flex">
+                                            <img style="width: 20%; height:20%" src="{{ url_for('static', filename = img) }}">
+                                            <a style="white-space:break-spaces;display:flex;align-items:center"><span>{{ producto['Nombre'] }} <span style="color:#808080ab">#{{ producto['Id'] }}</span></span></a>
+                                        
+                                        </div>
+                                        <hr>
+                                    </div>
+                                {% endfor %}
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -159,4 +203,22 @@
         </div>
     </div>
 </div>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const menuItems = document.querySelectorAll('#itemOjos');
+    const nombreProducto = document.getElementById('nombreprodojos');
+    const precioProducto = document.getElementById('precioprodojos');
+    
+    menuItems.forEach(function(item) {
+      item.addEventListener('click', function() {
+        const nombre = this.dataset.nombre;
+        const producto = JSON.parse(this.dataset.producto);
+        
+        nombreProducto.textContent = nombre;
+        precioProducto.textContent = '$' + producto.Precio;
+      });
+    });
+  });
+</script>
+
 

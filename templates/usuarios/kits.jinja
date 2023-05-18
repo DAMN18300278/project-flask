@@ -1,37 +1,40 @@
 {% extends "usuarios/usuariosMaster.jinja" %}
+
 {% block head %}
     {{ super() }}
 {% endblock %}
 
 {% set producto = productos[0] %}
+
 {% block content %}
-    {% include "usuarios/infoKit.jinja" %}
+    
     {% include "usuarios/nav.jinja" %}
     {% include "usuarios/menu.jinja" %} 
 
-{%set productosOjos =[]%}
-{%set productosPiel =[]%}
-{%set productosSkinCare =[]%}
-{%set productosAccesorios =[]%}
-{% set productosLabios = [] %}
-{% for producto in productos %}
-    
-    {% if producto['Categoria'] == 'labios' %}
-        {% set _ = productosLabios.append(producto) %}
-    {% endif %}
-    {% if producto['Categoria'] == 'piel' %}
-        {% set _ = productosPiel.append(producto) %}
-    {% endif %}
-    {% if producto['Categoria'] == 'ojos' %}
-        {% set _ = productosOjos.append(producto) %}
-    {% endif %}
-    {% if producto['Categoria'] == 'accesorios' %}
-        {% set _ = productosAccesorios.append(producto) %}
-    {% endif %}
-    {% if producto['Categoria'] == 'skinCare' %}
-        {% set _ = productosSkinCare.append(producto) %}
-    {% endif %}
-{% endfor %}
+    {% set productosOjos =[] %}
+    {% set productosPiel =[] %}
+    {% set productosSkinCare =[] %}
+    {% set productosAccesorios =[] %}
+    {% set productosLabios = [] %}
+
+    {% for producto in productos %}
+        {% if producto['Categoria'] == 'labios' %}
+            {% set _ = productosLabios.append(producto) %}
+        {% endif %}
+        {% if producto['Categoria'] == 'piel' %}
+            {% set _ = productosPiel.append(producto) %}
+        {% endif %}
+        {% if producto['Categoria'] == 'ojos' %}
+            {% set _ = productosOjos.append(producto) %}
+        {% endif %}
+        {% if producto['Categoria'] == 'accesorios' %}
+            {% set _ = productosAccesorios.append(producto) %}
+        {% endif %}
+        {% if producto['Categoria'] == 'skinCare' %}
+            {% set _ = productosSkinCare.append(producto) %}
+        {% endif %}
+    {% endfor %}
+    {% include "usuarios/infoKit.jinja" %}
 {% set subelementos = productosLabios|length %}
 
     <div class="position-absolute d-flex align-items-center p-2 m-5" id="carrito" style="border: 2px solid rgba(140, 140, 140, 0.586); background-color:rgba(251, 229, 255, 0.789); border-radius:50%; bottom:0; right:0; z-index:2">

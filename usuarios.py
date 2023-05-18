@@ -4,12 +4,14 @@ from flask import session, render_template, redirect, jsonify, make_response, ur
 from flask_mysqldb import MySQL
 from collections import OrderedDict
 import base64
+from flask_mail import Mail, Message
 from datetime import datetime
 import cv2
 import numpy as np
 
 usuarios = flask.Blueprint('usuarios', __name__)
 mysql = MySQL()
+mail = Mail()
 
 def asignarNombre():
     with mysql.connect.cursor() as cursor:
@@ -22,6 +24,7 @@ def asignarNombre():
 def on_load(state):
     app = state.app
     mysql.init_app(app)
+    mail.init_app(app)
 
 @usuarios.route("/productsApi")
 @usuarios.route("/productsApi/<id>", methods=['GET'])
@@ -66,6 +69,7 @@ def productsApi(id=0):
             del ord['Nombre color']
             del ord['Hex color']
             arr.append(ord)
+
         else:
             cursor.execute("SELECT * FROM productos")
             rows = cursor.fetchall()
@@ -271,6 +275,7 @@ def RecogerCaja(id):
             with mysql.connection.cursor() as cursor:
                 cursor.execute("INSERT INTO ordenpago( Id_Usuario, Fecha, Status, carrito) VALUES ( %s, NOW(), 'Pagar en caja', %s)", (id,fetch))
                 mysql.connection.commit()
+        numeroorden(id)
 
     return redirect("/usuarios")
 
@@ -300,7 +305,7 @@ def guardarPub():
     with mysql.connection.cursor() as cursor:
         cursor.execute("INSERT INTO foro(Id_usuario, Id_producto, Descripcion, Calificacion, Fecha) VALUES(%s,%s,%s,%s, CURDATE())", (Id_usuario, Id_producto, Descripcion, Puntuacion))
         mysql.connection.commit()
-    
+    actualizar_promedios()
     return redirect("/")
 
 def takeProfileInfo():
@@ -381,3 +386,27 @@ def tasks():
         switch = not switch
     
     return render_template("usuarios/cam.jinja")
+
+def numeroorden(id):
+    subject = 'Pedido Realizado con éxito'
+    sender = "decore.makeup.soporte@gmail.com"
+    with mysql.connect.cursor() as cursor:
+        cursor.execute("SELECT MAX(ordenpago.Id_Orden) AS Orden, cuenta.Correo FROM cuenta INNER JOIN usuarios ON cuenta.Id_Cuenta = usuarios.Id_Usuario INNER JOIN ordenpago ON usuarios.Id_Usuario = ordenpago.Id_Usuario WHERE cuenta.Id_Cuenta = %s GROUP BY cuenta.Correo", (id,))
+        resultado = cursor.fetchone()
+    message = Message(subject, sender=sender, recipients=[resultado[1]])
+    message.body = f"Estimado Cliente,\n\nSe ha realizado su pedido correctamente. Su número de orden es:\n\n{resultado[0]}\n\nSaludos,\nEquipo de Decore"
+    mail.send(message)
+
+
+def actualizar_promedios():
+    with mysql.connect.cursor() as cursor:
+        cursor.execute("SELECT Id_producto, AVG(Calificacion) AS PromedioCalificacion FROM Foro GROUP BY Id_producto")
+        resultados = cursor.fetchall()
+
+        for resultado in resultados:
+            id_producto = resultado[0]
+            promedio_calificacion = resultado[1]
+            with mysql.connection.cursor() as cursor:
+                cursor.execute("UPDATE recomendacion SET Promedio_Calificacion = %s WHERE Id_Producto = %s", (promedio_calificacion, id_producto))
+                mysql.connection.commit()
+        

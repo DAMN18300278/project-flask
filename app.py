@@ -32,8 +32,8 @@ app.register_blueprint(usuarios)
 #Email variables
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'
 app.config['MAIL_PORT'] = 465
-app.config['MAIL_USERNAME'] = 'decore.makeup@gmail.com'
-app.config['MAIL_PASSWORD'] = 'dtcnejovtwzeozhr'
+app.config['MAIL_USERNAME'] = 'decore.makeup.soporte@gmail.com'
+app.config['MAIL_PASSWORD'] = 'djfllqdvgmwgzzlb'
 app.config['MAIL_USE_TLS'] = False
 app.config['MAIL_USE_SSL'] = True 
 mail = Mail(app)
@@ -210,7 +210,7 @@ def send_correocon():
         subject = 'Cambio de contraseña Decore'
         
         # en el sender hay que poner un correo de decore
-        message = Message(subject,sender="decore.makeup@gmail.com", recipients=[email])
+        message = Message(subject,sender="decore.makeup.soporte@gmail.com", recipients=[email])
         
         link = url_for('confirmrecover',token=token, _external=True)
 
@@ -232,6 +232,9 @@ def send_correo():
         contraseña = request.form['contraseña']
         estado = 'Inactivo'
 
+        #encriptar la contraseña
+        #hashed_password = bcrypt.hashpw(contraseña.encode('utf-8'), bcrypt.gensalt())
+
         # Verificar si ya existe un usuario con el mismo correo electrónico
         with mysql.connect.cursor() as cursor:
             cursor.execute("SELECT Correo FROM cuenta WHERE Correo = %s", (email,))
@@ -243,11 +246,17 @@ def send_correo():
             token = s.dumps(email, salt='email-confirm')
             subject = 'Restablecimiento de cuenta Decore'
 
-            message = Message(subject, sender="decore.makeup@gmail.com", recipients=[email])
+            message = Message(subject, sender="decore.makeup.soporte@gmail.com", recipients=[email])
             link = url_for('confirm', token=token, _external=True)
             message.body = 'Se ha intentado crear una nueva cuenta con este correo electrónico, pero ya existe una cuenta registrada. Si desea restablecer su cuenta, ingrese al siguiente link: {}'.format(link)
+        
+            #button_html = f'<a href="{link}" style="background-color: #4CAF50; border: none; color: white; padding: 15px 32px; text-align: center; text-decoration: none; display: inline-block; font-size: 16px; margin: 4px 2px; cursor: pointer;">Restablecer cuenta</a>'
+            #message.body = f'Se ha intentado crear una nueva cuenta con este correo electrónico, pero ya existe una cuenta registrada. Si desea restablecer su cuenta, haga clic en el siguiente enlace: {button_html}'
 
             mail.send(message)
+
+           
+
 
             return redirect("/")
 
@@ -263,7 +272,7 @@ def send_correo():
             token = s.dumps(email, salt='email-confirm')
             subject = 'Confirmación de cuenta Decore'
 
-            message = Message(subject, sender="decore.makeup@gmail.com", recipients=[email])
+            message = Message(subject, sender="decore.makeup.soporte@gmail.com", recipients=[email])
 
             link = url_for('confirm', token=token, _external=True)
 

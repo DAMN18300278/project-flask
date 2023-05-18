@@ -411,8 +411,6 @@ $(document).ready(function ($) {
 
     });
 
-    
-
     // $('#colorhexlabios').click(function() {
     //     // Obtener los colores disponibles del JSON que se ha cargado previamente
     //     const productosLabios = JSON.parse($('#infokit [data-productos-labios]').attr('data-productos-labios'));

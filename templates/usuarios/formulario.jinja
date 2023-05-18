@@ -210,7 +210,8 @@
                 <div class="form-group d-flex flex-row mb-3 align-items-center to-left" style="animation-delay: 0.4s;">
                     <label for="nombre" class="col-form-label w-25" style="margin-right: 5%;" >Nombre:</label>
                     <div style="flex: auto;">
-                        <input type="text" class="form-control" placeholder="Inserte su nombre completo..." name="nombre" id="nombre" {% if profileInfo is defined %}value="{{ profileInfo[1] }}"{% endif %}>
+                        <input type="text" class="form-control" placeholder="Inserte su nombre completo..." name="nombre" id="nombre" {% if profileInfo is defined %}value="{{ profileInfo[1] }}"{% endif %} requiered pattern="^[A-Za-z\s]+$">
+                        
                     </div>
                 </div>
             </div>

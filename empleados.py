@@ -1,15 +1,18 @@
 from flask_mysqldb import MySQL
 from flask import render_template, session, redirect, flash, Blueprint, request, url_for
 import os
+from flask_mail import Mail, Message
 from werkzeug.utils import secure_filename
+
 
 empleados = Blueprint('empleados', __name__)
 mysql = MySQL()
-
+mail = Mail()
 @empleados.record_once
 def on_load(state):
     app = state.app
     mysql.init_app(app)
+    mail.init_app(app)
 
 def asignarNombre():
     with mysql.connect.cursor() as cursor:
@@ -102,7 +105,7 @@ def Admin_empleados_Edit(id=None):
     _, tipo = asignarNombre()
     if id:
         with mysql.connect.cursor() as cursor:
-            cursor.execute("SELECT empleado.Nombre_Empleado, cuenta.Correo, cuenta.Contraseña ,empleado.RFC, empleado.Direccion, empleado.RFC, rol.rol, empleado.Id_Empleado FROM empleado INNER JOIN cuenta ON empleado.Id_Empleado = %s INNER JOIN rol ON cuenta.Rol = rol.Id_Rol", (id,))
+            cursor.execute("SELECT empleado.Nombre_Empleado, cuenta.Correo, cuenta.Contraseña, empleado.RFC, empleado.Direccion, empleado.Telefono, rol.rol, empleado.Id_Empleado FROM empleado INNER JOIN cuenta ON empleado.Id_Empleado = cuenta.Id_cuenta INNER JOIN rol ON cuenta.Rol = rol.Id_Rol WHERE empleado.Id_Empleado = %s", (id,))
             resultado = cursor.fetchone()
         return render_template("empleados/EmpEdit.jinja", empleado = resultado, tipo=tipo)
     else:
@@ -121,10 +124,11 @@ def Admin_empleados_Delete(id):
 
 @empleados.route("/administradores/OrdenesPago")
 def PagosAdmin():
+    _, tipo = asignarNombre()
     with mysql.connect.cursor() as cursor:
         cursor.execute("SELECT OrdenPago.Id_Orden, usuarios.Nombre ,OrdenPago.Fecha, OrdenPago.Status, OrdenPago.Id_Usuario FROM OrdenPago INNER JOIN usuarios ON usuarios.Id_Usuario = OrdenPago.Id_Usuario ORDER BY Id_Orden ASC")
         resultado = cursor.fetchall()
-    return render_template("empleados/OrdenesPago.jinja", resultados = resultado)
+    return render_template("empleados/OrdenesPago.jinja", resultados = resultado,tipo = tipo)
 
 
 
@@ -142,10 +146,11 @@ def statusEntregado(id):
 
 @empleados.route("/administradores/OrdenEspecifica/crearorden/<string:id>")
 def crearorden(id):
-
+    
     with mysql.connect.cursor() as cursor:
         cursor.execute("SELECT Estatus_Pedido FROM usuarios WHERE Id_Usuario = %s", (id,))
         result = cursor.fetchone()
+        cursor.execute("SELECT Correo FROM usuarios WHERE Id_Usuario = %s", (id,))
         print(result)
         if result and result[0] == 'activo':  # Verificar si existe el registro y si el estatus es 'activo'
             
@@ -158,6 +163,7 @@ def crearorden(id):
                 cursor.execute("UPDATE usuarios SET Estatus_Pedido = 'activo' WHERE Id_Usuario = %s", (id,))
                 mysql.connection.commit()
             flash('Se ha insertado la orden de pago exitosamente.')
+            numeroorden(id)
     return redirect("/administradores/OrdenesPago")
 
 @empleados.route("/administradores/OrdenEspecifica/<string:id>")
@@ -215,9 +221,9 @@ def GuardarEmp(id=None):
     tipo = request.form['ListaTipo']
     if id:
         with mysql.connection.cursor() as cursor:
-            cursor.execute("UPDATE cuenta SET Correo = %s, Contraseña = %s, Rol = %s WHERE Id_cuenta = %s", (email, password, id))
+            cursor.execute("UPDATE cuenta SET Correo = %s, Contraseña = %s, Rol = %s WHERE Id_cuenta = %s", (email, password,tipo, id))
             mysql.connection.commit()
-            cursor.execute("UPDATE empleado SET RFC = %s, Nombre_Empleado = %s, Telefono = %s, Direccion = %s WHERE Id_Empleado = %s",(rfc, nombre, tel, direccion, tipo, id))
+            cursor.execute("UPDATE empleado SET RFC = %s, Nombre_Empleado = %s, Telefono = %s, Direccion = %s WHERE Id_Empleado = %s",(rfc, nombre, tel, direccion, id))
             mysql.connection.commit()
             
         return redirect("/administradores/EmpleadosList")
@@ -241,3 +247,43 @@ def GuardarEmp(id=None):
 def delAdmin():
     session.clear()
     return redirect("/")
+
+
+@empleados.route("/administradores/reportedeescazes", methods=['POST'])
+def procesar_reporte():
+    reporte = request.form.get('reporteInput')
+    with mysql.connect.cursor() as cursor:
+        cursor.execute("SELECT Correo FROM cuenta WHERE Rol = 3")
+        resultados = cursor.fetchall()
+        for resultado in resultados:
+            enviar_correo(resultado[0], reporte)
+    return redirect("/administradores/inventario")
+
+def enviar_correo(destinatario, reporte):
+    subject = 'Reporte de Escasez'
+    sender = "decore.makeup.soporte@gmail.com"
+    message = Message(subject, sender=sender, recipients=[destinatario])
+    message.body = f"Estimado Administrador,\n\nSe ha generado un reporte de escasez. Aquí está el contenido del reporte:\n\n{reporte}\n\nSaludos,\nEquipo de Decore"
+    mail.send(message)
+
+
+@empleados.route('/administradores/BorrarOrden/<int:id>')
+def borrarorden(id):
+    with mysql.connection.cursor() as cursor:
+        cursor.execute("DELETE FROM ordenpago WHERE Id_Orden = %s", (id,))
+        mysql.connection.commit()
+        
+    return redirect("/administradores/OrdenesPago")
+
+
+def numeroorden(id):
+    subject = 'Pedido Realizado con éxito'
+    sender = "decore.makeup.soporte@gmail.com"
+    with mysql.connect.cursor() as cursor:
+        cursor.execute("SELECT MAX(ordenpago.Id_Orden) AS Orden, cuenta.Correo FROM cuenta INNER JOIN usuarios ON cuenta.Id_Cuenta = usuarios.Id_Usuario INNER JOIN ordenpago ON usuarios.Id_Usuario = ordenpago.Id_Usuario WHERE cuenta.Id_Cuenta = 51 GROUP BY cuenta.Correo", (id,))
+        resultado = cursor.fetchone()
+    message = Message(subject, sender=sender, recipients=[resultado[1]])
+    message.body = f"Estimado Cliente,\n\nSe ha realizado su pedido correctamente. Su número de orden es:\n\n{resultado[0]}\n\nSaludos,\nEquipo de Decore"
+    mail.send(message)
+
+
