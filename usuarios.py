@@ -291,7 +291,6 @@ def foro():
     with mysql.connect.cursor() as cursor:
         cursor.execute("SELECT foro.*, usuarios.Nombre FROM foro INNER JOIN usuarios ON foro.Id_usuario = usuarios.Id_Usuario")
         forum = cursor.fetchall()
-        print(forum[0][4])
 
     return render_template("usuarios/foro.jinja", productos = data, nombre = nombre, forum = forum)
 
@@ -371,6 +370,34 @@ def calcular_angulo(landmarks, frame):
 
     return oriented
 
+def detectFaceShape(face_landmarks):
+    # Define las proporciones para cada forma de rostro
+    proportions = {
+        'Ovalado': [0.82, 1.18],
+        'Redondo': [1.0, 1.0],
+        'Cuadrado': [1.0, 1.0],
+        'Rectangular': [1.35, 1.0],
+        'Triángulo invertido': [0.9, 1.0],
+        'Triangular': [1.1, 1.0],
+        'Diamante': [0.95, 1.05]
+    }
+
+    # Calcula las proporciones del rostro
+    width = face_landmarks.landmark[454].x - face_landmarks.landmark[234].x
+    height = (face_landmarks.landmark[10].y - face_landmarks.landmark[152].y) * -1
+
+    # Compara las proporciones del rostro con las proporciones definidas para cada forma
+    shape_distances = {}
+    for shape, shape_proportions in proportions.items():
+        shape_width = shape_proportions[0]
+        shape_height = shape_proportions[1]
+        distance = abs((width / height) - (shape_width / shape_height))
+        shape_distances[shape] = distance
+    
+    # Encuentra la forma con la distancia más cercana
+    face_shape = min(shape_distances, key=shape_distances.get)
+    return face_shape
+
 @usuarios.route("/revisar_foto", methods=["POST"])
 def revisar_foto():
     data = request.get_json()
@@ -399,12 +426,13 @@ def revisar_foto():
 
     return jsonify(response)
 
-def capMakeup(image, landmarks, hexColor, layer = 0):
+def capMakeup(image, landmarks, hexColor, layer = 0, opacity = 0):
 
     if layer == 0:
         points = (61, 146, 91, 181, 84, 17, 314, 405, 321, 375, 291, 306, 292, 308, 324, 318, 402, 317, 14, 87, 178, 88, 95, 78, 62, 76)
         points2 = (61, 185, 40, 39, 37, 0, 267, 269, 270, 409, 291, 306, 292, 308, 415, 310, 311, 312, 13, 82, 81, 80, 191, 78, 62, 76)
-        opacity = -0.5
+        if opacity == 0:
+            opacity = -0.3
         gauss = (5, 5)
     elif layer == 1:
         points = ( 190, 157, 158, 159, 160, 161, 246, 33, 130, 226, 113, 225, 224, 223, 222, 190)
@@ -425,17 +453,36 @@ def capMakeup(image, landmarks, hexColor, layer = 0):
     cv2.fillPoly(mask2, [suject2.astype(np.int32)], color)
 
     mask3 = cv2.add(mask, mask2)
-    mask3 = cv2.GaussianBlur(mask3, gauss, 0) # Aplicamos un desenfoque gaussiano para suavizar los bordes de la máscar
-    cv2.imshow('prueba', mask3)
+    mask3 = cv2.GaussianBlur(mask3, gauss, 0) # Aplicamos un desenfoque gaussiano para suavizar los bordes de la máscara
 
     result = cv2.addWeighted(image, 1, mask3, opacity, 0)
     
     return result
 
-@usuarios.route("/procesar", methods=['POST'])
+@usuarios.route("/procesar", methods=['POST']) # se necesita el atributo link como formato IdLabios:Color,IdPiel:Color,IdPestañas,IdSombras:Color
 def procesar_imagen():
     data = request.get_json()
     imagen_data = data['image'] 
+    products_data = data['data']
+    products = products_data.split(',')
+
+    labialId = products[0].split(':')[0]
+    labialColor = products[0].split(':')[1]
+
+    sombrasId = products[3].split(':')[0]
+    sombrasColor = products[3].split(':')[1]
+
+    if labialId != '0':
+        link = url_for('usuarios.productsApi', _external=True, id = labialId)
+        response = requests.get(link).json()
+        dataLabial = response['Productos'][0]
+        hexLabial = dataLabial['Colores'][labialColor]['Hex']
+
+    if sombrasId != '0':
+        link = url_for('usuarios.productsApi', _external=True, id = sombrasId)
+        response = requests.get(link).json()
+        dataSombras = response['Productos'][0]
+        hexSombras = dataSombras['Colores'][sombrasColor]['Hex']
 
     # Aquí realizas el procesamiento de la imagen utilizando OpenCV
     imagen_base64 = imagen_data.split(',')[1]  # Eliminar el encabezado 'data:image/jpeg;base64,'
@@ -449,9 +496,11 @@ def procesar_imagen():
 
     if results.multi_face_landmarks:
         face_landmarks = results.multi_face_landmarks[0]
-
-        imagen = capMakeup(imagen, face_landmarks, 'eb6369', 1)
-        imagen = capMakeup(imagen, face_landmarks, 'bc0f28', 0)
+        if labialId != '0':
+            imagen = capMakeup(imagen, face_landmarks, hexLabial, 0, -0.25)
+            
+        if sombrasId != '0':
+            imagen = capMakeup(imagen, face_landmarks, hexSombras, 1)
 
     # Convertir la imagen procesada de nuevo a base64
     _, imagen_procesada_encoded = cv2.imencode('.jpeg', imagen)
@@ -464,6 +513,31 @@ def procesar_imagen():
     
     return jsonify(response)
 
+@usuarios.route("/procesarRostro", methods=['POST'])
+def processShape():
+    data = request.get_json()
+    imagen_data = data['image']
+
+    imagen_base64 = imagen_data.split(',')[1]  # Eliminar el encabezado 'data:image/jpeg;base64,'
+    imagen_bytes = base64.b64decode(imagen_base64)
+    nparr = np.frombuffer(imagen_bytes, np.uint8)
+    imagen = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+
+    # Procesar la imagen para poner el maquillaje
+    imagen_rgb = cv2.cvtColor(imagen, cv2.COLOR_BGR2RGB)
+    results = face_mesh.process(imagen_rgb)
+
+    if results.multi_face_landmarks:
+        face_landmarks = results.multi_face_landmarks[0]
+        face_shape = detectFaceShape(face_landmarks)
+
+    response = {
+        "Forma": face_shape
+    }
+
+    return jsonify(response)
+
 @usuarios.route("/tasks")
-def tasks():
-    return render_template("usuarios/cam.jinja")
+@usuarios.route("/tasks/<string:starter>", methods=['GET', 'POST'])
+def tasks(starter = ""):
+    return render_template("usuarios/cam.jinja", starter = starter)

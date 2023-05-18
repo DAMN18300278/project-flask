@@ -240,6 +240,7 @@ $(document).ready(function ($) {
         
         productoId = productJson['Id'];
         var cantidadImgs = productJson['Imagenes'];
+        var categoria = productJson['Categoria'];
         var nombre = productJson['Nombre'];
         var descripcion = productJson['Descripcion'];
         var tipoPiel = productJson['Tipo de piel'];
@@ -284,12 +285,46 @@ $(document).ready(function ($) {
         modal.find('#cantidad').prop('max', stock)
 
         modal.find('#hexColorInfoProductos').find('.colores-info').first().trigger('click');
+
+        if (tipo.toString().toLowerCase().includes('labial') ||
+            tipo.toString().toLowerCase().includes('base') ||
+            tipo.toString().toLowerCase().includes('corrector') ||
+            tipo.toString().toLowerCase().includes('maquillaje liquido') ||
+            tipo.toString().toLowerCase().includes('pestaña') ||
+            tipo.toString().toLowerCase().includes('sombra') ||
+            tipo.toString().toLowerCase().includes('iluminador')){
+                var link;
+            
+                switch (categoria) {
+                    case 'labios':
+                        link = productoId + ":1,0:0,0,0:0"
+                        break;
+                        
+                    case 'piel':
+                        link = "0:0," + productoId + ":1,0,0:0"
+                        break;
+                        
+                    case 'ojos':
+                        if(tipo.toString().toLowerCase().includes('pestaña')){
+                            link = "0:0,0:0," + productoId + ",0:0"
+                        }else{
+                            link = "0:0,0:0,0," + productoId + ":1"
+                        }
+                        break;
+                }
+                var inner = "<a type='button' class='btn btn-danger me-auto px-4 py-2 d-flex align-items-center' style='border-radius: 0px; font-size:15px' href='\\tasks\\" + link + "' id='btnProbar'>Probar</a>"
+                $('#btn-addcarrito').before(inner);
+        }else{
+            var inner = "<button type='button' class='btn btn-danger me-auto px-4 py-2 d-flex align-items-center' data-bs-dismiss='modal' style='border-radius: 0px; font-size:15px' id='btnProbar'>Cancelar</button>"
+            $('#btn-addcarrito').before(inner);
+        }
     });
 
     $('#infoProducto').on('hidden.bs.modal', function(){
         var modal = $(this);
         modal.find('#cantidad').val(1);
         modal.find('#nombreColorInfoProductos').text('Color');
+        $('#btnProbar').remove()
     });
 
 
@@ -364,6 +399,7 @@ $(document).ready(function ($) {
         modal.find('#stockskincare').text(productosSkinCare['Stock'] + " disponibles");
         modal.find('#colorhexskincare').css('background-color','#'+productosSkinCare.Colores[indexcolorskincare].Hex);
 
+        $('#infokit').data('id-ojos', productosOjos['Id']);
         
         let String = "|"+productosOjos['Id'] + ',1,' + indexcolorojos + '|' + 
             productosPiel['Id'] + ',1,' + indexcolorpiel + '|' + 
