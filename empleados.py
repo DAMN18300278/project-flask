@@ -164,6 +164,7 @@ def crearorden(id):
                 mysql.connection.commit()
             flash('Se ha insertado la orden de pago exitosamente.')
             numeroorden(id)
+            actualizaredad(id)
     return redirect("/administradores/OrdenesPago")
 
 @empleados.route("/administradores/OrdenEspecifica/<string:id>")
@@ -287,3 +288,22 @@ def numeroorden(id):
     mail.send(message)
 
 
+
+def actualizaredad(id):
+    with mysql.connect.cursor() as cursor:
+        # Obtener la orden de pago con el Id_Orden más grande
+        cursor.execute(" SELECT usuarios.Edad, ordenpago.carrito FROM usuarios INNER JOIN ordenpago ON ORDENPAGO.Id_Usuario = usuarios.Id_Usuario WHERE ordenpago.Id_Usuario = %s ORDER BY ordenpago.Id_Orden DESC LIMIT 1", (id,))
+        result = cursor.fetchone()
+
+        if result:
+            carrito = result[1].split("|")  # Separar los valores por el carácter "|"
+            edad = int(result[0])  # Obtener la edad del usuario
+            
+            with mysql.connection.cursor() as cursor:
+                for item in carrito:
+                    values = item.split(",")  # Separar los valores por el carácter ","
+                    producto_id = int(values[0])  # Obtener el primer dígito (Id_Producto)
+                    print(edad)
+                    print(producto_id)
+                    cursor.execute("UPDATE recomendacion SET Promedio_Edad = (Promedio_Edad + %s), NumVentas = (NumVentas+1) WHERE Id_Producto = %s", (edad, producto_id))
+                mysql.connection.commit()

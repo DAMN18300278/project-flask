@@ -116,6 +116,15 @@ def index():
     response = requests.get(link).json()
     data = response['Productos']
 
+
+    link2 = url_for('usuarios.productsApiordenar', _external=True, id ="1")
+    response2 = requests.get(link2).json()
+    data2 = response2['Productos']
+
+    link3 = url_for('usuarios.productsApiordenar', _external=True, id ="2")
+    response3 = requests.get(link3).json()
+    data3 = response3['Productos']
+
     with mysql.connect.cursor() as cursor:
         cursor.execute("SELECT Carrito FROM usuarios WHERE Id_Usuario = %s", (session.get('id_usuario'),))
         fetch = cursor.fetchone()
@@ -126,7 +135,7 @@ def index():
             numero = len(abubu)
 
     
-    return render_template("usuarios/landing.jinja", productos = data, idUsuario = session.get('id_usuario'), carrito = numero,nombre = nombre)
+    return render_template("usuarios/landing.jinja", populares=data3, ventas = data2, productos = data, idUsuario = session.get('id_usuario'), carrito = numero,nombre = nombre)
 
 
 @usuarios.route("/usuarios/addcarrito", methods=['POST', 'GET'])
@@ -258,19 +267,17 @@ def RecogerCaja(id):
                 fetch = cursor.fetchone()
                 carrito = fetch[0].split('|') 
                 
-                print(carrito)
                 numero = len(carrito)
                 
                 i = 0
                 for producto in carrito:
                     producto = producto.split(',')
                     productos.append(producto)
-                    print(producto[0])
-                    print(producto[1])
+                 
                     with mysql.connect.cursor() as cursor:
                         cursor.execute("SELECT Cantidad From productos where Id_Productos = %s",(producto[0],))
                         cantidad = int(cursor.fetchone()[0])
-                        print(cantidad)
+                       
                         if cantidad > int(producto[1]) :
                             cantidad = cantidad - int(producto[1])
 
@@ -287,7 +294,7 @@ def RecogerCaja(id):
                 cursor.execute("INSERT INTO ordenpago( Id_Usuario, Fecha, Status, carrito) VALUES ( %s, NOW(), 'Pagar en caja', %s)", (id,fetch))
                 mysql.connection.commit()
         numeroorden(id)
-
+        actualizaredad(id)
     return redirect("/usuarios")
 
 @usuarios.route("/usuarios/foro")
@@ -377,7 +384,6 @@ def calcular_angulo(landmarks, frame):
         oriented = 1
     else:
         oriented = 0
-
     return oriented
 
 @usuarios.route("/revisar_foto2", methods=["POST"])
@@ -415,7 +421,6 @@ def revisar_foto():
 
     return jsonify(response)
 
-
 @usuarios.route("/procesar", methods=['POST'])
 def procesar_imagen():
     data = request.get_json()
@@ -443,8 +448,8 @@ def procesar_imagen():
     response = {
         'processedImageUrl': imagen_procesada_base64
     }
-    return render_template("usuarios/cam.jinja")
     return jsonify(response)
+
 
 def numeroorden(id):
     subject = 'Pedido Realizado con éxito'
@@ -474,3 +479,92 @@ def actualizar_promedios():
 def tasks():
     return render_template("usuarios/cam.jinja")
 
+def actualizaredad(id):
+    with mysql.connect.cursor() as cursor:
+        # Obtener la orden de pago con el Id_Orden más grande
+        cursor.execute(" SELECT usuarios.Edad, ordenpago.carrito FROM usuarios INNER JOIN ordenpago ON ORDENPAGO.Id_Usuario = usuarios.Id_Usuario WHERE ordenpago.Id_Usuario = %s ORDER BY ordenpago.Id_Orden DESC LIMIT 1", (id,))
+        result = cursor.fetchone()
+
+        if result:
+            carrito = result[1].split("|")  # Separar los valores por el carácter "|"
+            edad = int(result[0])  # Obtener la edad del usuario
+            
+            with mysql.connection.cursor() as cursor:
+                for item in carrito:
+                    values = item.split(",")  # Separar los valores por el carácter ","
+                    producto_id = int(values[0])  # Obtener el primer dígito (Id_Producto)
+                    print(edad)
+                    print(producto_id)
+                    cursor.execute("UPDATE recomendacion SET Promedio_Edad = (Promedio_Edad + %s), NumVentas = (NumVentas+1) WHERE Id_Producto = %s", (edad, producto_id))
+                mysql.connection.commit()
+
+@usuarios.route('/actualizarvistas', methods=['POST'])
+def actualizar_vistas():
+    productoid = request.form.get('productoid')
+    
+    with mysql.connection.cursor() as cursor:
+            cursor.execute("UPDATE recomendacion SET Promedio_Vistas = (Promedio_Vistas + 1) WHERE Id_Producto = %s", (productoid,))
+            mysql.connection.commit()
+
+    return 'Actualización de vistas realizada'
+
+
+
+
+
+@usuarios.route("/productsApiordenar")
+@usuarios.route("/productsApiordenar/<string:id>", methods=['GET'])
+def productsApiordenar(id=0):
+    keys = [
+    'Id',
+    'Nombre', 
+    'Imagenes',
+    'Descripcion',
+    'Precio u.',
+    'Nombre color',
+    'Hex color',
+    'Categoria',
+    'Recomendacion',
+    'Marca',
+    'Stock',
+    'Tipo de piel',
+    'Imagenes filtro',
+    'Tipo'
+    ]
+    
+    arr = []
+    colors = {}
+
+
+    with mysql.connect.cursor() as cursor:
+        if id == "1":
+            cursor.execute("SELECT productos.* FROM productos inner join recomendacion on productos.Id_productos = recomendacion.Id_Producto order by NumVentas DESC Limit 10")
+        elif id =="2":
+            cursor.execute("SELECT productos.* FROM productos inner join recomendacion on productos.Id_productos = recomendacion.Id_Producto order by Promedio_Vistas DESC Limit 10")
+    
+        rows = cursor.fetchall()
+        print(rows)
+        for item in rows:
+            ord = OrderedDict(zip(keys, item))
+            # Dividir los nombres de colores y los valores de Hex
+            color_names = ord['Nombre color'].split(',')
+            hex_values = ord['Hex color'].split(',')
+
+            # Crear un nuevo JSON para cada color
+            colors = {}
+            for i, name in enumerate(color_names):
+                colors[i+1] = {'Nombre': name, 'Hex': hex_values[i]}
+
+            # Reemplazar 'Nombre color' y 'Hex color' con el nuevo JSON
+            ord['Colores'] = colors
+            del ord['Nombre color']
+            del ord['Hex color']
+
+            arr.append(ord)
+
+    response = make_response(jsonify({
+            'Productos': arr
+        }), 200)
+
+    response.headers["Content-type"] = "application/json"
+    return response
