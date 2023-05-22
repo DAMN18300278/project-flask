@@ -57,7 +57,7 @@
             <td><button class="btn btn-outline-warning" style="font-size: 12px;border-color: rgb(10, 92, 4); color: rgb(7, 150, 24);">{{row[3]}}</button></td>
             {# {%if tipo == 3%} #}
             <td>
-            <a href="BorrarOrden/{{row[0]}}">
+            <a href="BorrarOrden/{{row[0]}}" onclick="return confirm('¿Estás seguro de que deseas borrar la orden de pago: {{row[0]}} ?');">
                 <lord-icon
                     src="https://cdn.lordicon.com/jmkrnisz.json"
                     trigger="click"
