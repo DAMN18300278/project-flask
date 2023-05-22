@@ -117,15 +117,15 @@ $('#continuar').on('click', function(){
     type: 'post',
     success: function(response){
       // Mostrar la imagen procesada al usuario
-    //   $('#canvasFoto').hide();
-    //   const processedImage = new Image();
-    //   processedImage.onload = function(){
-    //     canvas2.height = cameraHeight;
-    //     canvas2.width = cameraWidth;
-    //     context2.drawImage(processedImage, 0, 0, canvas1.width, canvas1.height)
-    //   }
-    //   processedImage.src = 'data:image/png;base64,' + response.processedImageUrl;
-    //   $('#canvasResult').show();
+      $('#canvasFoto').hide();
+      const processedImage = new Image();
+      processedImage.onload = function(){
+        canvas2.height = cameraHeight;
+        canvas2.width = cameraWidth;
+        context2.drawImage(processedImage, 0, 0, canvas1.width, canvas1.height)
+      }
+      processedImage.src = 'data:image/png;base64,' + response.processedImageUrl;
+      $('#canvasResult').show();
         $('#continuar').text(response.Forma);
     }
   });

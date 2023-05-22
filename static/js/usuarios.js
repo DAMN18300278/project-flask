@@ -218,11 +218,9 @@ $(document).ready(function ($) {
     var contentColores;
     var keySeleccionado;
     
+    var timeoutId;
+
     $('#infoProducto').on('show.bs.modal', function(event){
-
-
-        
-
         var boton = $(event.relatedTarget);
         var modal = $(this);
         var contentImgs = '';
@@ -325,21 +323,25 @@ $(document).ready(function ($) {
             $('#btn-addcarrito').before(inner);
         }
     
-        
-        $.ajax({
-            url: '/actualizarvistas',
-            type: 'POST',
-            data: { productoid: productoId },
-            success: function(response) {
-                console.log('Actualización de vistas realizada');
-            },
-            error: function(error) {
-                console.log('Error al realizar la actualización de vistas');
-            }
-        });
+        timeoutId = setTimeout(() => {            
+            $.ajax({
+                url: '/actualizarvistas',
+                contentType: 'application/json',
+                type: 'POST',
+                data: { productoid: productoId },
+                dataType: 'json',
+                success: function(response) {
+                    console.log(response);
+                },
+                error: function(error) {
+                    console.log(error);
+                }
+            });
+        }, 3000);
     });
 
     $('#infoProducto').on('hidden.bs.modal', function(){
+        clearTimeout(timeoutId);
         var modal = $(this);
         modal.find('#cantidad').val(1);
         modal.find('#nombreColorInfoProductos').text('Color');
@@ -444,46 +446,7 @@ $(document).ready(function ($) {
                 console.error('Error al enviar la solicitud:', error);
             });   
         });
-        // console.log(productosSkinCare);
-
-        // $('#colorhexlabios').on('click', function() {
-        //     $('#spinner').show(); // Muestra el spinner
-          
-        //     // Obtiene los colores disponibles y los agrega a la lista
-        //     const colores = productosLabios.Colores;
-        //     const listaColores = $('#lista-colores');
-        //     listaColores.empty();
-        //     colores.forEach(function(color) {
-        //       const li = $('<li>').text(color.Hex);
-        //       listaColores.append(li);
-        //     });
-          
-        //     $('#spinner').hide(); // Oculta el spinner
-        //   });
-
-
-
-
     });
-
-    // $('#colorhexlabios').click(function() {
-    //     // Obtener los colores disponibles del JSON que se ha cargado previamente
-    //     const productosLabios = JSON.parse($('#infokit [data-productos-labios]').attr('data-productos-labios'));
-    //     const coloresDisponibles = Object.values(productosLabios.Colores).map(c => c.Nombre);
-        
-    //     // Mostrar el spinner y ocultar los colores
-    //     $('#spinner').show();
-    //     $('#colores-disponibles').hide();
-        
-    //     // Mostrar los colores disponibles en el spinner después de un corto retraso
-    //     setTimeout(function() {
-    //       $('#spinner').hide();
-    //       $('#colores-disponibles').html(coloresDisponibles.join(', ')).show();
-    //     }, 500);
-    //   });
-
-
-
 
     $('#btn-minus').click(function() {
         var input = $('#cantidad');
