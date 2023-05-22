@@ -218,11 +218,9 @@ $(document).ready(function ($) {
     var contentColores;
     var keySeleccionado;
     
+    var timeoutId;
+
     $('#infoProducto').on('show.bs.modal', function(event){
-
-
-        
-
         var boton = $(event.relatedTarget);
         var modal = $(this);
         var contentImgs = '';
@@ -325,21 +323,25 @@ $(document).ready(function ($) {
             $('#btn-addcarrito').before(inner);
         }
     
-        
-        $.ajax({
-            url: '/actualizarvistas',
-            type: 'POST',
-            data: { productoid: productoId },
-            success: function(response) {
-                console.log('Actualización de vistas realizada');
-            },
-            error: function(error) {
-                console.log('Error al realizar la actualización de vistas');
-            }
-        });
+        timeoutId = setTimeout(() => {            
+            $.ajax({
+                url: '/actualizarvistas',
+                contentType: 'application/json',
+                type: 'POST',
+                data: { productoid: productoId },
+                dataType: 'json',
+                success: function(response) {
+                    console.log(response);
+                },
+                error: function(error) {
+                    console.log(error);
+                }
+            });
+        }, 3000);
     });
 
     $('#infoProducto').on('hidden.bs.modal', function(){
+        clearTimeout(timeoutId);
         var modal = $(this);
         modal.find('#cantidad').val(1);
         modal.find('#nombreColorInfoProductos').text('Color');
@@ -444,14 +446,7 @@ $(document).ready(function ($) {
                 console.error('Error al enviar la solicitud:', error);
             });   
         });
-
-
-
-
     });
-
-
-
 
     $('#btn-minus').click(function() {
         var input = $('#cantidad');

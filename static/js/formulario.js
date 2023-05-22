@@ -3,11 +3,14 @@ slider = document.getElementById("edad");
 alertaOjos = document.getElementById("alertaOjos");
 alertaPiel = document.getElementById("alertaPiel");
 alertaColorPiel = document.getElementById("alertaColorPiel");
+alertaColorPelo = document.getElementById("alertaColorPelo");
 valorOjos = document.getElementById("colorOjos");
 btnTipoPiel = document.getElementById("btnTipoPiel");
 btnColorOjos = document.getElementById("btnColorOjos");
 btnColorPiel = document.getElementById("inputColorPiel");
 divColorPiel = document.getElementById("divColorPiel");
+btnColorCabello = document.getElementById("inputColorCabello");
+divColorCabello = document.getElementById("divColorCabello");
 
 slider.addEventListener("input", showSliderValue, true);
 document.addEventListener("DOMContentLoaded", showSliderValue);
@@ -66,8 +69,15 @@ function textoPiel(index){
     alertaPiel.style.display = "none";
 }
 
-function colorPiel(index){
-    btnColorPiel.value = index;
-    divColorPiel.style.backgroundColor = index;
+function colorPiel(val, color){
+    $('#inputColorPielForm').val(color.replace("#", ""))
+    $('#inputColorPiel').val(val.replace("#", ""))
+    divColorPiel.style.backgroundColor = color;
     alertaColorPiel.style.display = "none";
+}
+
+function colorPelo(val, color){
+    btnColorCabello.value = val.replace("#", "");
+    divColorCabello.style.backgroundColor = color;
+    alertaColorPelo.style.display = "none";
 }

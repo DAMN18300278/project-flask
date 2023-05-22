@@ -117,13 +117,18 @@ def index():
     data = response['Productos']
 
 
-    link2 = url_for('usuarios.productsApiordenar', _external=True, id ="1")
+    link2 = url_for('usuarios.productsApiordenar', _external=True, id ="1", idUsuario = session.get("id_usuario"))
     response2 = requests.get(link2).json()
     data2 = response2['Productos']
 
-    link3 = url_for('usuarios.productsApiordenar', _external=True, id ="2")
+    link3 = url_for('usuarios.productsApiordenar', _external=True, id ="2", idUsuario = session.get("id_usuario"))
     response3 = requests.get(link3).json()
     data3 = response3['Productos']
+
+    link4 = url_for('usuarios.productsApiordenar', _external=True, id ="3", idUsuario = session.get("id_usuario"))
+    response4 = requests.get(link4).json()
+    data4 = response4['Productos']
+    print(link4)
 
     with mysql.connect.cursor() as cursor:
         cursor.execute("SELECT Carrito FROM usuarios WHERE Id_Usuario = %s", (session.get('id_usuario'),))
@@ -131,11 +136,11 @@ def index():
         if fetch is None or not fetch[0]:
             numero = 0
         else:
-            abubu = fetch[0].split("|")
-            numero = len(abubu)
+            carritoNum = fetch[0].split("|")
+            numero = len(carritoNum)
 
     
-    return render_template("usuarios/landing.jinja", populares=data3, ventas = data2, productos = data, idUsuario = session.get('id_usuario'), carrito = numero,nombre = nombre)
+    return render_template("usuarios/landing.jinja", recomendados=data4, populares=data3, ventas = data2, productos = data, idUsuario = session.get('id_usuario'), carrito = numero,nombre = nombre)
 
 
 @usuarios.route("/usuarios/addcarrito", methods=['POST', 'GET'])
@@ -325,9 +330,12 @@ def guardarPub():
     actualizar_promedios()
     return redirect("/")
 
-def takeProfileInfo():
+def takeProfileInfo(id = 0):
     with mysql.connect.cursor() as cursor:
-        cursor.execute("SELECT * FROM usuarios WHERE Id_Usuario = %s", (session.get("id_usuario"),))
+        if id == 0:
+            cursor.execute("SELECT * FROM usuarios WHERE Id_Usuario = %s", (session.get("id_usuario"),))
+        else:
+            cursor.execute("SELECT * FROM usuarios WHERE Id_Usuario = %s", (id,))
         profileInfo = cursor.fetchone()
 
     return profileInfo
@@ -361,10 +369,11 @@ def updateDatosUsuario():
     colorOjos = request.form["colorOjos"]
     tipoPiel = request.form["tipoPiel"]
     colorPiel = request.form["colorPiel"]
+    colorPielForm = request.form["colorPielForm"]
     colorCabello = request.form["colorCabello"]
     with mysql.connection.cursor() as cursor:
-        cursor.execute("UPDATE usuarios SET Nombre = %s, Edad = %s, Color_Ojos = %s, Tipo_Piel = %s, Tono_Piel = %s, Color_Pelo = %s WHERE Id_Usuario = %s",
-                       (nombre, edad, colorOjos, tipoPiel, colorPiel, colorCabello, session.get('id_usuario')))
+        cursor.execute("UPDATE usuarios SET Nombre = %s, Edad = %s, Color_Ojos = %s, Tipo_Piel = %s, Tono_Piel = %s, Color_Pelo = %s, Tono_Piel_Form = %s WHERE Id_Usuario = %s",
+                       (nombre, edad, colorOjos, tipoPiel, colorPiel, colorCabello, colorPielForm, session.get('id_usuario')))
         mysql.connection.commit()
 
     return redirect("/usuarios/perfil")
@@ -413,6 +422,62 @@ def detectFaceShape(face_landmarks):
     face_shape = min(shape_distances, key=shape_distances.get)
     return face_shape
 
+def waysToMakeup(face_landmarks, image):
+    face_shape = detectFaceShape(face_landmarks)
+
+    lightSection1 = (109, 108, 9, 337, 338, 10, 109)
+    lightSection2 = (8, 196, 4, 419, 8)
+    lightSection3 = (31, 118, 119, 120, 121, 233, 232, 231, 230, 229, 228, 31)
+    lightSection4 = (261, 347, 348, 349, 350, 453, 452, 451, 450, 449, 448, 261)
+    lightSection5 = (18, 83, 201, 199, 421, 313, 18)
+    
+    suject1 = np.array([(face_landmarks.landmark[i].x * image.shape[1], face_landmarks.landmark[i].y * image.shape[0]) for i in lightSection1])
+    suject2 = np.array([(face_landmarks.landmark[i].x * image.shape[1], face_landmarks.landmark[i].y * image.shape[0]) for i in lightSection2])
+    suject3 = np.array([(face_landmarks.landmark[i].x * image.shape[1], face_landmarks.landmark[i].y * image.shape[0]) for i in lightSection3])
+    suject4 = np.array([(face_landmarks.landmark[i].x * image.shape[1], face_landmarks.landmark[i].y * image.shape[0]) for i in lightSection4])
+    suject5 = np.array([(face_landmarks.landmark[i].x * image.shape[1], face_landmarks.landmark[i].y * image.shape[0]) for i in lightSection5])
+    
+    mask = np.zeros_like(image)
+
+    colorLight = (130, 70, 20)
+
+    cv2.fillPoly(mask, [suject1.astype(np.int32)], colorLight)
+    cv2.fillPoly(mask, [suject2.astype(np.int32)], colorLight)
+    cv2.fillPoly(mask, [suject3.astype(np.int32)], colorLight)
+    cv2.fillPoly(mask, [suject4.astype(np.int32)], colorLight)
+    cv2.fillPoly(mask, [suject5.astype(np.int32)], colorLight)
+                
+    mask = cv2.GaussianBlur(mask, (39, 39), 0) # Aplicamos un desenfoque gaussiano para suavizar los bordes de la máscar
+
+    image = cv2.addWeighted(image, 1, mask, 0.7, 0)
+    
+    if 'Ovalado' in face_shape:
+        contourSection1 = (345, 436, 432, 367, 345)
+        contourSection2 = (116, 216, 212, 138, 116)
+    
+    elif 'Triangular' in face_shape:
+        contourSection1 = (332, 333, 293, 300, 368, 264, 345, 436, 432, 367, 264, 389, 251, 284, 332)
+        contourSection2 = (103, 104, 63, 70, 139, 34, 116, 216, 212, 138, 34, 162, 21, 54, 103)
+    
+    elif 'Rectangular' in face_shape:
+        contourSection1 = (345, 436, 416, 367, 434, 430, 394, 379, 365, 397, 288, 366)
+        contourSection2 = (116, 216, 192, 138, 214, 210, 169, 150, 136, 172, 58, 137)
+    
+    else:
+        contourSection1 = (0, 0)
+        contourSection2 = (0, 0)
+
+    suject7 = np.array([(face_landmarks.landmark[i].x * image.shape[1], face_landmarks.landmark[i].y * image.shape[0]) for i in contourSection2])
+    suject6 = np.array([(face_landmarks.landmark[i].x * image.shape[1], face_landmarks.landmark[i].y * image.shape[0]) for i in contourSection1])
+    mask2 = np.zeros_like(image)
+    colorContour = 255 - 255, 255 - 197, 255 - 229
+    cv2.fillPoly(mask2, [suject6.astype(np.int32)], colorContour)
+    cv2.fillPoly(mask2, [suject7.astype(np.int32)], colorContour)
+    mask2 = cv2.GaussianBlur(mask2, (39, 39), 0) # Aplicamos un desenfoque gaussiano para suavizar los bordes de la máscar
+    image = cv2.addWeighted(image, 1, mask2, -0.9, 0)
+
+    return image
+
 @usuarios.route("/revisar_foto", methods=["POST"])
 def revisar_foto():
     data = request.get_json()
@@ -440,6 +505,42 @@ def revisar_foto():
     response = { 'Orientado': False }
 
     return jsonify(response)
+
+def capEyelash(startPoint, endPoint, yPoint, imgSrc, frame, angle):
+    # Obtener las coordenadas de los puntos de referencia de la mascara
+    start_landmark = startPoint #face_landmarks.landmark[173]
+    start_x = int(start_landmark.x * frame.shape[1])
+    end_landmark =  endPoint #face_landmarks.landmark[143]
+    end_x = int(end_landmark.x * frame.shape[1])
+
+    # Calcular la altura
+    height_start = int(yPoint * frame.shape[0]) #face_landmarks.landmark[7].y
+
+    # Imagen a usar
+    img = cv2.imread(imgSrc, cv2.IMREAD_UNCHANGED) #'left_eye.png'
+
+    (h, w) = img.shape[:2]
+    center = (w / 2, h / 2)
+    M = cv2.getRotationMatrix2D(center, angle, 1.0)
+    img = cv2.warpAffine(img, M, (w, h))
+
+    # Escalar la imagen de las pestañas para que se ajuste al tamaño del ojo
+    scale_factor = (start_x - end_x) / img.shape[1]
+    img_resized = cv2.resize(img, (0, 0), fx=scale_factor, fy=scale_factor)
+
+    # Superponer la imagen de las pestañas en el frame
+    x_offset = end_x
+    y_offset = height_start - img_resized.shape[0]
+    alpha_s = img_resized[:, :, 3] / 255.0
+    alpha_l = 1.0 - alpha_s
+
+    for c in range(0, 3):
+        frame[y_offset:y_offset + img_resized.shape[0], x_offset:x_offset + img_resized.shape[1], c] = (
+                    alpha_s * img_resized[:, :, c] + alpha_l * frame[
+                y_offset:y_offset + img_resized.shape[0],
+                x_offset:x_offset + img_resized.shape[1], c])
+    
+    return frame
 
 def capMakeup(image, landmarks, hexColor, layer = 0, opacity = 0):
 
@@ -486,6 +587,8 @@ def procesar_imagen():
     sombrasId = products[3].split(':')[0]
     sombrasColor = products[3].split(':')[1]
 
+    pestañasId = products[2]
+
     if labialId != '0':
         link = url_for('usuarios.productsApi', _external=True, id = labialId)
         response = requests.get(link).json()
@@ -516,6 +619,11 @@ def procesar_imagen():
         if sombrasId != '0':
             imagen = capMakeup(imagen, face_landmarks, hexSombras, 1)
 
+        if pestañasId != '0':
+            imagen = capEyelash(face_landmarks.landmark[173], face_landmarks.landmark[143], face_landmarks.landmark[7].y, 'static/img/left_eye.png', imagen, angle=0)
+            imagen = capEyelash(face_landmarks.landmark[372], face_landmarks.landmark[398], face_landmarks.landmark[249].y, 'static/img/right_eye.png', imagen, angle=0)
+        
+
     # Convertir la imagen procesada de nuevo a base64
     _, imagen_procesada_encoded = cv2.imencode('.jpeg', imagen)
     imagen_procesada_base64 = base64.b64encode(imagen_procesada_encoded).decode('utf-8')
@@ -543,9 +651,15 @@ def processShape():
     if results.multi_face_landmarks:
         face_landmarks = results.multi_face_landmarks[0]
         face_shape = detectFaceShape(face_landmarks)
+        imagen = waysToMakeup(face_landmarks, imagen)
+
+    # Convertir la imagen procesada de nuevo a base64
+    _, imagen_procesada_encoded = cv2.imencode('.jpeg', imagen)
+    imagen_procesada_base64 = base64.b64encode(imagen_procesada_encoded).decode('utf-8')
 
     response = {
-        "Forma": face_shape
+        'Forma': face_shape,
+        'processedImageUrl': imagen_procesada_base64
     }
 
     return jsonify(response)
@@ -609,15 +723,11 @@ def actualizar_vistas():
             cursor.execute("UPDATE recomendacion SET Promedio_Vistas = (Promedio_Vistas + 1) WHERE Id_Producto = %s", (productoid,))
             mysql.connection.commit()
 
-    return 'Actualización de vistas realizada'
-
-
-
-
+    return jsonify({'success': True})
 
 @usuarios.route("/productsApiordenar")
-@usuarios.route("/productsApiordenar/<string:id>", methods=['GET'])
-def productsApiordenar(id=0):
+@usuarios.route("/productsApiordenar/<string:id>?<string:idUsuario>", methods=['GET'])
+def productsApiordenar(id=0, idUsuario = 0):
     keys = [
     'Id',
     'Nombre', 
@@ -641,12 +751,23 @@ def productsApiordenar(id=0):
 
     with mysql.connect.cursor() as cursor:
         if id == "1":
-            cursor.execute("SELECT productos.* FROM productos inner join recomendacion on productos.Id_productos = recomendacion.Id_Producto order by NumVentas DESC Limit 10")
-        elif id =="2":
-            cursor.execute("SELECT productos.* FROM productos inner join recomendacion on productos.Id_productos = recomendacion.Id_Producto order by Promedio_Vistas DESC Limit 10")
-    
+            cursor.execute("""SELECT productos.* FROM productos 
+            inner join 
+                recomendacion on productos.Id_productos = recomendacion.Id_Producto 
+            order by NumVentas DESC Limit 10""")
+
+        elif id == "2":
+            cursor.execute("""SELECT productos.* FROM productos 
+            inner join 
+                recomendacion on productos.Id_productos = recomendacion.Id_Producto 
+            order by Promedio_Vistas DESC Limit 10""")
+
+        elif id == "3":
+            profileInfo = takeProfileInfo(idUsuario)
+            cursor.execute("SELECT Hex FROM color_ojos WHERE Id_ColorOjos = %s", (profileInfo[3],))
+            coloresOjos = cursor.fetchone()
+            cursor.execute("SELECT productos.* FROM productos INNER JOIN recomendacion ON productos.Id_Productos = recomendacion.Id_Producto ORDER BY CASE WHEN recomendacion.Color_Ojos LIKE %s THEN 1 ELSE 2 END, CASE WHEN recomendacion.Color_Pelo LIKE %s THEN 1 ELSE 2 END, CASE WHEN recomendacion.Color_Piel LIKE %s THEN 1 ELSE 2 END, CASE WHEN recomendacion.Promedio_Edad BETWEEN %s AND %s THEN 1 ELSE 2 END;", ("%" + str(coloresOjos[0]) + "%", "%" + str(profileInfo[6]) + "%", "%" + str(profileInfo[5]) + "%", int(profileInfo[2]) - 3, int(profileInfo[2]) + 3))
         rows = cursor.fetchall()
-        print(rows)
         for item in rows:
             ord = OrderedDict(zip(keys, item))
             # Dividir los nombres de colores y los valores de Hex
