@@ -444,43 +444,11 @@ $(document).ready(function ($) {
                 console.error('Error al enviar la solicitud:', error);
             });   
         });
-        // console.log(productosSkinCare);
-
-        // $('#colorhexlabios').on('click', function() {
-        //     $('#spinner').show(); // Muestra el spinner
-          
-        //     // Obtiene los colores disponibles y los agrega a la lista
-        //     const colores = productosLabios.Colores;
-        //     const listaColores = $('#lista-colores');
-        //     listaColores.empty();
-        //     colores.forEach(function(color) {
-        //       const li = $('<li>').text(color.Hex);
-        //       listaColores.append(li);
-        //     });
-          
-        //     $('#spinner').hide(); // Oculta el spinner
-        //   });
 
 
 
 
     });
-
-    // $('#colorhexlabios').click(function() {
-    //     // Obtener los colores disponibles del JSON que se ha cargado previamente
-    //     const productosLabios = JSON.parse($('#infokit [data-productos-labios]').attr('data-productos-labios'));
-    //     const coloresDisponibles = Object.values(productosLabios.Colores).map(c => c.Nombre);
-        
-    //     // Mostrar el spinner y ocultar los colores
-    //     $('#spinner').show();
-    //     $('#colores-disponibles').hide();
-        
-    //     // Mostrar los colores disponibles en el spinner después de un corto retraso
-    //     setTimeout(function() {
-    //       $('#spinner').hide();
-    //       $('#colores-disponibles').html(coloresDisponibles.join(', ')).show();
-    //     }, 500);
-    //   });
 
 
 

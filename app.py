@@ -212,8 +212,8 @@ def send_correocon():
         
         link = url_for('confirmrecover',token=token, _external=True)
 
-        message.body = 'Porfavor ingresa al siguiente link para confirmar el cambio de contraseña en su cuenta {}'.format(link)
-
+        body = 'Porfavor ingresa al siguiente link para confirmar el cambio de contraseña en su cuenta '
+        message.html = render_template("index/email.jinja",body = body , user = email, link = link, boton= "Confrimar cambio")
         mail.send(message)
 
         success = "Correo enviado"
@@ -246,15 +246,10 @@ def send_correo():
 
             message = Message(subject, sender="decore.makeup.soporte@gmail.com", recipients=[email])
             link = url_for('confirm', token=token, _external=True)
-            message.body = 'Se ha intentado crear una nueva cuenta con este correo electrónico, pero ya existe una cuenta registrada. Si desea restablecer su cuenta, ingrese al siguiente link: {}'.format(link)
-        
-            #button_html = f'<a href="{link}" style="background-color: #4CAF50; border: none; color: white; padding: 15px 32px; text-align: center; text-decoration: none; display: inline-block; font-size: 16px; margin: 4px 2px; cursor: pointer;">Restablecer cuenta</a>'
-            #message.body = f'Se ha intentado crear una nueva cuenta con este correo electrónico, pero ya existe una cuenta registrada. Si desea restablecer su cuenta, haga clic en el siguiente enlace: {button_html}'
-
+            body = 'Se ha intentado crear una nueva cuenta con este correo electrónico, pero ya existe una cuenta registrada. Si desea restablecer su cuenta, ingrese al siguiente link:'
+            
+            message.html = render_template("index/email.jinja",body = body , user = email, link = link, boton = "Restablecer")
             mail.send(message)
-
-           
-
 
             return redirect("/")
 
@@ -274,8 +269,8 @@ def send_correo():
 
             link = url_for('confirm', token=token, _external=True)
 
-            message.body = 'Por favor, ingrese al siguiente link para confirmar la creación de su cuenta: {}'.format(link)
-
+            body = 'Por favor, ingrese al siguiente link para confirmar la creación de su cuenta: '
+            message.html = render_template("index/email.jinja",body = body , user = email, link = link, boton = "confirmar")
             mail.send(message)
 
             return redirect("/")
