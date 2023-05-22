@@ -471,7 +471,7 @@ def capMakeup(image, landmarks, hexColor, layer = 0, opacity = 0):
     mask3 = cv2.GaussianBlur(mask3, gauss, 0) # Aplicamos un desenfoque gaussiano para suavizar los bordes de la máscara
 
     result = cv2.addWeighted(image, 1, mask3, opacity, 0)
-        return result
+    return result
 
 @usuarios.route("/procesar", methods=['POST']) # se necesita el atributo link como formato IdLabios:Color,IdPiel:Color,IdPestañas,IdSombras:Color
 def procesar_imagen():

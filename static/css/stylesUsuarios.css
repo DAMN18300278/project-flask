@@ -302,3 +302,29 @@ hr{
         transform: rotate(360deg);
     }
 }
+
+.container-form{
+    width: 100%;
+    max-width: 1100 px;
+    margin: auto;
+    display: grid;
+    grid-template-columns: repeat(2,1fr);
+    grid-gap: 50px;
+    margin-top: 40px;
+    margin-bottom: 20px;
+}
+
+.container-form h2{
+    margin-bottom: 15px;
+    font-size: 20px;
+}
+
+.container-form p{
+    font-size: 15px;
+    line-height: 1.6;
+    margin-bottom: 10px;
+}
+
+.container-form i{
+    margin-right: 10px;
+}
