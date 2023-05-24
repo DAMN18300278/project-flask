@@ -316,7 +316,7 @@ $(document).ready(function ($) {
                         }
                         break;
                 }
-                var inner = "<a type='button' class='btn btn-danger me-auto px-4 py-2 d-flex align-items-center' style='border-radius: 0px; font-size:15px' href='\\tasks\\" + link + "' id='btnProbar'>Probar</a>"
+                var inner = "<a type='button' class='btn btn-danger me-auto px-4 py-2 d-flex align-items-center' style='border-radius: 0px; font-size:15px' href='\\usuarios\\probado\\" + link + "' id='btnProbar'>Probar</a>"
                 $('#btn-addcarrito').before(inner);
         }else{
             var inner = "<button type='button' class='btn btn-danger me-auto px-4 py-2 d-flex align-items-center' data-bs-dismiss='modal' style='border-radius: 0px; font-size:15px' id='btnProbar'>Cancelar</button>"

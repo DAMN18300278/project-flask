@@ -126,6 +126,10 @@ $('#continuar').on('click', function(){
       }
       processedImage.src = 'data:image/png;base64,' + response.processedImageUrl;
       $('#canvasResult').show();
+      $('#options').hide();
+      $('#optionsColors').show();
     }
   });
+
+  $('')
 });
