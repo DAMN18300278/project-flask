@@ -689,8 +689,8 @@ def actualizar_promedios():
                 mysql.connection.commit()
 
 
-@usuarios.route("/tasks")
-@usuarios.route("/tasks/<string:starter>", methods=['GET', 'POST'])
+@usuarios.route("/usuarios/probado")
+@usuarios.route("/usuarios/probado/<string:starter>", methods=['GET', 'POST'])
 def tasks(starter = ""):
     return render_template("usuarios/cam.jinja", starter = starter)
 def tasks():
