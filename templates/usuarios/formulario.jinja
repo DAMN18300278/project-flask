@@ -358,10 +358,8 @@
         <div class="d-flex flex-column justify-content-between" style="font-size: 18px; height: 85%;">
             <div>
                 <div class="form-group d-flex flex-row mb-3 align-items-center to-left" style="animation-delay: 0.4s;">
-                    <label for="nombre" class="col-form-label w-25" style="margin-right: 5%;" >Nombre:</label>
                     <div style="flex: auto;">
-                        <input type="text" class="form-control" placeholder="Inserte su nombre completo..." name="nombre" id="nombre" {% if profileInfo is defined %}value="{{ profileInfo[1] }}"{% endif %} requiered pattern="^[A-Za-z\s]+$">
-                        
+                    <input type="text" class="form-control" placeholder="Inserte su nombre completo..." name="nombre" id="nombre" {% if profileInfo is defined %}value="{{ profileInfo[1] }}"{% endif %} required pattern="^[A-Za-z\s]{3,}$" title="El nombre debe contener al menos 3 caracteres y no debe incluir números.">
                     </div>
                 </div>
             </div>
