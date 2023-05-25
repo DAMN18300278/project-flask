@@ -3,6 +3,7 @@ from flask import render_template, Response, request, redirect, flash, session, 
 from flask_mail import Mail, Message
 from flask_session import Session
 from empleados import empleados
+from flask import jsonify
 from usuarios import usuarios
 import mediapipe as mp
 import paypalrestsdk
@@ -251,7 +252,8 @@ def send_correo():
             message.html = render_template("index/email.jinja",body = body , user = email, link = link, boton = "Restablecer")
             mail.send(message)
 
-            return redirect("/")
+            flash('El correo que has ingresado ya existe, porfavor utiliza otro correo o confirma tu correo en tu correo electronico', 'alert-success')
+            return render_template("index/register.jinja")
 
         else:
             # Insertar el nuevo usuario en la tabla cuenta
@@ -362,6 +364,22 @@ def guardarDatosUsuario():
         
 
     return redirect("/usuarios")
+
+@app.route("/validar_correo", methods=["POST"])
+def validar_correo():
+    data = request.get_json()
+    correo = data["correo"]
+
+    cursor.execute("SELECT COUNT(*) FROM cuenta WHERE correo = %s", (correo,))
+    result = cursor.fetchone()
+
+    # Verificar el resultado de la consulta
+    if result[0] > 0:
+        # El correo ya existe
+        return jsonify({"existe": True})
+    else:
+        # El correo no existe
+        return jsonify({"existe": False})
 
 @app.before_request
 def before_request():

@@ -7,6 +7,7 @@
 
 {% block content %}
   <div class="animate__animated animate__fadeIn" style="animation-delay: 0.3s;">
+
     <p class="display-1 to-right">BIENVENIDO</p>
 
     <svg class="path mb-5"  width="50%" viewBox="0 0 1280 1280">
@@ -15,24 +16,24 @@
         </g>
     </svg>
 
-    <form action="/send_correo" id="form" method="post" class="input-group input-group-lg d-flex justify-content-between flex-column">
+    <form action="/send_correo" id="formregister" method="post" class="input-group input-group-lg d-flex justify-content-between flex-column">
         <div class="input-group">
             <input type="email" id="correo" class="form-control mt-2" placeholder="Correo" name="correo" required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$">
         </div>
         <div class="form-group mt-4 position-relative">
-            <input type="password" id="contraseña" class="form-control" placeholder="Contraseña" name="contraseña" minlength="8" maxlength="14" requiered pattern="^(?=.*[0-9])(?=.*[a-zA-Z])([a-zA-Z0-9]+)$" data-error="La contraseña debe de contener al menos 8 caracteres y un numero">
-            <span class="d-flex align-items-left form-text mt-1" style="font-size: 12px;"></span>
-            <div class=" h-100 pt-2 position-absolute icon" style="right: 0; bottom:0">
+        <input type="password" id="contraseña" class="form-control" placeholder="Contraseña" name="contraseña" minlength="8" maxlength="14" required pattern="^(?=.*[0-9])(?=.*[a-zA-Z])([a-zA-Z0-9]+)$" title="La contraseña debe contener al menos 8 caracteres y al menos un número">
+        <span class="d-flex align-items-left form-text mt-1" style="font-size: 12px;"></span>
+        <div class="h-100 pt-2 position-absolute icon" style="right: 0; bottom:0">
             <i class="bi bi-eye-slash mx-3" id="show-password-btn1"></i>
-            </div>
+        </div>
         </div>
         <div class="form-group mt-4 position-relative">
-            <input type="password" id="contraseñaC" class="form-control" placeholder="Confirmar contraseña" minlength="8" maxlength="14" required pattern="^(?=.*[0-9])(?=.*[a-zA-Z])([a-zA-Z0-9]+)$">
-            <div class=" h-100 pt-2 position-absolute icon" style="right: 0; bottom:0">
+        <input type="password" id="contraseñaC" class="form-control" placeholder="Confirmar contraseña" minlength="8" maxlength="14" required pattern="^(?=.*[0-9])(?=.*[a-zA-Z])([a-zA-Z0-9]+)$" title="La contraseña debe contener al menos 8 caracteres y al menos un número">
+        <div class="h-100 pt-2 position-absolute icon" style="right: 0; bottom:0">
             <i class="bi bi-eye-slash mx-3" id="show-password-btn2"></i>
-            </div>
         </div>
-        <button type="submit" name="registrarme" class="btn btn-success vanish1 mt-5" style="font-size: 18px; border-radius: 10px; height: 36px; animation-duration: 4s;">Registrarme</button>
+        </div>
+        <button type="submit" id="btn-registrarme" name="registrarme" class="btn btn-success vanish1 mt-5" style="font-size: 18px; border-radius: 10px; height: 36px; animation-duration: 4s;">Registrarme</button>
     </form>
   </div>
     <a href="/" class="link-success mt-5" style="font-size: 15px;">Ya tienes una cuenta? Inicia sesion</a>
@@ -74,6 +75,8 @@
             alert('Las contraseñas no coinciden');
             }
         });
+
+
     </script>
 
 {% endblock %}

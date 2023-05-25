@@ -14,7 +14,7 @@
       <div class="d-flex flex-column justify-content-between align-items-center h-100 w-100">
         <div class="mb-3 w-100 form-group d-flex align-items-center flex-column">
           <label for="EmpNombre" class="form-label w-100">Nombre</label>
-          <input type="text" class="form-control" id="EmpNombre" name="EmpNombre" value="{{empleado[0]}}" required>
+          <input type="text" class="form-control" id="EmpNombre" name="EmpNombre" value="{{empleado[0]}}" required pattern="[A-Za-z]{3,}" title="El nombre debe tener un minimo de 3 caracteres y no se aceptan numeros">
         </div>
 
         <div class="mb-3 w-100 form-group d-flex align-items-center flex-column">
@@ -25,26 +25,26 @@
         <div class="mb-3 w-100 form-group d-flex align-items-center flex-column">
           <label for="EmpPassword" class="form-label">Contraseña</label>
           <div class="form-group w-100 mt-4 position-relative">
-            <input type="password" class="form-control" id="EmpPassword" name="EmpPassword" value="{{empleado[2]}}" required pattern="^(?=.*[0-9])(?=.*[a-zA-Z])([a-zA-Z0-9]+)$">
-            <div class=" h-100 pt-2 position-absolute icon" style="right: 0; bottom:0">
-            <i class="bi bi-eye-slash mx-3" id="show-password-btn3" style="font-size: x-large;"></i>
+            <input type="password" class="form-control" id="EmpPassword" name="EmpPassword" value="{{empleado[2]}}" required pattern="^(?=.*[0-9])(?=.*[a-zA-Z])([a-zA-Z0-9]{8,})$" title="La contraseña debe tener al menos 8 caracteres, contener al menos una letra y un número">
+            <div class="h-100 pt-2 position-absolute icon" style="right: 0; bottom:0">
+              <i class="bi bi-eye-slash mx-3" id="show-password-btn3" style="font-size: x-large;"></i>
             </div>
           </div>
         </div>
 
         <div class="mb-3 w-100 form-group d-flex align-items-center flex-column">
           <label for="EmpRFC" class="form-label">RFC</label>
-          <input type="text" class="form-control" id="EmpRFC" name="EmpRFC" value="{{empleado[3]}}" required>
+          <input type="text" class="form-control" id="EmpRFC" name="EmpRFC" value="{{empleado[3]}}" required pattern="[A-Za-z0-9]{13}" title="El RFC debe tener 13 caracteres alfanuméricos" maxlength="13">
         </div>
 
         <div class="mb-3 w-100 form-group d-flex align-items-center flex-column">
-          <label for="EmpDireccion" class="form-label">Direccion</label>
-          <input type="text" class="form-control" id="EmpDireccion" name="EmpDireccion" value="{{empleado[4]}}" required>
+          <label for="EmpDireccion" class="form-label">Dirección</label>
+          <input type="text" class="form-control" id="EmpDireccion" name="EmpDireccion" value="{{empleado[4]}}" required pattern="^(?=.*\d)[a-zA-Z0-9\s\-\.,]{8,}$" title="La dirección debe tener al menos 8 caracteres y contener al menos un número">
         </div>
 
         <div class="mb-3 w-100 form-group d-flex align-items-center flex-column">
-          <label for="EmpTelefono" class="form-label">Telefono</label>
-          <input type="tel" class="form-control" id="EmpTelefono" name="EmpTelefono" value="{{empleado[5]}}" required maxlength="10">
+          <label for="EmpTelefono" class="form-label">Teléfono</label>
+          <input type="tel" class="form-control" id="EmpTelefono" name="EmpTelefono" value="{{empleado[5]}}" required pattern="[0-9]{10}" maxlength="10" title="Ingresa un número de telefono de 10 digitos valido">
         </div>
 
         <div class="mb-3 w-100 form-group d-flex align-items-center flex-column">
