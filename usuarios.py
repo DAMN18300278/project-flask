@@ -139,8 +139,37 @@ def index():
             carritoNum = fetch[0].split("|")
             numero = len(carritoNum)
 
+    # Obtén las alergias del usuario desde la tabla usuarios
+    with mysql.connect.cursor() as cursor:
+        cursor.execute("SELECT alergias FROM usuarios WHERE Id_Usuario = %s", (session.get('id_usuario'),))
+        resultado = cursor.fetchone()
+        alergias_usuario = resultado[0].strip() if resultado else ""  # Asegúrate de manejar el caso de que no haya resultado
+
+    # Divide las alergias en una lista
+    ingredientes_alergicos = alergias_usuario.split(",")
+
+    # Construye la consulta utilizando FIND_IN_SET y OR
+    query = "SELECT Id_producto, ingredientes FROM recomendacion WHERE "
+
+    conditions = []
+    params = []
+    for ingrediente in ingredientes_alergicos:
+        conditions.append("ingredientes LIKE %s")
+        params.append("%" + ingrediente.strip() + "%")
+
+    # Combina las condiciones con OR
+    query += " OR ".join(conditions)
+
+
+    with mysql.connect.cursor() as cursor:
+        cursor.execute(query, params)
+        resultados = cursor.fetchall()
+
+    # Obtén los Id_producto y los ingredientes coincidentes de los resultados
+    id_productos = [resultado[0] for resultado in resultados]
+    ingredientes_string = " | ".join([resultado[1] for resultado in resultados])
     
-    return render_template("usuarios/landing.jinja", recomendados=data4, populares=data3, ventas = data2, productos = data, idUsuario = session.get('id_usuario'), carrito = numero,nombre = nombre)
+    return render_template("usuarios/landing.jinja", alergias=id_productos, ingredientes=ingredientes_string, recomendados=data4, populares=data3, ventas=data2, productos=data, idUsuario=session.get('id_usuario'), carrito=numero, nombre=nombre)
 
 
 @usuarios.route("/usuarios/addcarrito", methods=['POST', 'GET'])
@@ -371,9 +400,12 @@ def updateDatosUsuario():
     colorPiel = request.form["colorPiel"]
     colorPielForm = request.form["colorPielForm"]
     colorCabello = request.form["colorCabello"]
+
+    alergias = ','.join(request.form.getlist("alergias"))
+
     with mysql.connection.cursor() as cursor:
-        cursor.execute("UPDATE usuarios SET Nombre = %s, Edad = %s, Color_Ojos = %s, Tipo_Piel = %s, Tono_Piel = %s, Color_Pelo = %s, Tono_Piel_Form = %s WHERE Id_Usuario = %s",
-                       (nombre, edad, colorOjos, tipoPiel, colorPiel, colorCabello, colorPielForm, session.get('id_usuario')))
+        cursor.execute("UPDATE usuarios SET Nombre = %s, Edad = %s, Color_Ojos = %s, Tipo_Piel = %s, Tono_Piel = %s, Color_Pelo = %s, Tono_Piel_Form = %s, Alergias = %s WHERE Id_Usuario = %s",
+                       (nombre, edad, colorOjos, tipoPiel, colorPiel, colorCabello, colorPielForm, alergias, session.get('id_usuario')))
         mysql.connection.commit()
 
     return redirect("/usuarios/perfil")
