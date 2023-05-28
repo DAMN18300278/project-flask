@@ -223,6 +223,14 @@ $(document).ready(function ($) {
     $('#infoProducto').on('show.bs.modal', function(event){
         var boton = $(event.relatedTarget);
         var modal = $(this);
+
+        var alergias = boton.data('alergias');
+        var ingredientesString = boton.data('ingredientes')
+
+
+        var ingredientes = ingredientesString.split('|');
+        
+
         var contentImgs = '';
         contentColores = '';
         var tiposPiel = {
@@ -233,7 +241,7 @@ $(document).ready(function ($) {
             5: 'Acné',
             6: 'Sensible'
         };
-
+    
         var textProduct = boton.data('producto');
         var sinComillas = textProduct.replace('\n\n', " ");
         var sinTabs = sinComillas.replace(/'/g, "\"");
@@ -264,6 +272,19 @@ $(document).ready(function ($) {
         modal.find('#idInfoProductos').text("ID: #" + productoId.toString());
         modal.find('#nombreInfoProductos').text(nombre);
         modal.find('#descInfoProductos').text(descripcion);
+
+
+        var indice = alergias.indexOf(productoId);
+        console.log(indice);
+        if (indice !== -1) {
+            modal.find('#alergiasInfoProductos').text("El producto contiene ingredientes como: "+ingredientes[indice]+". Le recomendamos que use este producto con precaucion debido a sus alergias");
+        } else {
+           
+            modal.find('#alergiasInfoProductos').text("");
+        }
+
+
+        
         if(tipoPiel == '1'){
             modal.find('#tipoPielInfoProductos').text("No afecta a la piel");
         }else{

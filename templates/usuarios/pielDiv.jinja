@@ -26,7 +26,7 @@
                 <div style="overflow-y: scroll;" id="dropdownSearchPielList">
                 {% for producto in productosPiel %}
                     {% set img = 'src/img' + producto['Id']|string + '_1.jpg' %}
-                    <div id="itemPiel" class="dropdown-item" data-nombre="{{ producto['Nombre'] }}" data-bs-toggle="modal" data-bs-target="#infoProducto" data-producto="{{ producto }}">
+                    <div id="itemPiel" class="dropdown-item" data-nombre="{{ producto['Nombre'] }}" data-bs-toggle="modal" data-bs-target="#infoProducto" data-producto="{{ producto }}" data-alergias="{{ alergias }}" data-ingredientes="{{ ingredientes }}">
                         <div class="d-flex">
                             <img style="width: 20%; height:20%" src="{{ url_for('static', filename = img) }}">
                             <a style="white-space:break-spaces;display:flex;align-items:center"><span>{{ producto['Nombre'] }} <span style="color:#808080ab">#{{ producto['Id'] }}</span></span></a>
@@ -65,7 +65,9 @@
                         <p class="mb-4" style="font-size: 20px; display:inline; white-space:break-spaces;">{{ producto['Nombre'] }}</p>
                         <button class="btn btn-product border-1 text-danger" type="button" data-bs-toggle="modal" data-bs-target="#infoProducto"
                             data-bs-target="#infoProducto" 
-                            data-producto="{{ producto }}">Detalles ></button>
+                            data-producto="{{ producto }}"
+                            data-alergias="{{ alergias }}"
+                            data-ingredientes="{{ ingredientes }}">Detalles ></button>
                     </div>
                 </div>
             {% endwith %}

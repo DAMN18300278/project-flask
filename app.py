@@ -358,11 +358,12 @@ def guardarDatosUsuario():
     colorPielForm = request.form["colorPielForm"]
     colorCabello = request.form["colorCabello"]
 
+    alergias = ','.join(request.form.getlist("alergias"))
+
     with mysql.connection.cursor() as cursor:
-        cursor.execute("INSERT INTO usuarios VALUES(%s, %s, %s, %s, %s, %s, %s, 'Inactivo', '', %s)", (session.get('id_usuario'), nombre, edad, colorOjos, tipoPiel, colorPiel, colorCabello, colorPielForm))
+        cursor.execute("INSERT INTO usuarios VALUES(%s, %s, %s, %s, %s, %s, %s, 'Inactivo', '', %s,%s)", (session.get('id_usuario'), nombre, edad, colorOjos, tipoPiel, colorPiel, colorCabello, colorPielForm, alergias))
         mysql.connection.commit()
         
-
     return redirect("/usuarios")
 
 @app.route("/validar_correo", methods=["POST"])

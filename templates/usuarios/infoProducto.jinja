@@ -17,10 +17,11 @@
                     class="position-absolute"
                     onclick="snapContainerTranslateRight(4)">
                 </lord-icon>
-
+               
                 <div class="snap-container h-50" id="snapInfoProductos"> {# snap-container fue otorgado por https://www.silocreativo.com/controla-desplazamiento-web-css-scroll-snap/ #}
                     {% for imgCount in range(0, producto['Imagenes']) %}
                         {% set imgModal = 'src/img' + producto['Id']|string + '_' + loop.index|string + '.jpg' %}
+
                         <div class="snap-section">
                             <img class="imgInfo" src="{{ url_for('static', filename= imgModal) }}">
                         </div>
@@ -31,13 +32,16 @@
                 </button>
             </div>
             <div class="p-4">
+                
                 <p class="product-text" id="nombreInfoProductos" style="letter-spacing: 2px; font-size: 29px; text-align:left;"><p style="font-size: 20px; letter-spacing:1px;color: rgb(93, 93, 93); text-align:left" id="idInfoProductos">#00001</p></p>
+                
                 <p class="normal-text" id="descInfoProductos">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec dapibus sagittis nunc, eu pharetra odio lacinia eget. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
                 <div class="row">
                     <div class="col-6 p-3">
                         <button class="btn btn-outline-danger text-recom p-4 d-flex align-items-center mb-3" id="tipoPielInfoProductos">Piel que afecta: Seca, Mixta, Acné</button>
                         <button class="btn btn-outline-danger text-recom p-4 d-flex align-items-center mb-3" id="marcaInfoProductos">Marca: Amorus</button>
-                        <button class="btn btn-outline-danger text-recom p-4 d-flex align-items-center" id="tipoInfoProductos">Tipo: Pestaña</button>
+                        <button class="btn btn-outline-danger text-recom p-4 d-flex align-items-center mb-3" id="tipoInfoProductos">Tipo: Pestaña</button>
+                        <button class="btn btn-outline-danger text-recom d-inline-flex align-items-center btn-block w-auto" id="alergiasInfoProductos" style="height: auto;"></button>
                         <p class="text-start mt-4 ms-3 mb-0" style="font-weight: bold; font-size: 19px" id="precioInfoProductos">$510.00</p>
                     </div>
                     <div class="col-6 ">
@@ -85,4 +89,5 @@
         </div>
     </div>
 </div>
+
 
