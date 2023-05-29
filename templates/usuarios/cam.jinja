@@ -10,35 +10,6 @@
     body{
       overflow-x: hidden;
     }
-
-    #sidebar {
-      position: fixed;
-      top: 0;
-      right: -50%;
-      width: 50%;
-      height: 100vh;
-      background-color: white;
-      transition: all 0.3s ease-out;
-    }
-
-    #sidebar-toggle{
-      position: fixed;
-      top: 0;
-      right: 0;
-      transition: all 0.3s ease-out;
-      width: 5vh;
-      height: 7vh;
-      background-color: white;
-      display: grid;
-      place-items: center;
-      border-top-left-radius: 10px;
-      border-bottom-left-radius: 10px;
-      font-size: 25px;
-    }
-
-    .bi{
-      transition: all 0.3s ease-out;
-    }
     </style>
 {% endblock %}
 
@@ -58,17 +29,73 @@
     </div>
   </div>
 
-  <div class="container d-none" style="z-index: 4;">
+  <div class="container" style="z-index: 4;" id="sideBarDiv">
     <div class="mt-5" id="sidebar-toggle"><i class="bi bi-caret-left-fill d-grid place-items-center text-danger" id="iconSidebar" style="rotate: 0deg"></i></div>
-    <div id="sidebar"></div>
+    <div id="sidebar" class="p-4" style="overflow-y: scroll;">
+      {% set productosLabios = [] %}
+      {% set productosPestañas = [] %}
+      {% set productosSombras = [] %}
+      {% for producto in productos %}
+          {% if 'labial' in producto['Tipo']|lower or 'gloss' in producto['Tipo'] %}
+              {% set _ = productosLabios.append(producto) %}
+          {% endif %}
+          {% if 'pestaña' in producto['Tipo']|lower %}
+              {% set _ = productosPestañas.append(producto) %}
+          {% endif %}
+          {% if 'sombra' in producto['Tipo']|lower %}
+              {% set _ = productosSombras.append(producto) %}
+          {% endif %}
+      {% endfor %}
+
+      <div class="d-flex justify-content-start align-items-center mb-3">
+        <h1 class="mb-0 me-3">Sombras</h1>
+        <hr class="w-100">
+      </div>
+      {% for producto in productosSombras %}
+        {% if producto['Id']|string == idProductStarter|string %}
+          <div class="border border-1 border-danger box-shadow1 position-relative mx-auto mb-5 productSombras" style="max-width:6.5em; max-height:6.5em;" data-id="{{ producto['Id'] }}" data-colores="{{ producto['Colores'] }}">
+        {% else %}
+          <div class="border border-1 position-relative mx-auto mb-5 productSombras" style="max-width:6.5em; max-height:6.5em;" data-id="{{ producto['Id'] }}" data-colores="{{ producto['Colores'] }}">
+        {% endif %}
+          {% include "usuarios/productosCardProb.jinja" %}
+        </div>
+      {% endfor %}
+
+      <div class="d-flex justify-content-start align-items-center mb-3">
+        <h1 class="mb-0 me-3">Pestañas</h1>
+        <hr class="w-100">
+      </div>
+      {% for producto in productosPestañas %}
+        {% if producto['Id']|string == idProductStarter|string %}
+          <div class="border border-1 border-danger box-shadow1 position-relative mx-auto mb-5 productPestañas" style="max-width:6.5em; max-height:6.5em;" data-id="{{ producto['Id'] }}" data-colores="{{ producto['Colores'] }}">
+        {% else %}
+          <div class="border border-1 position-relative mx-auto mb-5 productPestañas" style="max-width:6.5em; max-height:6.5em;" data-id="{{ producto['Id'] }}" data-colores="{{ producto['Colores'] }}">
+        {% endif %}
+          {% include "usuarios/productosCardProb.jinja" %}
+        </div>
+      {% endfor %}
+
+      <div class="d-flex justify-content-start align-items-center mb-3">
+        <h1 class="mb-0 me-3">Labiales</h1>
+        <hr class="w-100">
+      </div>
+      {% for producto in productosLabios %}
+        {% if producto['Id']|string == idProductStarter|string %}
+          <div class="border border-1 border-danger box-shadow1 position-relative mx-auto mb-5 productLabios" style="max-width:6.5em; max-height:6.5em;" data-id="{{ producto['Id'] }}" data-colores="{{ producto['Colores'] }}">
+        {% else %}
+          <div class="border border-1 position-relative mx-auto mb-5 productLabios" style="max-width:6.5em; max-height:6.5em;" data-id="{{ producto['Id'] }}" data-colores="{{ producto['Colores'] }}">
+        {% endif %}
+          {% include "usuarios/productosCardProb.jinja" %}
+        </div>
+      {% endfor %}
+    </div>
   </div>
 
   <div class="d-flex flex-column align-items-center justify-content-center" id="containerFilter">
     <video id="video" class="position-absolute" style="z-index: 0;object-fit:cover;left:0;right:0;bottom:0;top:0;max-height:100%"></video>
     <canvas id="canvasFoto" class="position-absolute" style="top: 0; z-index: 2;object-fit:cover; height:100%; width:100%"></canvas>
     <canvas id="canvasResult" class="position-absolute" style="top: 0; z-index: 3;object-fit:cover; height:100%; width:100%"></canvas>
-    
-    <button id="capture-btn" class="btn btn-danger position-absolute d-none" style="border-radius: 50%; border: 2px solid rgb(205, 205, 205); background-color:rgba(231, 231, 231, 0.532); height: 80px; width:80px; bottom: 10%; left: calc(50% - 40px); z-index: 5;"></button>
+    <button id="capture-btn" class="btn btn-danger position-absolute" style="border-radius: 50%; border: 2px solid rgb(205, 205, 205); background-color:rgba(231, 231, 231, 0.532); height: 80px; width:80px; bottom: 10%; left: calc(50% - 40px); z-index: 5;"></button>
     
     <div id="options" class="position-absolute w-50" style="bottom: 10%; left: 25%; z-index: 6;">
       <div class="d-flex flex-column">
@@ -76,22 +103,15 @@
         <button class="btn btn-info" id="continuar">Continuar</button>
       </div>
     </div>
-    <style>
-      ::-webkit-scrollbar-thumb{
-        display: none;
-      }
-      .colores-info{
-        width: 7vh;
-        height: 7vh;
-      }
-    </style>
-    <div id="optionsColors" class="position-absolute w-100 d-flex justify-content-center" style="bottom: 10%; left: 0%; z-index: 6; ">
-      <div class="snap-container w-50" style="overflow-x: scroll">
-        <div class="snap-section d-flex justify-content-center" style="min-width: 50%">
-          <div class="colores-info" style="background-color: antiquewhite;"></div>
-        </div>
-        <div class="snap-section d-flex justify-content-center" style="min-width: 50%;">
-          <div class="colores-info" style="background-color: rgb(16, 111, 67);"></div>
+
+    <div id="optionsColors" style="z-index: 5;">
+      <div class="position-absolute w-100 d-flex justify-content-center" style="bottom: 10%; left: 0%;">
+        <div class="filter-container">
+          <div class="filter-slider">
+            {% for color in colores.items() %}
+            <div class="filter" data-color="{{ color[0] }}" style="background-color: #{{ color[1]['Hex'] }};"></div>
+            {% endfor %}
+          </div>
         </div>
       </div>
     </div>
@@ -99,23 +119,12 @@
 
   {% if starter != "" %}
     <script>
-      var initialJsonProbado = "{{ starter }}"
+      var initialJsonProbado = "{{ starter }}";
+      var initialPart = "{{ initialPart }}";
     </script>
     <script src="{{ url_for('static', filename='js/capMakeup.js') }}"></script>
   {% else %}
     <script src="{{ url_for('static', filename='js/capShape.js') }}"></script>
   {% endif %}
-  <script>
-    const sidebar = document.getElementById('sidebar');
-    const sidebarToggle = document.getElementById('sidebar-toggle');
-    const iconSidebar = document.getElementById('iconSidebar');
-
-    sidebarToggle.addEventListener('click', function() {
-      $('#sidebar').toggleClass('active');
-      sidebar.style.right = sidebar.style.right === '0%' ? '-50%' : '0%';
-      sidebarToggle.style.right = sidebarToggle.style.right === '50%' ? '0' : '50%';
-      iconSidebar.style.rotate = iconSidebar.style.rotate === '180deg' ? '0deg' : '180deg';
-    });
-  </script>
 
 {% endblock %}

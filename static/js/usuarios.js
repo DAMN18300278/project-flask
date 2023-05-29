@@ -291,28 +291,21 @@ $(document).ready(function ($) {
         modal.find('#hexColorInfoProductos').find('.colores-info').first().trigger('click');
 
         if (tipo.toString().toLowerCase().includes('labial') ||
-            tipo.toString().toLowerCase().includes('base') ||
-            tipo.toString().toLowerCase().includes('corrector') ||
-            tipo.toString().toLowerCase().includes('maquillaje liquido') ||
             tipo.toString().toLowerCase().includes('pestaña') ||
             tipo.toString().toLowerCase().includes('sombra') ||
-            tipo.toString().toLowerCase().includes('iluminador')){
+            tipo.toString().toLowerCase().includes('gloss')){
                 var link;
             
                 switch (categoria) {
                     case 'labios':
-                        link = productoId + ":1,0:0,0,0:0"
-                        break;
-                        
-                    case 'piel':
-                        link = "0:0," + productoId + ":1,0,0:0"
+                        link = productoId + ":1,0,0:0"
                         break;
                         
                     case 'ojos':
                         if(tipo.toString().toLowerCase().includes('pestaña')){
-                            link = "0:0,0:0," + productoId + ",0:0"
+                            link = "0:0," + productoId + ",0:0"
                         }else{
-                            link = "0:0,0:0,0," + productoId + ":1"
+                            link = "0:0,0," + productoId + ":1"
                         }
                         break;
                 }

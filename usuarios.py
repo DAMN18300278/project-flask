@@ -553,7 +553,7 @@ def capMakeup(image, landmarks, hexColor, layer = 0, opacity = 0):
     elif layer == 1:
         points = ( 190, 157, 158, 159, 160, 161, 246, 33, 130, 226, 113, 225, 224, 223, 222, 190)
         points2 = ( 414, 384, 385, 386, 387, 388, 466, 263, 359, 446, 342, 445, 444, 443, 442, 414)
-        opacity = -0.25
+        opacity = -0.3
         gauss = (9, 9)
 
     suject1 = np.array([(landmarks.landmark[i].x * image.shape[1], landmarks.landmark[i].y * image.shape[0]) for i in points])
@@ -574,7 +574,7 @@ def capMakeup(image, landmarks, hexColor, layer = 0, opacity = 0):
     result = cv2.addWeighted(image, 1, mask3, opacity, 0)
     return result
 
-@usuarios.route("/procesar", methods=['POST']) # se necesita el atributo link como formato IdLabios:Color,IdPiel:Color,IdPestañas,IdSombras:Color
+@usuarios.route("/procesar", methods=['POST']) # se necesita el atributo link como formato IdLabios:Color,IdPestañas,IdSombras:Color
 def procesar_imagen():
     data = request.get_json()
     imagen_data = data['image'] 
@@ -584,10 +584,10 @@ def procesar_imagen():
     labialId = products[0].split(':')[0]
     labialColor = products[0].split(':')[1]
 
-    sombrasId = products[3].split(':')[0]
-    sombrasColor = products[3].split(':')[1]
+    sombrasId = products[2].split(':')[0]
+    sombrasColor = products[2].split(':')[1]
 
-    pestañasId = products[2]
+    pestañasId = products[1]
 
     if labialId != '0':
         link = url_for('usuarios.productsApi', _external=True, id = labialId)
@@ -614,7 +614,7 @@ def procesar_imagen():
     if results.multi_face_landmarks:
         face_landmarks = results.multi_face_landmarks[0]
         if labialId != '0':
-            imagen = capMakeup(imagen, face_landmarks, hexLabial, 0, -0.25)
+            imagen = capMakeup(imagen, face_landmarks, hexLabial, 0, -0.2)
             
         if sombrasId != '0':
             imagen = capMakeup(imagen, face_landmarks, hexSombras, 1)
@@ -692,9 +692,35 @@ def actualizar_promedios():
 @usuarios.route("/usuarios/probado")
 @usuarios.route("/usuarios/probado/<string:starter>", methods=['GET', 'POST'])
 def tasks(starter = ""):
-    return render_template("usuarios/cam.jinja", starter = starter)
-def tasks():
-    return render_template("usuarios/cam.jinja")
+    products = starter.split(',')
+
+    labialId = products[0].split(':')[0]
+    sombrasId = products[2].split(':')[0]
+    pestañasId = products[1]
+
+    if labialId != '0':
+        idProduct = labialId
+    elif sombrasId != '0':
+        idProduct = sombrasId
+    elif pestañasId != '0':
+        idProduct = pestañasId
+
+    link = url_for('usuarios.productsApi', _external=True, id = idProduct)
+    response = requests.get(link).json()
+    data = response['Productos'][0]
+    if data['Categoria'] == 'labios':
+        initialPart = 0
+    elif 'Pestaña' in data['Tipo']:
+        initialPart = 1
+    else:
+        initialPart = 2
+    coloresIniciales = data['Colores']
+
+    link = url_for('usuarios.productsApi', _external=True)
+    response = requests.get(link).json()
+    listProducts = response['Productos']
+
+    return render_template("usuarios/cam.jinja", starter = starter, colores = coloresIniciales, idProductStarter = idProduct, productos = listProducts, initialPart = initialPart)
 
 def actualizaredad(id):
     with mysql.connect.cursor() as cursor:
