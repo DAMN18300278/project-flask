@@ -3,6 +3,7 @@ from flask import render_template, session, redirect, flash, Blueprint, request,
 import os
 from flask_mail import Mail, Message
 from werkzeug.utils import secure_filename
+from datetime import datetime
 
 
 empleados = Blueprint('empleados', __name__)
@@ -50,13 +51,16 @@ def UpCantidad(id):
 @empleados.route("/administradores/inventario/NuevoProducto", methods=['POST','GET'])
 def añadir_producto():
     if request.method == 'POST':
-        id_producto = request.form['IdProducto']
         nombre = request.form['Nombre']
         imagenes = request.files.getlist('Imagen[]')
         num_imagenes = len(imagenes)
 
         index = 1
         ruta_completa = os.path.join(os.getcwd(), 'static', 'src')
+        with mysql.connect.cursor() as cursor:
+            cursor.execute("SELECT MAX(Id_Productos) from productos")
+            id_producto = cursor.fetchone()[0] + 1
+
         for imagen in imagenes:
             imagen.filename = "img" + str(id_producto) + "_" + str(index) + ".jpg"
             filename = secure_filename(imagen.filename)
@@ -85,7 +89,7 @@ def añadir_producto():
         filtronames = ','.join([file.filename for file in imagen_filtro])
 
     with mysql.connection.cursor() as cursor:
-            cursor.execute("INSERT INTO productos(Id_Productos, Nombre, Imagen, Descripcion, Precio, Nombre_Color, Color_RGBA, Categoria, Recomendacion, Marca, Cantidad , Tipo_Piel, Imagen_filtro, Tipo) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", (id_producto, nombre,num_imagenes, descripcion, precio, nombre_color, color_rgba, categoria, recomendacion, marca, cantidad, tipo_piel, filtronames, tipo))
+            cursor.execute("INSERT INTO productos(Nombre, Imagen, Descripcion, Precio, Nombre_Color, Color_RGBA, Categoria, Recomendacion, Marca, Cantidad , Tipo_Piel, Imagen_filtro, Tipo) VALUES ( %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", ( nombre,num_imagenes, descripcion, precio, nombre_color, color_rgba, categoria, recomendacion, marca, cantidad, tipo_piel, filtronames, tipo))
             mysql.connection.commit()
             
     return redirect("/administradores/inventario")
@@ -95,7 +99,7 @@ def añadir_producto():
 def EmpAdmin():
     _, tipo = asignarNombre()
     with mysql.connect.cursor() as cursor:
-        cursor.execute("SELECT empleado.Id_Empleado, empleado.Nombre_Empleado, rol.Rol FROM empleado INNER JOIN cuenta ON empleado.Id_Empleado = cuenta.Id_cuenta INNER JOIN rol ON cuenta.Rol = rol.Id_Rol ORDER BY empleado.Id_Empleado ASC")
+        cursor.execute("SELECT empleado.Id_Empleado, empleado.Nombre_Empleado, rol.Rol FROM empleado INNER JOIN cuenta ON empleado.Id_Empleado = cuenta.Id_cuenta INNER JOIN rol ON cuenta.Rol = rol.Id_Rol WHERE empleado.Id_Empleado != 0 ORDER BY empleado.Id_Empleado ASC")
         resultado = cursor.fetchall()
     return render_template("empleados/EmpleadosList.jinja", resultados = resultado, tipo = tipo)
 
@@ -253,18 +257,26 @@ def delAdmin():
 @empleados.route("/administradores/reportedeescazes", methods=['POST'])
 def procesar_reporte():
     reporte = request.form.get('reporteInput')
+    fecha = request.form.get('fechaInput')
+    fecha_formateada = datetime.strptime(fecha, '%Y-%m-%d').strftime('%d/%m/%Y')
+    
     with mysql.connect.cursor() as cursor:
-        cursor.execute("SELECT Correo FROM cuenta WHERE Rol = 3")
+        cursor.execute("SELECT Correo FROM cuenta WHERE Rol = 3 AND Id_cuenta <> 0")
+
         resultados = cursor.fetchall()
         for resultado in resultados:
-            enviar_correo(resultado[0], reporte)
+            enviar_correo(resultado[0], reporte, fecha_formateada)
+    
     return redirect("/administradores/inventario")
 
-def enviar_correo(destinatario, reporte):
+def enviar_correo(destinatario, reporte, fecha):
     subject = 'Reporte de Escasez'
     sender = "decore.makeup.soporte@gmail.com"
     message = Message(subject, sender=sender, recipients=[destinatario])
-    message.body = f"Estimado Administrador,\n\nSe ha generado un reporte de escasez. Aquí está el contenido del reporte:\n\n{reporte}\n\nSaludos,\nEquipo de Decore"
+    
+    body = f"Estimado Administrador,\n\nSe ha generado un reporte de escasez. Aquí está el contenido del reporte:\n\n{reporte}\n\nFecha del reporte: {fecha}\n\nSaludos,\nEquipo de Decore"
+    message.body = body
+    
     mail.send(message)
 
 

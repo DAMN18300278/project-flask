@@ -38,7 +38,9 @@
                             <button class="btn btn-outline-danger btn-product mx-auto mb-4" type="button" 
                             data-bs-toggle="modal" 
                             data-bs-target="#infoProducto" 
-                            data-producto="{{ producto }}">Detalles</button>
+                            data-producto="{{ producto }}"
+                            data-alergias="{{ alergias }}"
+                            data-ingredientes="{{ ingredientes }}">Detalles</button>
                         </div>
                     </div>
                 {% endfor %}
@@ -84,7 +86,10 @@
                             <button class="btn btn-outline-danger btn-product mx-auto mb-4" type="button" 
                             data-bs-toggle="modal" 
                             data-bs-target="#infoProducto"
-                            data-producto="{{ producto }}">Detalles</button>
+                            data-producto="{{ producto }}"
+                            data-alergias="{{ alergias }}"
+                            data-ingredientes="{{ ingredientes }}"
+                            >Detalles</button>
                         </div>
                     </div>
                 {% endfor %}
@@ -120,21 +125,56 @@
             </lord-icon>
 
             <div class="snap-container w-100 h-100" id="snapSelectedForUser"> {# snap-container fue otorgado por https://www.silocreativo.com/controla-desplazamiento-web-css-scroll-snap/ #}
-                {% for i in range(15) %}
-                    {% set producto = recomendados[i] %}
-                    <div class="snap-section position-relative d-flex align-items-center flex-column" style="overflow: hidden;">
-                        {% set img = 'src/img' + producto['Id']|string + '_1.jpg' %}
-                        <img src="{{ url_for('static', filename = img) }}">
-                        <div>
-                            <p class="product-text my-4 w-75 mx-auto">{{ producto['Nombre'] }}</p>
-                            <p style="font-size: 13px; color:rgb(70, 70, 70)">{{ producto['Marca'] }}</p>
-                            <button class="btn btn-outline-danger btn-product mx-auto mb-4" type="button"
-                            data-bs-toggle="modal" 
-                            data-bs-target="#infoProducto" 
-                            data-producto="{{ producto }}">Detalles</button>
-                        </div>
-                    </div>
-                {% endfor %}
+
+{% set productosOjos =[] %}
+{% set productosPiel =[] %}
+{% set productosSkinCare =[] %}
+{% set productosAccesorios =[] %}
+{% set productosLabios = [] %}
+
+{% for producto in recomendados %}
+    {% if producto['Categoria'] == 'labios' %}
+        {% set _ = productosLabios.append(producto) %}
+    {% endif %}
+    {% if producto['Categoria'] == 'piel' %}
+        {% set _ = productosPiel.append(producto) %}
+    {% endif %}
+    {% if producto['Categoria'] == 'ojos' %}
+        {% set _ = productosOjos.append(producto) %}
+    {% endif %}
+    {% if producto['Categoria'] == 'accesorios' %}
+        {% set _ = productosAccesorios.append(producto) %}
+    {% endif %}
+    {% if producto['Categoria'] == 'skinCare' %}
+        {% set _ = productosSkinCare.append(producto) %}
+    {% endif %}
+{% endfor %}
+
+{% for categoria, productos in {
+    'labios': productosLabios[:3],
+    'piel': productosPiel[:3],
+    'ojos': productosOjos[:3],
+    'accesorios': productosAccesorios[:3],
+    'skinCare': productosSkinCare[:3]
+    }.items() %}
+    <h2>{{ categoria }}</h2>
+    {% for producto in productos %}
+        <div class="snap-section position-relative d-flex align-items-center flex-column" style="overflow: hidden;">
+            {% set img = 'src/img' + producto['Id']|string + '_1.jpg' %}
+            <img src="{{ url_for('static', filename = img) }}">
+            <div>
+                <p class="product-text my-4 w-75 mx-auto">{{ producto['Nombre'] }}</p>
+                <p style="font-size: 13px; color:rgb(70, 70, 70)">{{ producto['Marca'] }}</p>
+                <button class="btn btn-outline-danger btn-product mx-auto mb-4" type="button"
+                data-bs-toggle="modal" 
+                data-bs-target="#infoProducto" 
+                data-producto="{{ producto }}"
+                data-ingredientes="{{ ingredientes }}"
+                data-alergias="{{ alergias }}">Detalles</button>
+            </div>
+        </div>
+    {% endfor %}
+{% endfor %}
             </div>
         </div>   
     </div>
