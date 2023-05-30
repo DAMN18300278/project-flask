@@ -254,31 +254,39 @@ def delAdmin():
     return redirect("/")
 
 
+@empleados.route("/administradores/reportedeescazes/<int:id>", methods=['POST'])
 @empleados.route("/administradores/reportedeescazes", methods=['POST'])
-def procesar_reporte():
-    reporte = request.form.get('reporteInput')
-    fecha = request.form.get('fechaInput')
-    fecha_formateada = datetime.strptime(fecha, '%Y-%m-%d').strftime('%d/%m/%Y')
-    
+def procesar_reporte(id=None):
+    fecha = datetime.now().strftime('%d/%m/%Y')  # Obtiene la fecha actual
+
+    with mysql.connect.cursor() as cursor:
+        cursor.execute("SELECT Nombre, Cantidad FROM productos WHERE Id_Productos = %s", (id,))
+        resultados = cursor.fetchone()
+
+    if id:
+        subject = "Reporte de Escasez"
+        producto_nombre = resultados[0]
+        producto_cantidad = resultados[1]
+        reporte = f"Estimado Administrador,\n\nSe ha generado un reporte de escasez. El producto '{producto_nombre}' con ID {id} cuenta actualmente con {producto_cantidad} unidades en stock. Por favor, tome las medidas necesarias para abastecer el inventario.\n\nFecha del reporte: {fecha}\n\nSaludos,\nEquipo de Decore"
+    else:
+        reporte = request.form.get('reporteInput')
+        subject = "Reporte"
+        reporte = f"Estimado Administrador,\n\nSe ha generado un reporte. A continuación se muestra el contenido del reporte:\n\n{reporte}\n\nFecha del reporte: {fecha}\n\nSaludos,\nEquipo de Decore"
+
     with mysql.connect.cursor() as cursor:
         cursor.execute("SELECT Correo FROM cuenta WHERE Rol = 3 AND Id_cuenta <> 0")
-
         resultados = cursor.fetchall()
+
         for resultado in resultados:
-            enviar_correo(resultado[0], reporte, fecha_formateada)
-    
+            enviar_correo(resultado[0], subject, reporte)
+
     return redirect("/administradores/inventario")
 
-def enviar_correo(destinatario, reporte, fecha):
-    subject = 'Reporte de Escasez'
+def enviar_correo(destinatario, subject, reporte):
     sender = "decore.makeup.soporte@gmail.com"
     message = Message(subject, sender=sender, recipients=[destinatario])
-    
-    body = f"Estimado Administrador,\n\nSe ha generado un reporte de escasez. Aquí está el contenido del reporte:\n\n{reporte}\n\nFecha del reporte: {fecha}\n\nSaludos,\nEquipo de Decore"
-    message.body = body
-    
+    message.body = reporte
     mail.send(message)
-
 
 @empleados.route('/administradores/BorrarOrden/<int:id>')
 def borrarorden(id):

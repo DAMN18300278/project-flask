@@ -44,6 +44,14 @@
                                 </form>
                             </div>
                         </td>
+
+                        <td style="width: 50px;">
+                            <div class="form-group">
+                                <form method="post" action="/administradores/reportedeescazes/{{row[0]}}"  onsubmit="return confirm('¿Desea generar el reporte?')">
+                                    <button type="submit" class="btn btn-outline-danger mt-3" style="font-size: 12px; height:10%">Generar reporte</button>
+                                </form>
+                            </div>
+                        </td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -60,10 +68,6 @@
             <div class="mb-3">
                 <label for="reporteInput" class="form-label">Ingrese la información del reporte:</label>
                 <input type="text" id="reporteInput" name="reporteInput" class="form-control" required>
-            </div>
-            <div class="mb-3">
-                <label for="fechaInput" class="form-label">Fecha del reporte:</label>
-                <input type="date" id="fechaInput" name="fechaInput" class="form-control" required>
             </div>
             <button type="submit" class="btn btn-primary">Enviar Reporte</button>
         </form>

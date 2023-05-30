@@ -323,7 +323,7 @@ def login():
     if rows[4] != 'Activo':
         flash("Su cuenta todavia no se encuentra activa")
         return redirect("/")
-    
+    session.clear()
     session['id_usuario'] = rows[0]
 
     if rows[3] != 5:
