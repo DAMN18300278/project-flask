@@ -5,48 +5,77 @@
 
 {% block content %}
 
+<div class="pt-5 d-flex align-items-center justify-content-center position-relative">
+    <a href="../inventario" class="position-absolute" style="top:35%;left:5%;" >
+        <i class="text-black bi bi-arrow-left" style="font-size: 25px;"></i>
+    </a>
+
+    {% if producto is defined %}
+    <h1 style="font-size: 25px;">Editar producto #{{ producto['Id'] }}</h1>
+    {% else %}
+    <h1 style="font-size: 25px;">Nuevo producto</h1>
+    {% endif %}
+</div>
 
 <div>
-    <form action="./NuevoProducto" id="form-nuevo-producto" method="post" class="to-left p-5 d-flex flex-column justify-content-center align-items-center h-100" enctype="multipart/form-data">
-
-        <p>Nuevo Producto</p>
-
-
+    <form action="{% if producto is defined %}./UpdateProducto/{{ producto['Id'] }}{% else %}./NuevoProducto{% endif %}" id="form-nuevo-producto" method="post" class="to-left p-5 d-flex flex-column justify-content-center align-items-center h-100" enctype="multipart/form-data">
       <div class="d-flex flex-column justify-content-between align-items-center h-100 w-100">
         <div class="mb-3 w-100 form-group d-flex align-items-center flex-column">
           <label for="Nombre" class="form-label">Nombre</label>
-          <input type="text" class="form-control" id="Nombre" name="Nombre" value="" required>
+          <input type="text" class="form-control" id="Nombre" name="Nombre" {% if producto is defined %} value="{{ producto['Nombre'] }}" {% endif %} required>
           <small class="text-danger hidden">Este campo es requerido</small>  
         </div>
 
         <div  class="mb-3 w-100 form-group d-flex align-items-center flex-column">
           <label for="Imagen" class="form-label w-100">Imagen</label>
-          <input  type="file" class="form-control-file" id="Imagen" name="Imagen[]" multiple accept="image/png, image/jpeg, image/jpg" value="" required>
+          {% if producto is defined %} 
+          <small class="text-danger">Este producto actualmente tiene {{ producto['Imagenes'] }} imagenes</small> 
+          {% endif %}
+          <input  type="file" class="form-control-file" id="Imagen" name="Imagen[]" multiple accept="image/png, image/jpeg, image/jpg">
           <small class="text-danger hidden">Este campo es requerido</small>
         </div>
 
         <div class="mb-3 w-100 form-group d-flex align-items-center flex-column">
             <label for="Descripcion" class="form-label">Descripcion</label>
-            <input style="height: 200px;" type="text" class="form-control" id="Descripcion" name="Descripcion" value="" required>
+            <textarea rows="10" cols="10" style="height: 200px;" type="text" class="form-control" id="Descripcion" name="Descripcion" required maxlength="450">{% if producto is defined %}{{ producto['Descripcion'] }}{% endif %}</textarea>
             <small class="text-danger hidden">Este campo es requerido</small>  
         </div>
 
         <div class="mb-3 w-100 form-group d-flex align-items-center flex-column">
           <label for="Cantidad" class="form-label">Cantidad</label>
-          <input type="number" class="form-control" id="Cantidad" name="Cantidad" value="" required>
+          <input type="number" class="form-control" id="Cantidad" name="Cantidad" {% if producto is defined %} value="{{ producto['Stock'] }}" {% endif %} required>
           <small class="text-danger hidden">Este campo es requerido</small>  
         </div>
 
         <div class="mb-3 w-100 form-group d-flex align-items-center flex-column">
             <label for="Precio" class="form-label">Precio</label>
-            <input type="number" class="form-control" id="Precio" name="Precio" value="" required>
+            <input type="number" class="form-control" id="Precio" name="Precio" {% if producto is defined %} value="{{ producto['Precio u.'] }}" {% endif %} required>
             <small class="text-danger hidden">Este campo es requerido</small>  
         </div>
 
         <label for="NombreColor" class="col-form-label ">Color</label>
         <div class="mb-3 w-100 form-group d-flex align-items-center">
-         
-          <div class="col-md-6 d-flex justify-content-center" style="margin-right: 5%;">
+
+          {% if producto is defined %}   
+
+          <div class="d-flex flex-column">
+          {% for color in range(1, producto['Colores']|length+1) %}
+          <div class="d-flex justify-content-center align-items-center w-100 mb-3">
+            <div class="col-md-3 d-flex">
+                <input type="text" class="form-control border w-auto" id="nombre_color" name="nombre_color" value="{{ producto['Colores'][color|string]['Nombre'] }}" required>
+                <small class="text-danger hidden">Este campo es requerido</small>  
+            </div>            
+            <div class="col-md-9 d-flex justify-content-start" style="margin-left: 10px;">
+                <input type="color" name="color" id="color" value="#{{ producto['Colores'][color|string]['Hex'] }}" class="input-color mt-0" required>
+                <small class="text-danger hidden">Este campo es requerido</small>  
+            </div>
+          </div>
+          {% endfor %}       
+          </div>
+          
+          {% else %}
+
+            <div class="col-md-6 d-flex justify-content-center" style="margin-right: 5%;">
                 <input type="text" class="form-control border" id="nombre_color" name="nombre_color" value="" required>
                 <small class="text-danger hidden">Este campo es requerido</small>  
             </div>            
@@ -54,58 +83,57 @@
                 <input type="color" name="color" id="color" value="" class="input-color" required>
                 <small class="text-danger hidden">Este campo es requerido</small>  
             </div>
-         
+          
             <div class="col-md-6 d-flex justify-content-start">
                 <button type="button" id="agregar_color" class="btn btn-outline-danger" onclick="agregarCampos()" style="font-size: 12px;" >Agregar</button>
             </div> 
-          
-          
+          {% endif %}
         </div>
         <div id="contenedorCampos" class="mb-3 w-100 form-group d-flex align-items-center flex-column"></div>
 
         <div class="mb-3 w-100 form-group d-flex align-items-center flex-column">
           <label for="Categoria" class="form-label">Categoría</label>
           <select class="form-control" id="Categoria" name="Categoria">
-            <option value="ojos">Ojos</option>
-            <option value="labios">Labios</option>
-            <option value="piel">Piel</option>
-            <option value="skinCare">SkinCare</option>
-            <option value="accesorios">Accesorios</option>
+            <option value="ojos" {% if producto is defined %}{% if producto['Categoria'] == 'ojos' %} selected {% endif %}{% endif %}>Ojos</option>
+            <option value="labios" {% if producto is defined %}{% if producto['Categoria'] == 'labios' %} selected {% endif %}{% endif %}>Labios</option>
+            <option value="piel" {% if producto is defined %}{% if producto['Categoria'] == 'piel' %} selected {% endif %}{% endif %}>Piel</option>
+            <option value="skinCare" {% if producto is defined %}{% if producto['Categoria'] == 'skinCare' %} selected {% endif %}{% endif %}>Skincare</option>
+            <option value="accesorios" {% if producto is defined %}{% if producto['Categoria'] == 'accesorios' %} selected {% endif %}{% endif %}>Accesorios</option>
           </select>
         </div>
 
         <div class="mb-3 w-100 form-group d-flex align-items-center flex-column">
           <label for="Recomendacion" class="form-label">Recomendacion</label>
-          <input type="text" class="form-control" id="Recomendacion" name="Recomendacion" value="" required>
+          <input type="text" class="form-control" id="Recomendacion" name="Recomendacion" {% if producto is defined %} value="{{ producto['Recomendacion'] }}" {% endif %} required>
           <small class="text-danger hidden">Este campo es requerido</small>  
         </div>
 
         <div class="mb-3 w-100 form-group d-flex align-items-center flex-column">
           <label for="Tipo" class="form-label">Tipo de producto</label>
-          <input type="text" class="form-control" id="Tipo" name="Tipo" value="" required>
+          <input type="text" class="form-control" autocomplete="off" id="Tipo" name="Tipo" {% if producto is defined %} value="{{ producto['Tipo'] }}" {% endif %} required>
           <small class="text-danger hidden">Este campo es requerido</small>
         </div>
 
         <div class="mb-3 w-100 form-group d-flex align-items-center flex-column">
           <label for="Marca" class="form-label">Marca</label>
           <select class="form-control" id="Marca" name="Marca">
-            <option value="AMORUS">Amorus</option>
-            <option value="YVES SAINT LAURENT">Yves Saint Laurent</option>
-            <option value="MAC COSMETICS">Mac Cosmetics</option>
-            <option value="ANASTASIA BEVERLY HILLS">Anastasia Beverly Hills</option>
-            <option value="URBAN DECAY">Urban Decay</option>
+            <option value="AMORUS" {% if producto is defined %}{% if producto['Marca'] == 'AMORUS' %} selected {% endif %}{% endif %}>Amours</option>
+            <option value="YVES SAINT LAURENT" {% if producto is defined %}{% if producto['Marca'] == 'YVES SAINT LAURENT' %} selected {% endif %}{% endif %}>Yves Saint Laurent</option>
+            <option value="MAC COSMETICS" {% if producto is defined %}{% if producto['Marca'] == 'MAC COSMETICS' %} selected {% endif %}{% endif %}>Mac Cosmetics</option>
+            <option value="ANASTASIA BEVERLY HILLS" {% if producto is defined %}{% if producto['Marca'] == 'ANASTASIA BEVERLY HILLS' %} selected {% endif %}{% endif %}>Anastasia Beverly Hills</option>
+            <option value="URBAN DECAY" {% if producto is defined %}{% if producto['Marca'] == 'URBAN DECAY' %} selected {% endif %}{% endif %}>Urban Decay</option>
           </select>
         </div>
 
         <div class="mb-3 w-100 form-group d-flex align-items-center flex-column">
           <label for="TipoPiel" class="form-label">Tipo de piel</label>
           <select class="form-control" id="TipoPiel" name="TipoPiel">
-              <option value="1">Normal</option>
-              <option value="2">Seca</option>
-              <option value="3">Grasa</option>
-              <option value="4">Mixta</option>
-              <option value="5">Acné</option>
-              <option value="6">Sensible</option>
+            <option value="1" {% if producto is defined %}{% if producto['Tipo de piel'] == 1 %} selected {% endif %}{% endif %}>Normal</option>
+            <option value="2" {% if producto is defined %}{% if producto['Tipo de piel'] == 2 %} selected {% endif %}{% endif %}>Seca</option>
+            <option value="3" {% if producto is defined %}{% if producto['Tipo de piel'] == 3 %} selected {% endif %}{% endif %}>Grasa</option>
+            <option value="4" {% if producto is defined %}{% if producto['Tipo de piel'] == 4 %} selected {% endif %}{% endif %}>Mixta</option>
+            <option value="5" {% if producto is defined %}{% if producto['Tipo de piel'] == 5 %} selected {% endif %}{% endif %}>Acné</option>
+            <option value="6" {% if producto is defined %}{% if producto['Tipo de piel'] == 6 %} selected {% endif %}{% endif %}>Sensible</option>
           </select>
         </div>
 
@@ -115,7 +143,7 @@
           <small class="text-danger hidden">Este campo es requerido</small>  
         </div>
         
-        <button type="submit" class="btn btn-secondary w-50">Submit</button>
+        <button type="submit" class="btn btn-secondary w-50">Guardar</button>
       </div>
 
     </form>

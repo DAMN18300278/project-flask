@@ -371,8 +371,9 @@ def validar_correo():
     data = request.get_json()
     correo = data["correo"]
 
-    cursor.execute("SELECT COUNT(*) FROM cuenta WHERE correo = %s", (correo,))
-    result = cursor.fetchone()
+    with mysql.connect.cursor() as cursor:
+        cursor.execute("SELECT COUNT(*) FROM cuenta WHERE correo = %s", (correo,))
+        result = cursor.fetchone()
 
     # Verificar el resultado de la consulta
     if result[0] > 0:
@@ -381,6 +382,10 @@ def validar_correo():
     else:
         # El correo no existe
         return jsonify({"existe": False})
+
+@app.route("/noAdec")
+def noAdec():
+    return render_template('index/screen.jinja')
 
 @app.before_request
 def before_request():

@@ -558,7 +558,7 @@ def capEyelash(startPoint, endPoint, yPoint, imgSrc, frame, angle):
 
     # Escalar la imagen de las pestañas para que se ajuste al tamaño del ojo
     scale_factor = (start_x - end_x) / img.shape[1]
-    img_resized = cv2.resize(img, (0, 0), fx=scale_factor, fy=scale_factor)
+    img_resized = cv2.resize(img, (0, 0), fx=scale_factor, fy=scale_factor, interpolation=cv2.INTER_LANCZOS4)
 
     # Superponer la imagen de las pestañas en el frame
     x_offset = end_x
@@ -652,8 +652,8 @@ def procesar_imagen():
             imagen = capMakeup(imagen, face_landmarks, hexSombras, 1)
 
         if pestañasId != '0':
-            imagen = capEyelash(face_landmarks.landmark[173], face_landmarks.landmark[143], face_landmarks.landmark[7].y, 'static/img/left_eye.png', imagen, angle=0)
-            imagen = capEyelash(face_landmarks.landmark[372], face_landmarks.landmark[398], face_landmarks.landmark[249].y, 'static/img/right_eye.png', imagen, angle=0)
+            imagen = capEyelash(face_landmarks.landmark[193], face_landmarks.landmark[124], face_landmarks.landmark[163].y, 'static/img/left_eye2.png', imagen, angle=0)
+            imagen = capEyelash(face_landmarks.landmark[353], face_landmarks.landmark[417], face_landmarks.landmark[390].y, 'static/img/right_eye2.png', imagen, angle=0)
         
 
     # Convertir la imagen procesada de nuevo a base64
@@ -696,6 +696,32 @@ def processShape():
 
     return jsonify(response)
 
+@usuarios.route("/usuarios/cambiarContrasena", methods=['POST'])
+def cambiarContraseña():
+    data = request.get_json()
+    contraseñaAnterior = data['contraseñaAnterior']
+    contraseñaNueva = data['contraseñaNueva']
+
+    with mysql.connect.cursor() as cursor:
+        cursor.execute("SELECT Contraseña FROM cuenta WHERE Id_cuenta = %s", (session.get('id_usuario'),))
+        profileInfo = cursor.fetchone()
+    print(profileInfo[0])
+
+    if profileInfo[0] != contraseñaAnterior:
+        response = {
+            'respuesta': 0
+        }
+        return jsonify(response)
+    
+    with mysql.connection.cursor() as cursor:
+        cursor.execute("UPDATE cuenta SET Contraseña = %s WHERE Id_Cuenta = %s", (contraseñaNueva, session.get('id_usuario')))
+        mysql.connection.commit()
+
+    response = {
+        'respuesta': 1
+    }
+
+    return jsonify(response)
 
 def numeroorden(id):
     subject = 'Pedido Realizado con éxito'

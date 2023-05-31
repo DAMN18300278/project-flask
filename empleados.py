@@ -4,6 +4,7 @@ import os
 from flask_mail import Mail, Message
 from werkzeug.utils import secure_filename
 from datetime import datetime
+import requests
 
 
 empleados = Blueprint('empleados', __name__)
@@ -93,6 +94,63 @@ def añadir_producto():
             mysql.connection.commit()
             
     return redirect("/administradores/inventario")
+
+@empleados.route("/administradores/editarProducto/UpdateProducto/<int:id>", methods=['POST','GET'])
+def modificar_producto(id):
+    if request.method == 'POST':
+        nombre = request.form['Nombre']
+        imagenes = request.files.getlist('Imagen[]')
+        num_imagenes = 0
+
+        if imagenes[0].filename != "":
+            num_imagenes = len(imagenes)
+            index = 1
+            ruta_completa = os.path.join(os.getcwd(), 'static', 'src')
+            archivos = os.listdir(ruta_completa)
+
+            for archivo in archivos:
+                if archivo.startswith('img' + str(id) + '_'):
+                    ruta_archivo = os.path.join(ruta_completa, archivo)
+                    os.remove(ruta_archivo)
+
+            for imagen in imagenes:
+                imagen.filename = "img" + str(id) + "_" + str(index) + ".jpg"
+                filename = secure_filename(imagen.filename)
+                with open(os.path.join(ruta_completa, filename), 'wb') as f:
+                    f.write(imagen.read())
+                index+= 1
+
+
+        descripcion = request.form['Descripcion']
+        precio = request.form['Precio']
+        
+        nombre_color = request.form.getlist('nombre_color') # Obtener la lista de nombres de colores
+        color_rgba = request.form.getlist('color') # Obtener la lista de valores hexadecimales de colores
+        # Convertir las listas en strings separados por comas
+        for i in range(len(color_rgba)):
+            color_rgba[i] = color_rgba[i].replace('#', '')
+        nombre_color = ','.join(nombre_color)
+        color_rgba = ','.join(color_rgba)
+       
+        categoria = request.form['Categoria']
+        cantidad = request.form['Cantidad']
+        marca = request.form['Marca']
+        tipo_piel = request.form['TipoPiel']
+        tipo = request.form['Tipo']
+        recomendacion = request.form['Recomendacion']
+        imagen_filtro = request.files.getlist('Imagen_fil[]')
+        filtronames = ','.join([file.filename for file in imagen_filtro])
+
+    with mysql.connection.cursor() as cursor:
+            if num_imagenes > 0:
+                cursor.execute("UPDATE productos SET Nombre = %s, Imagen = %s, Descripcion = %s, Precio = %s, Nombre_Color = %s, Color_RGBA = %s, Categoria = %s, Recomendacion = %s, Marca = %s, Cantidad = %s, Tipo_Piel = %s, Imagen_filtro = %s, Tipo = %s WHERE Id_Productos = %s", ( nombre,num_imagenes, descripcion, precio, nombre_color, color_rgba, categoria, recomendacion, marca, cantidad, tipo_piel, filtronames, tipo, id))
+            else:
+                cursor.execute("UPDATE productos SET Nombre = %s, Descripcion = %s, Precio = %s, Nombre_Color = %s, Color_RGBA = %s, Categoria = %s, Recomendacion = %s, Marca = %s, Cantidad = %s, Tipo_Piel = %s, Imagen_filtro = %s, Tipo = %s WHERE Id_Productos = %s", ( nombre, descripcion, precio, nombre_color, color_rgba, categoria, recomendacion, marca, cantidad, tipo_piel, filtronames, tipo, id))
+
+            mysql.connection.commit()
+            
+    return redirect("/administradores/inventario")
+
 
 
 @empleados.route("/administradores/EmpleadosList")
@@ -299,8 +357,6 @@ def numeroorden(id):
     message.body = f"Estimado Cliente,\n\nSe ha realizado su pedido correctamente. Su número de orden es:\n\n{resultado[0]}\n\nSaludos,\nEquipo de Decore"
     mail.send(message)
 
-
-
 def actualizaredad(id):
     with mysql.connect.cursor() as cursor:
         # Obtener la orden de pago con el Id_Orden más grande
@@ -319,3 +375,11 @@ def actualizaredad(id):
                     print(producto_id)
                     cursor.execute("UPDATE recomendacion SET Promedio_Edad = (Promedio_Edad + %s), NumVentas = (NumVentas+1) WHERE Id_Producto = %s", (edad, producto_id))
                 mysql.connection.commit()
+
+@empleados.route("/administradores/editarProducto/<int:id>", methods=['POST', 'GET'])
+def editarProducto(id):
+    link = url_for('usuarios.productsApi', _external=True, id = id)
+    response = requests.get(link).json()
+    data = response['Productos'][0]
+
+    return render_template("empleados/InventarioNewProd.jinja", producto = data)

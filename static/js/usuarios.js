@@ -1,9 +1,37 @@
+var alerta;
+var modalAlerta;
+
 document.addEventListener("DOMContentLoaded", () => {
     var url = $(location).attr('href')
     if(!url.includes('formulario')){
         horizontalMenuChange(1);
     }
+
+    alerta = document.getElementById('alertaRed');
+    modalAlerta = bootstrap.Modal.getOrCreateInstance(alerta);
+    verificarConexion();
 });
+
+
+function verificarConexion() {
+    $.ajax({
+        url: "https://api.ipify.org?format=json",
+        type: "GET",
+        success: function() {
+            modalAlerta.hide();
+        },
+        error: function() {
+            modalAlerta.show();
+        },
+        complete: function() {
+          setTimeout(verificarConexion, 3500);
+        }
+    });
+}
+
+if(window.innerHeight < window.innerWidth){
+    document.location.href = '/noAdec';
+}
 
 function ircarrito(){
     window.location.href = "/usuarios/ordencarrito/"+idUsuario;
@@ -18,7 +46,6 @@ function horizontalMenuChange(element) {
     accesorios = document.getElementById("accesoriosMenu");
     selected = document.getElementsByClassName("horizontal-menu-hover");
     
-
     selected[0].classList.add("horizontal-menu-unset");
     selected[0].classList.remove("horizontal-menu-hover");
     switch (element) {
@@ -210,7 +237,6 @@ $(document).ready(function ($) {
     });
 
     $('#tabs').tab();
-
     $('#tabsMenu').tab();
     $('#tabsMenu2').tab();
 
@@ -226,10 +252,7 @@ $(document).ready(function ($) {
 
         var alergias = boton.data('alergias');
         var ingredientesString = boton.data('ingredientes')
-
-
         var ingredientes = ingredientesString.split('|');
-        
 
         var contentImgs = '';
         contentColores = '';
@@ -260,8 +283,6 @@ $(document).ready(function ($) {
         var stock = productJson['Stock'];
         var precio = productJson['Precio u.'];
 
-        
-        
         for (var i = 0; i < cantidadImgs; i++) {
             var imgModal = 'static/src/img' + productoId + '_' + (i+1) + '.jpg';
             contentImgs += '<div class="snap-section"><img class="imgInfo" src="' + imgModal + '"></div>';
@@ -280,10 +301,8 @@ $(document).ready(function ($) {
             modal.find('#alergiasInfoProductos').text("El producto contiene ingredientes como: "+ingredientes[indice]+". Le recomendamos que use este producto con precaucion debido a sus alergias");
         } else {
            
-            modal.find('#alergiasInfoProductos').text("");
+            modal.find('#alergiasInfoProductos').hide();
         }
-
-
         
         if(tipoPiel == '1'){
             modal.find('#tipoPielInfoProductos').text("No afecta a la piel");
@@ -395,7 +414,6 @@ $(document).ready(function ($) {
         let indexcolorpiel = 1;
         let indexcolorlabios = 1;
         let indexcolorskincare = 1;
-        console.log(productosOjos);
 
         //Accesorios
         modal.find('#imagenaccesorios').attr('src', '../static/src/img'+productosAccesorios['Id']+'_1.jpg');
@@ -403,7 +421,6 @@ $(document).ready(function ($) {
         modal.find('#precioprodaccesorios').text(productosAccesorios['Precio u.']);
         modal.find('#stockaccesorios').text(productosAccesorios['Stock'] + " disponibles");
         modal.find('#colorhexaccesorios').css('background-color','#'+productosAccesorios.Colores[indexcoloraccesorios].Hex);
-
 
         //Ojos
         modal.find('#imagenojos').attr('src', '../static/src/img'+productosOjos['Id']+'_1.jpg');
@@ -441,7 +458,6 @@ $(document).ready(function ($) {
             productosLabios['Id'] + ',1,' + indexcolorlabios + '|' + 
             productosSkinCare['Id'] + ',1,' + indexcolorskincare + '|' + 
             productosAccesorios['Id'] + ',1,' + indexcoloraccesorios;
-            console.log(String);
         
         const btnAddCarrito = document.querySelector('#btn-kit');
         btnAddCarrito.addEventListener('click', function() {

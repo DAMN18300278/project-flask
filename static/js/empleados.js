@@ -7,3 +7,7 @@ $(document).ready(function() {
       });
     });
   });
+
+if(window.innerHeight < window.innerWidth){
+    document.location.href = '/noAdec';
+}
