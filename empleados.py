@@ -1,9 +1,11 @@
 from flask_mysqldb import MySQL
 from flask import render_template, session, redirect, flash, Blueprint, request, url_for
 import os
+import schedule
+import time
 from flask_mail import Mail, Message
 from werkzeug.utils import secure_filename
-from datetime import datetime
+from datetime import datetime, timedelta
 
 
 empleados = Blueprint('empleados', __name__)
@@ -161,7 +163,32 @@ def crearorden(id):
             flash('pedido activo.')
             return redirect("/usuarios/ordencarrito/"+id)
         else:
-            print(result)
+            with mysql.connect.cursor() as cursor:
+                cursor.execute("SELECT carrito From usuarios where Id_Usuario = %s",(id,))
+                fetch = cursor.fetchone()
+                carrito = fetch[0].split('|') 
+                
+                numero = len(carrito)
+                
+                i = 0
+                for producto in carrito:
+                    producto = producto.split(',')
+                    productos.append(producto)
+                 
+                    with mysql.connect.cursor() as cursor:
+                        cursor.execute("SELECT Cantidad,Nombre From productos where Id_Productos = %s",(producto[0],))
+                        result = cursor.fetchone()
+                        cantidad = int(result[0])
+                        nombre= result[1]
+                       
+                        if cantidad > int(producto[1]) :
+                            cantidad = cantidad - int(producto[1])
+
+                            with mysql.connection.cursor() as cursor:
+                                cursor.execute("UPDATE productos SET Cantidad = %s WHERE Id_Productos = %s", (cantidad,producto[0]))
+                        else:
+                                flash('No hay suficiente cantidad del producto ' + nombre)
+                                return redirect("/usuarios/ordencarrito/"+id)
             with mysql.connection.cursor() as cursor:
                 cursor.execute("INSERT INTO ordenpago(Id_Orden, Id_Usuario, Fecha, Status) VALUES (NULL, %s, NOW(), 'Pagado, recoger en caja')", (id,))
                 cursor.execute("UPDATE usuarios SET Estatus_Pedido = 'activo' WHERE Id_Usuario = %s", (id,))
@@ -176,8 +203,9 @@ def OrdenUsuario(id):
 
     with mysql.connect.cursor() as cursor:
         
-        cursor.execute("SELECT Carrito, Id_Usuario FROM ordenpago WHERE Id_Orden = %s",(id,))
+        cursor.execute("SELECT Carrito, Id_Usuario, Status FROM ordenpago WHERE Id_Orden = %s",(id,))
         fetch = cursor.fetchone()
+        status = fetch[2]
         if not fetch or not fetch[0]:
             numero = 0
             productos = []
@@ -212,7 +240,7 @@ def OrdenUsuario(id):
 
         cursor.execute("SELECT Id_Orden, Fecha FROM ordenpago WHERE Id_Orden = %s",(id,))
         orden = cursor.fetchone()
-    return render_template("empleados/OrdenEspecifica.jinja",id=id,numero = numero,productos=productos, nombre=nombre, orden = orden)
+    return render_template("empleados/OrdenEspecifica.jinja",id=id,status=status,numero = numero,productos=productos, nombre=nombre, orden = orden)
 
 @empleados.route("/administradores/GuardarEmp", methods=['POST', 'GET'])
 @empleados.route("/administradores/GuardarEmp/<int:id>", methods=['POST','GET'])
@@ -290,10 +318,27 @@ def enviar_correo(destinatario, subject, reporte):
 
 @empleados.route('/administradores/BorrarOrden/<int:id>')
 def borrarorden(id):
+    with mysql.connect.cursor() as cursor:
+        cursor.execute("SELECT * FROM ordenpago WHERE Id_Orden = %s", (id,))
+        orden_pago = cursor.fetchone()
+
+    if orden_pago and orden_pago[3] != "Entregado":
+        carrito = orden_pago[4]
+        productos = carrito.split('|')
+        for producto_info in productos:
+            producto = producto_info.split(',')
+            producto_id = producto[0]
+            cantidad = int(producto[1])
+
+            # Actualizar el stock del producto
+            with mysql.connection.cursor() as cursor:
+                cursor.execute("UPDATE productos SET Cantidad = (Cantidad + %s) WHERE Id_Productos = %s", (cantidad, producto_id))
+                mysql.connection.commit()
+
     with mysql.connection.cursor() as cursor:
         cursor.execute("DELETE FROM ordenpago WHERE Id_Orden = %s", (id,))
         mysql.connection.commit()
-        
+
     return redirect("/administradores/OrdenesPago")
 
 
@@ -327,3 +372,5 @@ def actualizaredad(id):
                     print(producto_id)
                     cursor.execute("UPDATE recomendacion SET Promedio_Edad = (Promedio_Edad + %s), NumVentas = (NumVentas+1) WHERE Id_Producto = %s", (edad, producto_id))
                 mysql.connection.commit()
+
+

@@ -28,8 +28,26 @@
             
         {% endfor %}
 
-        <a href="/administradores/OrdenEspecifica/statusEntregado/{{orden[0]}}"> <button class="btn btn-outline-danger" style="font-size: 12px;">Entregar</button></a>
-    
+        <h1 >Total: <span id="resultado"></span></h1>
+        
+        {% if status != "Entregado" %}
+            <a href="/administradores/OrdenEspecifica/statusEntregado/{{ orden[0] }}">
+                <button class="btn btn-outline-danger" style="font-size: 12px;">Entregar</button>
+            </a>
+        {% endif %}
 
+<script>
 
+        var suma = 0
+        const subtotales = document.querySelectorAll('.subtotal');
+        subtotales.forEach((subtotal) => {
+            var sub = subtotal.textContent.replace("$","");
+            suma += parseFloat(sub)
+        });
+
+        
+        let resultado = document.getElementById('resultado');
+        total = suma.toFixed(2)
+        resultado.innerHTML = total
+</script>
 {% endblock content %}
