@@ -5,8 +5,13 @@ from flask_session import Session
 from empleados import empleados
 from flask import jsonify
 from usuarios import usuarios
+from flask_apscheduler import APScheduler
+from datetime import datetime, timedelta
 import mediapipe as mp
 import paypalrestsdk
+import threading
+import schedule
+import time
 import cv2
 import math
 from flask_mysqldb import MySQL
@@ -58,6 +63,12 @@ paypalrestsdk.configure({
 
 #Este valor es como la contraseña del token
 s = URLSafeTimedSerializer('decore')
+
+
+#Jobs
+
+
+
 
 @app.route('/procesar_pago', methods=['POST'])
 def procesar_pago():
@@ -323,7 +334,7 @@ def login():
     if rows[4] != 'Activo':
         flash("Su cuenta todavia no se encuentra activa")
         return redirect("/")
-    
+    session.clear()
     session['id_usuario'] = rows[0]
 
     if rows[3] != 5:
@@ -397,5 +408,65 @@ def before_request():
     if not 'id_administrador' in session and '/administradores' in ruta:
         return redirect("/")
 
+def procesar_ordenes_pago():
+    with app.app_context():
+        with mysql.connect.cursor() as cursor:
+            fecha_limite = datetime.now() - timedelta(hours=24)
+            fecha_limite = fecha_limite.strftime('%Y-%m-%d %H:%M:%S')
+            cursor.execute("SELECT * FROM ordenpago WHERE Status != 'Entregado' AND Fecha < %s", (fecha_limite,))
+            ordenes_pago = cursor.fetchall()
+
+            for orden_pago in ordenes_pago:
+                carrito = orden_pago[4]
+                productos = carrito.split('|')
+                for producto_info in productos:
+                    producto = producto_info.split(',')
+                    producto_id = producto[0]
+                    cantidad = int(producto[1])
+
+                    # Actualizar el stock del producto
+                    with mysql.connection.cursor() as cursor:
+                        cursor.execute("UPDATE productos SET Cantidad = Cantidad + %s WHERE Id_Productos = %s", (cantidad, producto_id))
+                        mysql.connection.commit()
+                # Eliminar la orden de pago
+                with mysql.connection.cursor() as cursor:
+                    cursor.execute("DELETE FROM ordenpago WHERE Id_Orden = %s", (orden_pago[0],))
+                    cursor.execute("UPDATE usuarios SET Estatus_Pedido = 'inactivo' WHERE Id_Usuario = %s", (orden_pago[1],))
+                    mysql.connection.commit()
+        
+        with mysql.connect.cursor() as cursor:
+            fecha_limite_recoger_caja = fecha_actual - timedelta(hours=72)
+            fecha_limite_recoger_caja = fecha_limite_recoger_caja.strftime('%Y-%m-%d %H:%M:%S')
+            cursor.execute("SELECT * FROM ordenpago WHERE Status = 'Pagado, recoger en caja' AND Fecha < %s", (fecha_limite_recoger_caja,))
+            ordenes_pago = cursor.fetchall()
+
+            for orden_pago in ordenes_pago:
+                carrito = orden_pago[4]
+                productos = carrito.split('|')
+                for producto_info in productos:
+                    producto = producto_info.split(',')
+                    producto_id = producto[0]
+                    cantidad = int(producto[1])
+
+                    # Actualizar el stock del producto
+                    with mysql.connection.cursor() as cursor:
+                        cursor.execute("UPDATE productos SET Cantidad = Cantidad + %s WHERE Id_Productos = %s", (cantidad, producto_id))
+                        mysql.connection.commit()
+                # Eliminar la orden de pago
+                with mysql.connection.cursor() as cursor:
+                    cursor.execute("DELETE FROM ordenpago WHERE Id_Orden = %s", (orden_pago[0],))
+                    cursor.execute("UPDATE usuarios SET Estatus_Pedido = 'inactivo' WHERE Id_Usuario = %s", (orden_pago[1],))
+                    mysql.connection.commit()
+
+sched = APScheduler()
+
+def run_scheduler():
+    print("se ejecuto")
+    procesar_ordenes_pago()
+    
+
 if __name__ == "__main__":
-    app.run(debug=True, host="0.0.0.0", port="3000")
+    sched.add_job(id='run_scheduler', func=run_scheduler, trigger='cron', day_of_week='*', hour=23, minute=59)
+    sched.start()
+
+    app.run(debug=True, host="0.0.0.0", port="3000", threaded=True)

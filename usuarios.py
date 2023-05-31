@@ -124,11 +124,16 @@ def index():
     link3 = url_for('usuarios.productsApiordenar', _external=True, id ="2", idUsuario = session.get("id_usuario"))
     response3 = requests.get(link3).json()
     data3 = response3['Productos']
-
-    link4 = url_for('usuarios.productsApiordenar', _external=True, id ="3", idUsuario = session.get("id_usuario"))
-    response4 = requests.get(link4).json()
-    data4 = response4['Productos']
-    print(link4)
+    print(type(session.get("id_usuario")))
+    if session.get("id_usuario") == 1:
+        link = url_for('usuarios.productsApi', _external=True)
+        response = requests.get(link).json()
+        data4 = response['Productos']
+    else:
+        link4 = url_for('usuarios.productsApiordenar', _external=True, id ="3", idUsuario = session.get("id_usuario"))
+        response4 = requests.get(link4).json()
+        data4 = response4['Productos']
+   
 
     with mysql.connect.cursor() as cursor:
         cursor.execute("SELECT Carrito FROM usuarios WHERE Id_Usuario = %s", (session.get('id_usuario'),))
@@ -309,8 +314,10 @@ def RecogerCaja(id):
                     productos.append(producto)
                  
                     with mysql.connect.cursor() as cursor:
-                        cursor.execute("SELECT Cantidad From productos where Id_Productos = %s",(producto[0],))
-                        cantidad = int(cursor.fetchone()[0])
+                        cursor.execute("SELECT Cantidad,Nombre From productos where Id_Productos = %s",(producto[0],))
+                        result = cursor.fetchone()
+                        cantidad = int(result[0])
+                        nombre= result[1]
                        
                         if cantidad > int(producto[1]) :
                             cantidad = cantidad - int(producto[1])
@@ -318,7 +325,7 @@ def RecogerCaja(id):
                             with mysql.connection.cursor() as cursor:
                                 cursor.execute("UPDATE productos SET Cantidad = %s WHERE Id_Productos = %s", (cantidad,producto[0]))
                         else:
-                                flash('No hay suficiente cantidad del producto solicitado')
+                                flash('No hay suficiente cantidad del producto ' + nombre)
                                 return redirect("/usuarios/ordencarrito/"+id)
             with mysql.connection.cursor() as cursor:
                 cursor.execute("UPDATE usuarios SET carrito = '' WHERE Id_Usuario = %s", (id,))
@@ -327,8 +334,11 @@ def RecogerCaja(id):
             with mysql.connection.cursor() as cursor:
                 cursor.execute("INSERT INTO ordenpago( Id_Usuario, Fecha, Status, carrito) VALUES ( %s, NOW(), 'Pagar en caja', %s)", (id,fetch))
                 mysql.connection.commit()
+        
         numeroorden(id)
-        actualizaredad(id)
+        if id != "1":
+            actualizaredad(id)
+
     return redirect("/usuarios")
 
 @usuarios.route("/usuarios/foro")
@@ -876,3 +886,4 @@ def productsApiordenar(id=0, idUsuario = 0):
 
     response.headers["Content-type"] = "application/json"
     return response
+

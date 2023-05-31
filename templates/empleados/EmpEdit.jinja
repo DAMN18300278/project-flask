@@ -9,12 +9,17 @@
     <form {% if not empleado[7] %} action="/administradores/GuardarEmp" {% else %} action="/administradores/GuardarEmp/{{empleado[7]}}" {% endif %} method="post" class="to-left position-absolute p-5 d-flex flex-column justify-content-center align-items-center h-100" style="top: 0; bottom: 0; left: 0; right: 0;">
 
       <div class="mb-3">
-        <p>Informacion Empleado</p>
+              
+            <a href="../administradores" class="position-absolute" style="top:0;left:0;" >
+                <i class="text-black bi bi-arrow-left" style="font-size: 25px;"></i>
+            </a>
+            <h1 style="font-size: 25px;">Informacion Empleados</h1>
+        
       </div>
       <div class="d-flex flex-column justify-content-between align-items-center h-100 w-100">
         <div class="mb-3 w-100 form-group d-flex align-items-center flex-column">
           <label for="EmpNombre" class="form-label w-100">Nombre</label>
-          <input type="text" class="form-control" id="EmpNombre" name="EmpNombre" value="{{empleado[0]}}" required pattern="[A-Za-z]{3,}" title="El nombre debe tener un minimo de 3 caracteres y no se aceptan numeros">
+          <input type="text" class="form-control" id="EmpNombre" name="EmpNombre" value="{{empleado[0]}}" required pattern="^[A-Za-z\s]{3,}$" title="El nombre debe tener un minimo de 3 caracteres y no se aceptan numeros">
         </div>
 
         <div class="mb-3 w-100 form-group d-flex align-items-center flex-column">
@@ -34,7 +39,7 @@
 
         <div class="mb-3 w-100 form-group d-flex align-items-center flex-column">
           <label for="EmpRFC" class="form-label">RFC</label>
-          <input type="text" class="form-control" id="EmpRFC" name="EmpRFC" value="{{empleado[3]}}" required pattern="[A-Za-z0-9]{13}" title="El RFC debe tener 13 caracteres alfanuméricos" maxlength="13">
+          <input type="text" class="form-control" id="EmpRFC" name="EmpRFC" value="{{empleado[3]}}" required pattern="[A-Za-z]{4}[0-9]{6}[A-Za-z0-9]{3}" title="El RFC debe tener 13 caracteres alfanuméricos formados por 4 letras con las iniciales de la persona fisica o moral, seguido de 6 numeros con la fecha de nacimiento o constitución y 3 caracteres más llamados “homoclave”" maxlength="13">
         </div>
 
         <div class="mb-3 w-100 form-group d-flex align-items-center flex-column">
@@ -60,7 +65,7 @@
             <option value="4">Encargado de almacen</option>
           </select>
         </div>
-        <button type="submit" class="btn btn-secondary w-50">Submit</button>
+        <button type="submit" class="btn btn-secondary w-50">Guardar</button>
       </div>
 
     </form>

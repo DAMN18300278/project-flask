@@ -75,12 +75,32 @@
                                     style="width:26px;height:26px">
                                 </lord-icon> 
                             </a>
+                        <td style="width: 50px;">
+                            <div class="form-group">
+                                <form method="post" action="/administradores/reportedeescazes/{{row[0]}}"  onsubmit="return confirm('¿Desea generar el reporte?')">
+                                    <button type="submit" class="btn btn-outline-danger mt-3" style="font-size: 12px; height:10%">Generar reporte</button>
+                                </form>
+                            </div>
                         </td>
                     </tr>
                     {% endfor %}
                 </tbody>
             </table>
         </div>
+        <div>
+            <a href="/administradores/inventario/Agregar"><button class="btn">Añadir</button></a>
+        </div>
+
+        <div style="margin-bottom: 10px;">
+            <h1 style="font-size: 25px; margin: 40px 0;">Generar Reporte de Escazes</h1>
+        </div>
+        <form action="/administradores/reportedeescazes" method="post" onsubmit="mostrarMensaje()">
+            <div class="mb-3">
+                <label for="reporteInput" class="form-label">Ingrese la información del reporte:</label>
+                <input type="text" id="reporteInput" name="reporteInput" class="form-control" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Enviar Reporte</button>
+        </form>
     </div>
     <script>
     function mostrarMensaje() {

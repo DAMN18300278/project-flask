@@ -275,27 +275,27 @@
                 <p class="display-4">Tipo de piel</p>
                 <div class="w-50 d-inline-block" style="font-size: larger;">
                     <div class="form-check" onclick="textoPiel('Normal')">
-                        <input class="form-check-input" type="radio" name="tipoPiel" id="normal" value="1">
+                        <input class="form-check-input"  type="radio" name="tipoPiel" id="normal" value="1">
                         <label class="form-check-label" for="normal">Normal</label>
                     </div>
                     <div class="form-check" onclick="textoPiel('Seca')">
-                        <input class="form-check-input" type="radio" name="tipoPiel" id="seca" value="2">
+                        <input class="form-check-input"  type="radio" name="tipoPiel" id="seca" value="2">
                         <label class="form-check-label" for="seca">Seca</label>
                     </div>
                     <div class="form-check" onclick="textoPiel('Grasa')">
-                        <input class="form-check-input" type="radio" name="tipoPiel" id="grasa" value="3">
+                        <input class="form-check-input"  type="radio" name="tipoPiel" id="grasa" value="3">
                         <label class="form-check-label" for="grasa">Grasa</label>
                     </div>
                     <div class="form-check" onclick="textoPiel('Mixta')">
-                        <input class="form-check-input" type="radio" name="tipoPiel" id="mixta" value="4">
+                        <input class="form-check-input"  type="radio" name="tipoPiel" id="mixta" value="4">
                         <label class="form-check-label" for="mixta">Mixta</label>
                     </div>
                     <div class="form-check" onclick="textoPiel('Acné')">
-                        <input class="form-check-input" type="radio" name="tipoPiel" id="acne" value="5">
+                        <input class="form-check-input"  type="radio" name="tipoPiel" id="acne" value="5">
                         <label class="form-check-label" for="acne">Acné</label>
                     </div>
                     <div class="form-check" onclick="textoPiel('Sensible')">
-                        <input class="form-check-input" type="radio" name="tipoPiel" id="sensible" value="6">
+                        <input class="form-check-input"  type="radio" name="tipoPiel" id="sensible" value="6">
                         <label class="form-check-label" for="sensible">Sensible</label>
                     </div>
                 </div>
@@ -674,5 +674,16 @@
     </div>
     </form>
 
-    <script src="{{ url_for('static', filename='js/formulario.js') }}"></script>
+    <script
+    
+    src="{{ url_for('static', filename='js/formulario.js') }}">
+    
+    var botonAlergias = document.getElementById("mostrar-alergias");
+    var checkboxesAlergias = document.getElementById("alergias-checkboxes");
+
+    botonAlergias.addEventListener("click", function() {
+        console.log("si entra we")
+        checkboxesAlergias.style.display = "block";
+    });
+    </script>
 {% endblock %}
