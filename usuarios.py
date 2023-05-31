@@ -568,7 +568,7 @@ def capEyelash(startPoint, endPoint, yPoint, imgSrc, frame, angle):
 
     # Escalar la imagen de las pestañas para que se ajuste al tamaño del ojo
     scale_factor = (start_x - end_x) / img.shape[1]
-    img_resized = cv2.resize(img, (0, 0), fx=scale_factor, fy=scale_factor)
+    img_resized = cv2.resize(img, (0, 0), fx=scale_factor, fy=scale_factor, interpolation=cv2.INTER_LANCZOS4)
 
     # Superponer la imagen de las pestañas en el frame
     x_offset = end_x
@@ -595,7 +595,7 @@ def capMakeup(image, landmarks, hexColor, layer = 0, opacity = 0):
     elif layer == 1:
         points = ( 190, 157, 158, 159, 160, 161, 246, 33, 130, 226, 113, 225, 224, 223, 222, 190)
         points2 = ( 414, 384, 385, 386, 387, 388, 466, 263, 359, 446, 342, 445, 444, 443, 442, 414)
-        opacity = -0.25
+        opacity = -0.3
         gauss = (9, 9)
 
     suject1 = np.array([(landmarks.landmark[i].x * image.shape[1], landmarks.landmark[i].y * image.shape[0]) for i in points])
@@ -616,7 +616,7 @@ def capMakeup(image, landmarks, hexColor, layer = 0, opacity = 0):
     result = cv2.addWeighted(image, 1, mask3, opacity, 0)
     return result
 
-@usuarios.route("/procesar", methods=['POST']) # se necesita el atributo link como formato IdLabios:Color,IdPiel:Color,IdPestañas,IdSombras:Color
+@usuarios.route("/procesar", methods=['POST']) # se necesita el atributo link como formato IdLabios:Color,IdPestañas,IdSombras:Color
 def procesar_imagen():
     data = request.get_json()
     imagen_data = data['image'] 
@@ -626,10 +626,10 @@ def procesar_imagen():
     labialId = products[0].split(':')[0]
     labialColor = products[0].split(':')[1]
 
-    sombrasId = products[3].split(':')[0]
-    sombrasColor = products[3].split(':')[1]
+    sombrasId = products[2].split(':')[0]
+    sombrasColor = products[2].split(':')[1]
 
-    pestañasId = products[2]
+    pestañasId = products[1]
 
     if labialId != '0':
         link = url_for('usuarios.productsApi', _external=True, id = labialId)
@@ -656,14 +656,14 @@ def procesar_imagen():
     if results.multi_face_landmarks:
         face_landmarks = results.multi_face_landmarks[0]
         if labialId != '0':
-            imagen = capMakeup(imagen, face_landmarks, hexLabial, 0, -0.25)
+            imagen = capMakeup(imagen, face_landmarks, hexLabial, 0, -0.2)
             
         if sombrasId != '0':
             imagen = capMakeup(imagen, face_landmarks, hexSombras, 1)
 
         if pestañasId != '0':
-            imagen = capEyelash(face_landmarks.landmark[173], face_landmarks.landmark[143], face_landmarks.landmark[7].y, 'static/img/left_eye.png', imagen, angle=0)
-            imagen = capEyelash(face_landmarks.landmark[372], face_landmarks.landmark[398], face_landmarks.landmark[249].y, 'static/img/right_eye.png', imagen, angle=0)
+            imagen = capEyelash(face_landmarks.landmark[193], face_landmarks.landmark[124], face_landmarks.landmark[163].y, 'static/img/left_eye2.png', imagen, angle=0)
+            imagen = capEyelash(face_landmarks.landmark[353], face_landmarks.landmark[417], face_landmarks.landmark[390].y, 'static/img/right_eye2.png', imagen, angle=0)
         
 
     # Convertir la imagen procesada de nuevo a base64
@@ -706,6 +706,32 @@ def processShape():
 
     return jsonify(response)
 
+@usuarios.route("/usuarios/cambiarContrasena", methods=['POST'])
+def cambiarContraseña():
+    data = request.get_json()
+    contraseñaAnterior = data['contraseñaAnterior']
+    contraseñaNueva = data['contraseñaNueva']
+
+    with mysql.connect.cursor() as cursor:
+        cursor.execute("SELECT Contraseña FROM cuenta WHERE Id_cuenta = %s", (session.get('id_usuario'),))
+        profileInfo = cursor.fetchone()
+    print(profileInfo[0])
+
+    if profileInfo[0] != contraseñaAnterior:
+        response = {
+            'respuesta': 0
+        }
+        return jsonify(response)
+    
+    with mysql.connection.cursor() as cursor:
+        cursor.execute("UPDATE cuenta SET Contraseña = %s WHERE Id_Cuenta = %s", (contraseñaNueva, session.get('id_usuario')))
+        mysql.connection.commit()
+
+    response = {
+        'respuesta': 1
+    }
+
+    return jsonify(response)
 
 def numeroorden(id):
     subject = 'Pedido Realizado con éxito'
@@ -734,9 +760,35 @@ def actualizar_promedios():
 @usuarios.route("/usuarios/probado")
 @usuarios.route("/usuarios/probado/<string:starter>", methods=['GET', 'POST'])
 def tasks(starter = ""):
-    return render_template("usuarios/cam.jinja", starter = starter)
-def tasks():
-    return render_template("usuarios/cam.jinja")
+    products = starter.split(',')
+
+    labialId = products[0].split(':')[0]
+    sombrasId = products[2].split(':')[0]
+    pestañasId = products[1]
+
+    if labialId != '0':
+        idProduct = labialId
+    elif sombrasId != '0':
+        idProduct = sombrasId
+    elif pestañasId != '0':
+        idProduct = pestañasId
+
+    link = url_for('usuarios.productsApi', _external=True, id = idProduct)
+    response = requests.get(link).json()
+    data = response['Productos'][0]
+    if data['Categoria'] == 'labios':
+        initialPart = 0
+    elif 'Pestaña' in data['Tipo']:
+        initialPart = 1
+    else:
+        initialPart = 2
+    coloresIniciales = data['Colores']
+
+    link = url_for('usuarios.productsApi', _external=True)
+    response = requests.get(link).json()
+    listProducts = response['Productos']
+
+    return render_template("usuarios/cam.jinja", starter = starter, colores = coloresIniciales, idProductStarter = idProduct, productos = listProducts, initialPart = initialPart)
 
 def actualizaredad(id):
     with mysql.connect.cursor() as cursor:

@@ -54,11 +54,14 @@ const validarPass2 = () => {
     }
 }
 
-contraA.addEventListener('keyup', ValidarForm);
-contraB.addEventListener('keyup', ValidarForm); 
 
+if(window.innerHeight < window.innerWidth && !document.location.href.includes('/noAdec')){
+    document.location.href = '/noAdec';
+}
 
-
-
-
-
+$(document).ready(function(){
+    
+    contraA.addEventListener('keyup', ValidarForm);
+    contraB.addEventListener('keyup', ValidarForm); 
+    
+});

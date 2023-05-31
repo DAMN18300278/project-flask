@@ -11,8 +11,30 @@
                 <i class="text-black bi bi-arrow-left" style="font-size: 25px;"></i>
             </a>
 
-            <h1 style="font-size: 25px;">Inventario</h1>
+            <h1 style="font-size: 30px;">Inventario</h1>
         </div>
+
+        <hr class="w-100 mb-5 mt-2">
+
+        <div class="my-4">
+            <h1 style="font-size: 20px;">Generar Reporte de Escazes</h1>
+        </div>
+        <form action="/administradores/reportedeescazes" method="post" onsubmit="mostrarMensaje()">
+            <div class="mb-3">
+                <label for="reporteInput" class="form-label">Ingrese la información del reporte:</label>
+                <input type="text" id="reporteInput" name="reporteInput" class="form-control" required>
+            </div>
+            <div class="mb-3">
+                <label for="fechaInput" class="form-label">Fecha del reporte:</label>
+                <input type="date" id="fechaInput" name="fechaInput" class="form-control" required>
+            </div>
+            <button type="submit" class="btn btn-danger mt-4" style="font-size: 13px;">Enviar Reporte</button>
+        </form>
+        <div>
+            <a href="/administradores/inventario/Agregar"><button class="btn btn-danger mt-5" style="font-size: 13px;">Añadir producto</button></a>
+        </div>
+
+        <hr class="w-100 my-5">
 
         <div class="input-group justify-content-center">
             <div class="form-outline">
@@ -28,7 +50,8 @@
                     <tr>
                         <th>Id Producto</th>
                         <th>Nombre Prodcuto</th>
-                        <th>cantidad</th>
+                        <th>Cantidad</th>
+                        <th>Editar</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -44,7 +67,14 @@
                                 </form>
                             </div>
                         </td>
-
+                        <td>
+                            <a href="/administradores/editarProducto/{{row[0]}}"> 
+                                <lord-icon
+                                    src="https://cdn.lordicon.com/wloilxuq.json"
+                                    trigger="click"
+                                    style="width:26px;height:26px">
+                                </lord-icon> 
+                            </a>
                         <td style="width: 50px;">
                             <div class="form-group">
                                 <form method="post" action="/administradores/reportedeescazes/{{row[0]}}"  onsubmit="return confirm('¿Desea generar el reporte?')">
