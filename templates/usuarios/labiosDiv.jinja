@@ -63,7 +63,7 @@
         </div>
 
         <div class="h-100" style="overflow-y: scroll;">
-            {% with producto=productosLabios[0] %}
+            {% with producto =productosLabios[0] %}
             {% set img = 'src/img' + producto['Id']|string + '_1.jpg' %}
                 <div class="position-relative border-bottom border-3">
                     <img class="img-principal" src="{{ url_for('static', filename = img) }}">

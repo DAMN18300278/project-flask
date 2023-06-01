@@ -343,17 +343,21 @@ def delAdmin():
 @empleados.route("/administradores/reportedeescazes/<int:id>", methods=['POST'])
 @empleados.route("/administradores/reportedeescazes", methods=['POST'])
 def procesar_reporte(id=None):
-    fecha = datetime.now().strftime('%d/%m/%Y')  # Obtiene la fecha actual
+    fecha = datetime.now().strftime('%Y-%m-%d')  # Obtiene la fecha actual
 
     with mysql.connect.cursor() as cursor:
-        cursor.execute("SELECT Nombre, Cantidad FROM productos WHERE Id_Productos = %s", (id,))
-        resultados = cursor.fetchone()
+        if id:
+            cursor.execute("SELECT Nombre, Cantidad FROM productos WHERE Id_Productos = %s", (id,))
+            resultados = cursor.fetchone()
 
     if id:
         subject = "Reporte de Escasez"
         producto_nombre = resultados[0]
         producto_cantidad = resultados[1]
         reporte = f"Estimado Administrador,\n\nSe ha generado un reporte de escasez. El producto '{producto_nombre}' con ID {id} cuenta actualmente con {producto_cantidad} unidades en stock. Por favor, tome las medidas necesarias para abastecer el inventario.\n\nFecha del reporte: {fecha}\n\nSaludos,\nEquipo de Decore"
+        with mysql.connection.cursor() as cursor:
+            cursor.execute("INSERT INTO solicitudes (fecha, estatus, id_producto) VALUES (%s, 'Pendiente', %s)", (fecha, id))
+            mysql.connection.commit()
     else:
         reporte = request.form.get('reporteInput')
         subject = "Reporte"
@@ -391,10 +395,12 @@ def borrarorden(id):
             # Actualizar el stock del producto
             with mysql.connection.cursor() as cursor:
                 cursor.execute("UPDATE productos SET Cantidad = (Cantidad + %s) WHERE Id_Productos = %s", (cantidad, producto_id))
+
                 mysql.connection.commit()
 
     with mysql.connection.cursor() as cursor:
         cursor.execute("DELETE FROM ordenpago WHERE Id_Orden = %s", (id,))
+        cursor.execute("UPDATE usuarios SET Estatus_Pedido = 'inactivo' WHERE Id_Usuario = %s", (orden_pago[1],))
         mysql.connection.commit()
 
     return redirect("/administradores/OrdenesPago")
@@ -436,3 +442,27 @@ def editarProducto(id):
     data = response['Productos'][0]
 
     return render_template("empleados/InventarioNewProd.jinja", producto = data)
+
+@empleados.route("/administradores/solicitudes")
+def solicitudes():
+    _, tipo = asignarNombre()
+    with mysql.connect.cursor() as cursor:
+        cursor.execute("SELECT solicitudes.id_solicitud, productos.Nombre , solicitudes.fecha, solicitudes.estatus, productos.cantidad FROM solicitudes INNER JOIN productos ON solicitudes.id_producto = productos.Id_Productos ORDER BY Id_solicitud ASC")
+        resultado = cursor.fetchall()
+    return render_template("empleados/solicitudes.jinja", resultados = resultado,tipo = tipo)
+
+
+@empleados.route("/administradores/aceptarsolicitud/<int:id>")
+def aceptarsolicitud(id):
+    with mysql.connection.cursor() as cursor:
+        cursor.execute("UPDATE solicitudes SET estatus = 'Aprobada' WHERE id_solicitud = %s",(id,))
+        mysql.connection.commit()
+    return redirect("/administradores/solicitudes")
+
+@empleados.route("/administradores/Borrarsolicitud/<int:id>")
+def borrarrsolicitud(id):
+    with mysql.connection.cursor() as cursor:
+        cursor.execute("DELETE FROM solicitudes WHERE id_solicitud = %s",(id,))
+        mysql.connection.commit()
+
+    return redirect("/administradores/solicitudes")

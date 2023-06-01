@@ -296,7 +296,7 @@ $(document).ready(function ($) {
 
 
         var indice = alergias.indexOf(productoId);
-        console.log(indice);
+        
         if (indice !== -1) {
             modal.find('#alergiasInfoProductos').text("El producto contiene ingredientes como: "+ingredientes[indice]+". Le recomendamos que use este producto con precaucion debido a sus alergias");
         } else {
@@ -371,6 +371,20 @@ $(document).ready(function ($) {
                 }
             });
         }, 3000);
+
+        $.ajax({
+            url: '/usuarios/conjunto',
+            contentType: 'application/json',
+            type: 'POST',
+            data: JSON.stringify({ productoid: productoId }),
+            dataType: 'json',
+            success: function(response) {
+                console.log(response);
+            },
+            error: function(error) {
+                console.log(error);
+            }
+        });
     });
 
     $('#infoProducto').on('hidden.bs.modal', function(){

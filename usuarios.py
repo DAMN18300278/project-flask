@@ -125,6 +125,7 @@ def index():
     response3 = requests.get(link3).json()
     data3 = response3['Productos']
     print(type(session.get("id_usuario")))
+
     if session.get("id_usuario") == 1:
         link = url_for('usuarios.productsApi', _external=True)
         response = requests.get(link).json()
@@ -196,11 +197,11 @@ def addcarrito():
 @usuarios.route('/usuarios/kits')
 def kits():
     nombre = asignarNombre()
-    link = url_for('usuarios.productsApi', _external=True)
-    response = requests.get(link).json()
-    data = response['Productos']
+    link4 = url_for('usuarios.productsApiordenar', _external=True, id ="3", idUsuario = session.get("id_usuario"))
+    response4 = requests.get(link4).json()
+    data4 = response4['Productos']
 
-    for producto in data:
+    for producto in data4:
         del producto['Descripcion']
         del producto['Imagenes']
         del producto['Marca']
@@ -218,7 +219,7 @@ def kits():
         else:
             abubu = fetch[0].split("|")
             numero = len(abubu)
-    return render_template("usuarios/kits.jinja", productos = data, idUsuario = session.get('id_usuario'), carrito = numero,nombre = nombre)
+    return render_template("usuarios/kits.jinja", productos = data4, idUsuario = session.get('id_usuario'), carrito = numero,nombre = nombre)
 
 @usuarios.route('/usuarios/eliminar_producto/<string:id>', methods=['POST'])
 def eliminar_producto(id):
@@ -257,7 +258,7 @@ def ordencarrito(id):
             
             carrito = fetch[0].split('|') 
             
-            
+
             numero = len(carrito)
             productos = []
             i = 0
@@ -849,7 +850,7 @@ def productsApiordenar(id=0, idUsuario = 0):
             cursor.execute("""SELECT productos.* FROM productos 
             inner join 
                 recomendacion on productos.Id_productos = recomendacion.Id_Producto 
-            order by NumVentas DESC Limit 10""")
+            order by NumVentas DESC """)
 
         elif id == "2":
             cursor.execute("""SELECT productos.* FROM productos 
@@ -862,6 +863,7 @@ def productsApiordenar(id=0, idUsuario = 0):
             cursor.execute("SELECT Hex FROM color_ojos WHERE Id_ColorOjos = %s", (profileInfo[3],))
             coloresOjos = cursor.fetchone()
             cursor.execute("SELECT productos.* FROM productos INNER JOIN recomendacion ON productos.Id_Productos = recomendacion.Id_Producto ORDER BY CASE WHEN recomendacion.Color_Ojos LIKE %s THEN 1 ELSE 2 END, CASE WHEN recomendacion.Color_Pelo LIKE %s THEN 1 ELSE 2 END, CASE WHEN recomendacion.Color_Piel LIKE %s THEN 1 ELSE 2 END, CASE WHEN recomendacion.Promedio_Edad BETWEEN %s AND %s THEN 1 ELSE 2 END;", ("%" + str(coloresOjos[0]) + "%", "%" + str(profileInfo[6]) + "%", "%" + str(profileInfo[5]) + "%", int(profileInfo[2]) - 3, int(profileInfo[2]) + 3))
+
         rows = cursor.fetchall()
         for item in rows:
             ord = OrderedDict(zip(keys, item))
@@ -888,3 +890,25 @@ def productsApiordenar(id=0, idUsuario = 0):
     response.headers["Content-type"] = "application/json"
     return response
 
+
+@usuarios.route("/usuarios/conjunto", methods=['POST','GET'])
+def obtener_productos_relacionados():
+    id_producto = request.json.get('productoid')
+    with mysql.connect.cursor() as cursor:
+        cursor.execute("SELECT Carrito FROM ordenpago")  # Obtener todas las órdenes de pago
+        ordenes_pago = cursor.fetchall()
+        
+        conjunto_compras = {}
+
+        for orden in ordenes_pago:
+            productos = orden[0].split('|')
+            for producto in productos:
+                producto_id = int(producto.split(',')[0])
+                if producto_id == id_producto:
+                    conjunto_ids = [int(p.split(',')[0]) for p in productos if int(p.split(',')[0]) != id_producto]
+                    for conjunto_id in conjunto_ids:
+                        conjunto_compras[conjunto_id] = conjunto_compras.get(conjunto_id, 0) + 1
+
+        conjunto_ordenado = sorted(conjunto_compras.keys(), key=lambda x: conjunto_compras[x], reverse=True)
+
+        return jsonify(conjunto_ordenado)
