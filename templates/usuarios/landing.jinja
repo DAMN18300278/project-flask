@@ -2,9 +2,9 @@
 {% block head %}
     {{ super() }}
 {% endblock %}
-{% set ingrediente = ingredientes[0] %}
-{% set alergia = alergias[0] %}
-{% set producto = productos[0] %}
+
+{% set producto = populares[0]%}
+
 {% block content %}
     {% include "usuarios/nav.jinja" %}
     {% include "usuarios/menu.jinja" %} 

@@ -20,6 +20,9 @@
                 {% if tipo == 3 or tipo == 2 or tipo == 1 %}
                 <a href="/administradores/OrdenesPago"class="btn btn-success mt-5 to-left position-relative" style="height: auto;">Ordenes de pago</a>
                 {% endif %}
+                {% if tipo == 3 or tipo == 2%}
+                <a href="/administradores/solicitudes" class="btn btn-success mt-5 to-right position-relative">Solicitudes</a>
+                {% endif %}
             </div>
             <div style="width: 80px;" class="mx-auto">
                 <a href="/administradores/delete" class="btn btn-success to-left w-20 position-relative">Salir</a>
