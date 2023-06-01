@@ -333,10 +333,12 @@ def borrarorden(id):
             # Actualizar el stock del producto
             with mysql.connection.cursor() as cursor:
                 cursor.execute("UPDATE productos SET Cantidad = (Cantidad + %s) WHERE Id_Productos = %s", (cantidad, producto_id))
+
                 mysql.connection.commit()
 
     with mysql.connection.cursor() as cursor:
         cursor.execute("DELETE FROM ordenpago WHERE Id_Orden = %s", (id,))
+        cursor.execute("UPDATE usuarios SET Estatus_Pedido = 'inactivo' WHERE Id_Usuario = %s", (orden_pago[1],))
         mysql.connection.commit()
 
     return redirect("/administradores/OrdenesPago")

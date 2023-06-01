@@ -405,10 +405,11 @@ def before_request():
 
 def procesar_ordenes_pago():
     with app.app_context():
+        #Eliminar orden pagar en caja
         with mysql.connect.cursor() as cursor:
             fecha_limite = datetime.now() - timedelta(hours=24)
             fecha_limite = fecha_limite.strftime('%Y-%m-%d %H:%M:%S')
-            cursor.execute("SELECT * FROM ordenpago WHERE Status != 'Entregado' AND Fecha < %s", (fecha_limite,))
+            cursor.execute("SELECT * FROM ordenpago WHERE Status = 'Pagar en caja' AND Fecha < %s", (fecha_limite,))
             ordenes_pago = cursor.fetchall()
 
             for orden_pago in ordenes_pago:
@@ -428,9 +429,9 @@ def procesar_ordenes_pago():
                     cursor.execute("DELETE FROM ordenpago WHERE Id_Orden = %s", (orden_pago[0],))
                     cursor.execute("UPDATE usuarios SET Estatus_Pedido = 'inactivo' WHERE Id_Usuario = %s", (orden_pago[1],))
                     mysql.connection.commit()
-        
+        #Eliminar orden Pagado, recoger en caja
         with mysql.connect.cursor() as cursor:
-            fecha_limite_recoger_caja = fecha_actual - timedelta(hours=72)
+            fecha_limite_recoger_caja = datetime.now() - timedelta(hours=72)
             fecha_limite_recoger_caja = fecha_limite_recoger_caja.strftime('%Y-%m-%d %H:%M:%S')
             cursor.execute("SELECT * FROM ordenpago WHERE Status = 'Pagado, recoger en caja' AND Fecha < %s", (fecha_limite_recoger_caja,))
             ordenes_pago = cursor.fetchall()
@@ -452,6 +453,19 @@ def procesar_ordenes_pago():
                     cursor.execute("DELETE FROM ordenpago WHERE Id_Orden = %s", (orden_pago[0],))
                     cursor.execute("UPDATE usuarios SET Estatus_Pedido = 'inactivo' WHERE Id_Usuario = %s", (orden_pago[1],))
                     mysql.connection.commit()
+        #Eliminar orden Entregada
+        with mysql.connect.cursor() as cursor:
+            fecha_limite_entregado = datetime.now() - timedelta(days=180)
+            fecha_limite_entregado  = fecha_limite_entregado.strftime('%Y-%m-%d %H:%M:%S')
+            cursor.execute("SELECT * FROM ordenpago WHERE Status = 'Entregado' AND Fecha < %s", (fecha_limite_entregado,))
+            ordenes_pago = cursor.fetchall()
+
+            # Eliminar la orden de pago
+            with mysql.connection.cursor() as cursor:
+                for orden_pago in ordenes_pago:
+                # Eliminar la orden de pago
+                    cursor.execute("DELETE FROM ordenpago WHERE Id_Orden = %s", (orden_pago[0],))
+                    mysql.connection.commit()
 
 sched = APScheduler()
 
@@ -461,7 +475,7 @@ def run_scheduler():
     
 
 if __name__ == "__main__":
-    sched.add_job(id='run_scheduler', func=run_scheduler, trigger='cron', day_of_week='*', hour=23, minute=59)
+    sched.add_job(id='run_scheduler', func=run_scheduler, trigger='cron', day_of_week='*', hour=19, minute=25)
     sched.start()
 
     app.run(debug=True, host="0.0.0.0", port="3000", threaded=True)
