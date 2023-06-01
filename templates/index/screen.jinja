@@ -1,0 +1,20 @@
+{% extends "index/indexMaster.jinja" %}
+{% block head %}
+    {{ super() }}
+{% endblock %}
+
+{% block content %}
+
+  <div class="animate__animated animate__fadeIn" style="animation-delay: 0.3s;">
+    <lord-icon
+        src="https://cdn.lordicon.com/iqocwzif.json"
+        trigger="loop"
+        delay="1000"
+        colors="primary:#a866ee,secondary:#ebe6ef"
+        style="width:50%;height:250px">
+    </lord-icon>
+
+    <h2>La resolucion de su dispositivo no es admitida</h2>
+  </div>
+  
+{% endblock %}

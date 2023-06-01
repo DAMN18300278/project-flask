@@ -44,6 +44,224 @@
         </div>
     </div>
 
+    <div class="position-absolute w-100 h-100" id="alertaAlergias" style="z-index: 2; display: none; background-color: rgba(0, 0, 0, 0.152); top: 0;">
+        <div class="to-left position-relative justify-content-center align-items-center d-flex" style="top: 30%; animation-duration: 0.7s;">
+            <div>
+                <svg class="position-absolute" width="30" height="30" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round" style="top: 10; right: 12%;" onclick="document.getElementById('alertaOjos').style.display = 'none'">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                    <circle cx="12" cy="12" r="9" />
+                    <path d="M10 10l4 4m0 -4l-4 4" />
+                </svg>
+            </div>
+            <div class="text-center p-4" style="width: 80%; height: fit-content; background-color: white; border-radius: 10px;">
+                <p class="display-4">Alergias</p>
+                
+            <div>
+                <div class="col-md-6">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="propilparabeno" name="alergias" value="propilparabeno">
+                        <label class="form-check-label" for="propilparabeno">Propilparabeno</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="dioxido-titanio" name="alergias" value="dióxido de titanio">
+                        <label class="form-check-label" for="dioxido-titanio">Dióxido de Titanio</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="oxido-hierro" name="alergias" value="óxido de hierro">
+                        <label class="form-check-label" for="oxido-hierro">Óxido de Hierro</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="glicerina" name="alergias" value="glicerina">
+                        <label class="form-check-label" for="glicerina">Glicerina</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="dimeticona" name="alergias" value="dimeticona">
+                        <label class="form-check-label" for="dimeticona">Dimeticona</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="pentylene-glycol" name="alergias" value="pentylene glycol">
+                        <label class="form-check-label" for="pentylene-glycol">Pentylene Glycol</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="ethylhexylglycerin" name="alergias" value="ethylhexylglycerin">
+                        <label class="form-check-label" for="ethylhexylglycerin">Ethylhexylglycerin</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="ricinus-communis" name="alergias" value="ricino">
+                        <label class="form-check-label" for="ricino">Ricino</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="tocopherol" name="alergias" value="tocopherol">
+                        <label class="form-check-label" for="tocopherol">Tocopherol</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="bismuth-oxychloride" name="alergias" value="bismuth oxychloride">
+                        <label class="form-check-label" for="bismuth-oxychloride">Bismuth Oxychloride</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="carmine" name="alergias" value="carmine">
+                        <label class="form-check-label" for="carmine">Carmine</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="silice" name="alergias" value="sílice">
+                        <label class="form-check-label" for="silice">Sílice</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="mica" name="alergias" value="mica">
+                        <label class="form-check-label" for="mica">Mica</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="tocoferol" name="alergias" value="tocoferol">
+                        <label class="form-check-label" for="tocoferol">Tocoferol</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="oxidos-hierro" name="alergias" value="óxidos de hierro">
+                        <label class="form-check-label" for="oxidos-hierro">Óxidos de Hierro</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="acido-dehydroacetico" name="alergias" value="ácido dehydroacético">
+                        <label class="form-check-label" for="acido-dehydroacetico">Ácido Dehydroacético</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="acido-isostearico" name="alergias" value="ácido isostearico">
+                        <label class="form-check-label" for="acido-isostearico">Ácido Isostearico</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="aceite-mineral" name="alergias" value="aceite mineral">
+                        <label class="form-check-label" for="aceite-mineral">Aceite Mineral</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="palmitato-etilhexilo" name="alergias" value="palmitato de etilhexilo">
+                        <label class="form-check-label" for="palmitato-etilhexilo">Palmitato de Etilhexilo</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="parafina" name="alergias" value="parafina">
+                        <label class="form-check-label" for="parafina">Parafina</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="ceresina" name="alergias" value="ceresina">
+                        <label class="form-check-label" for="ceresina">Ceresina</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="alcohol-denat" name="alergias" value="alcohol denat">
+                        <label class="form-check-label" for="alcohol-denat">Alcohol Denat</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="bht" name="alergias" value="BHT">
+                        <label class="form-check-label" for="bht">BHT</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="metilparabeno" name="alergias" value="metilparabeno">
+                        <label class="form-check-label" for="metilparabeno">Metilparabeno</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="goma-xantana" name="alergias" value="goma xantana">
+                        <label class="form-check-label" for="goma-xantana">Goma Xantana</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="ciclometicona" name="alergias" value="ciclometicona">
+                        <label class="form-check-label" for="ciclometicona">Ciclometicona</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="isododecano" name="alergias" value="isododecano">
+                        <label class="form-check-label" for="isododecano">Isododecano</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="glicol-propileno" name="alergias" value="glicol propileno">
+                        <label class="form-check-label" for="glicol-propileno">Glicol Propileno</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="ciclopentasiloxano" name="alergias" value="ciclopentasiloxano">
+                        <label class="form-check-label" for="ciclopentasiloxano">Ciclopentasiloxano</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="fenoxietanol" name="alergias" value="fenoxietanol">
+                        <label class="form-check-label" for="fenoxietanol">Fenoxietanol</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="ethylhexyl-palmitate" name="alergias" value="ethylhexyl palmitate">
+                        <label class="form-check-label" for="ethylhexyl-palmitate">Ethylhexyl Palmitate</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="verbena" name="alergias" value="verbena">
+                        <label class="form-check-label" for="verbena">Verbena</label>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="polietileno-tereftalato" name="alergias" value="polietileno tereftalato">
+                        <label class="form-check-label" for="polietileno-tereftalato">Polietileno Tereftalato</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="copolimero-acrilatos" name="alergias" value="copolímero de acrilatos">
+                        <label class="form-check-label" for="copolimero-acrilatos">Copolímero de Acrilatos</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="fluorflogopita-sintetica" name="alergias" value="fluorflogopita sintética">
+                        <label class="form-check-label" for="fluorflogopita-sintetica">Fluorflogopita Sintética</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="poliuretano" name="alergias" value="poliuretano">
+                        <label class="form-check-label" for="poliuretano">Poliuretano</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="alcohol-polivinilico" name="alergias" value="alcohol polivinílico">
+                        <label class="form-check-label" for="alcohol-polivinilico">Alcohol Polivinílico</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="trimetilsiloxisilicato" name="alergias" value="trimetilsiloxisilicato" >
+                        <label class="form-check-label" for="trimetilsiloxisilicato">Trimetilsiloxisilicato</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="pantenol" name="alergias" value="pantenol">
+                        <label class="form-check-label" for="pantenol">Pantenol</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="biotina" name="alergias" value="biotina">
+                        <label class="form-check-label" for="biotina">Biotina</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="etilhexilglicerina" name="alergias" value="etilhexilglicerina">
+                        <label class="form-check-label" for="etilhexilglicerina">Etilhexilglicerina</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="butilenglicol" name="alergias" value="butilenglicol">
+                        <label class="form-check-label" for="butilenglicol">Butilenglicol</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="clorfenesina" name="alergias" value="clorfenesina">
+                        <label class="form-check-label" for="clorfenesina">Clorfenesina</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="acido-glicolico" name="alergias" value="ácido glicólico">
+                        <label class="form-check-label" for="acido-glicolico">Ácido Glicólico</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="cactus-marruecos" name="alergias" value="cactus de Marruecos">
+                        <label class="form-check-label" for="cactus-marruecos">Cactus de Marruecos</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="manzanilla" name="alergias" value="manzanilla">
+                        <label class="form-check-label" for="manzanilla">Manzanilla</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="pepino" name="alergias" value="pepino">
+                        <label class="form-check-label" for="pepino">Pepino</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="acido-hialuronico" name="alergias" value="ácido hialurónico">
+                        <label class="form-check-label" for="acido-hialuronico">Ácido Hialurónico</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="iris" name="alergias" value="iris">
+                        <label class="form-check-label" for="iris">Iris</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+
     <div class="position-absolute w-100 h-100" id="alertaPiel" style="z-index: 2; display: none; background-color: rgba(0, 0, 0, 0.152); top: 0; bottom: 0; left: 0; right: 0;">
         <div class="to-left position-relative justify-content-center align-items-center d-flex" style="top: 30%; animation-duration: 0.7s;">
             <div>
@@ -443,212 +661,14 @@
             </div>
 
             <div>
-                <label for="colorPiel" class="col-form-label w-50" style="margin-right: 5%;">Alergias:</label>
-                <button type="button" id="mostrar-alergias">Alergias</button>
-                        <div class="col-md-6" id="alergias-checkboxes" style="display: none;">
-                            <div class="form-check">
-                                <input class="form-check-input"  type="checkbox" id="propilparabeno" name="alergias" value="propilparabeno">
-                                <label class="form-check-label" for="propilparabeno">Propilparabeno</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input"  type="checkbox" id="dioxido-titanio" name="alergias" value="dióxido de titanio">
-                                <label class="form-check-label" for="dioxido-titanio">Dióxido de Titanio</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input"  type="checkbox" id="oxido-hierro" name="alergias" value="óxido de hierro">
-                                <label class="form-check-label" for="oxido-hierro">Óxido de Hierro</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input"  type="checkbox" id="glicerina" name="alergias" value="glicerina">
-                                <label class="form-check-label" for="glicerina">Glicerina</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input"  type="checkbox" id="dimeticona" name="alergias" value="dimeticona">
-                                <label class="form-check-label" for="dimeticona">Dimeticona</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input"  type="checkbox" id="pentylene-glycol" name="alergias" value="pentylene glycol">
-                                <label class="form-check-label" for="pentylene-glycol">Pentylene Glycol</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input"  type="checkbox" id="ethylhexylglycerin" name="alergias" value="ethylhexylglycerin">
-                                <label class="form-check-label" for="ethylhexylglycerin">Ethylhexylglycerin</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input"  type="checkbox" id="ricinus-communis" name="alergias" value="ricino">
-                                <label class="form-check-label" for="ricino">Ricino</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input"  type="checkbox" id="tocopherol" name="alergias" value="tocopherol">
-                                <label class="form-check-label" for="tocopherol">Tocopherol</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input"  type="checkbox" id="bismuth-oxychloride" name="alergias" value="bismuth oxychloride">
-                                <label class="form-check-label" for="bismuth-oxychloride">Bismuth Oxychloride</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input"  type="checkbox" id="carmine" name="alergias" value="carmine">
-                                <label class="form-check-label" for="carmine">Carmine</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input"  type="checkbox" id="silice" name="alergias" value="sílice">
-                                <label class="form-check-label" for="silice">Sílice</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input"  type="checkbox" id="mica" name="alergias" value="mica">
-                                <label class="form-check-label" for="mica">Mica</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input"  type="checkbox" id="tocoferol" name="alergias" value="tocoferol">
-                                <label class="form-check-label" for="tocoferol">Tocoferol</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input"  type="checkbox" id="oxidos-hierro" name="alergias" value="óxidos de hierro">
-                                <label class="form-check-label" for="oxidos-hierro">Óxidos de Hierro</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input"  type="checkbox" id="acido-dehydroacetico" name="alergias" value="ácido dehydroacético">
-                                <label class="form-check-label" for="acido-dehydroacetico">Ácido Dehydroacético</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input"  type="checkbox" id="acido-isostearico" name="alergias" value="ácido isostearico">
-                                <label class="form-check-label" for="acido-isostearico">Ácido Isostearico</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input"  type="checkbox" id="aceite-mineral" name="alergias" value="aceite mineral">
-                                <label class="form-check-label" for="aceite-mineral">Aceite Mineral</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input"  type="checkbox" id="palmitato-etilhexilo" name="alergias" value="palmitato de etilhexilo">
-                                <label class="form-check-label" for="palmitato-etilhexilo">Palmitato de Etilhexilo</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input"  type="checkbox" id="parafina" name="alergias" value="parafina">
-                                <label class="form-check-label" for="parafina">Parafina</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input"  type="checkbox" id="ceresina" name="alergias" value="ceresina">
-                                <label class="form-check-label" for="ceresina">Ceresina</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input"  type="checkbox" id="alcohol-denat" name="alergias" value="alcohol denat">
-                                <label class="form-check-label" for="alcohol-denat">Alcohol Denat</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input"  type="checkbox" id="bht" name="alergias" value="BHT">
-                                <label class="form-check-label" for="bht">BHT</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input"  type="checkbox" id="metilparabeno" name="alergias" value="metilparabeno">
-                                <label class="form-check-label" for="metilparabeno">Metilparabeno</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input"  type="checkbox" id="goma-xantana" name="alergias" value="goma xantana">
-                                <label class="form-check-label" for="goma-xantana">Goma Xantana</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input"  type="checkbox" id="ciclometicona" name="alergias" value="ciclometicona">
-                                <label class="form-check-label" for="ciclometicona">Ciclometicona</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input"  type="checkbox" id="isododecano" name="alergias" value="isododecano">
-                                <label class="form-check-label" for="isododecano">Isododecano</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input"  type="checkbox" id="glicol-propileno" name="alergias" value="glicol propileno">
-                                <label class="form-check-label" for="glicol-propileno">Glicol Propileno</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input"  type="checkbox" id="ciclopentasiloxano" name="alergias" value="ciclopentasiloxano">
-                                <label class="form-check-label" for="ciclopentasiloxano">Ciclopentasiloxano</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input"  type="checkbox" id="fenoxietanol" name="alergias" value="fenoxietanol">
-                                <label class="form-check-label" for="fenoxietanol">Fenoxietanol</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input"  type="checkbox" id="ethylhexyl-palmitate" name="alergias" value="ethylhexyl palmitate">
-                                <label class="form-check-label" for="ethylhexyl-palmitate">Ethylhexyl Palmitate</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input"  type="checkbox" id="verbena" name="alergias" value="verbena">
-                                <label class="form-check-label" for="verbena">Verbena</label>
-                            </div>
-
-                            <div class="form-check">
-                                <input class="form-check-input"  type="checkbox" id="polietileno-tereftalato" name="alergias" value="polietileno tereftalato">
-                                <label class="form-check-label" for="polietileno-tereftalato">Polietileno Tereftalato</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input"  type="checkbox" id="copolimero-acrilatos" name="alergias" value="copolímero de acrilatos">
-                                <label class="form-check-label" for="copolimero-acrilatos">Copolímero de Acrilatos</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input"  type="checkbox" id="fluorflogopita-sintetica" name="alergias" value="fluorflogopita sintética">
-                                <label class="form-check-label" for="fluorflogopita-sintetica">Fluorflogopita Sintética</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input"  type="checkbox" id="poliuretano" name="alergias" value="poliuretano">
-                                <label class="form-check-label" for="poliuretano">Poliuretano</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input"  type="checkbox" id="alcohol-polivinilico" name="alergias" value="alcohol polivinílico">
-                                <label class="form-check-label" for="alcohol-polivinilico">Alcohol Polivinílico</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input"  type="checkbox" id="trimetilsiloxisilicato" name="alergias" value="trimetilsiloxisilicato" >
-                                <label class="form-check-label" for="trimetilsiloxisilicato">Trimetilsiloxisilicato</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input"  type="checkbox" id="pantenol" name="alergias" value="pantenol">
-                                <label class="form-check-label" for="pantenol">Pantenol</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input"  type="checkbox" id="biotina" name="alergias" value="biotina">
-                                <label class="form-check-label" for="biotina">Biotina</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input"  type="checkbox" id="etilhexilglicerina" name="alergias" value="etilhexilglicerina">
-                                <label class="form-check-label" for="etilhexilglicerina">Etilhexilglicerina</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input"  type="checkbox" id="butilenglicol" name="alergias" value="butilenglicol">
-                                <label class="form-check-label" for="butilenglicol">Butilenglicol</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input"  type="checkbox" id="clorfenesina" name="alergias" value="clorfenesina">
-                                <label class="form-check-label" for="clorfenesina">Clorfenesina</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input"  type="checkbox" id="acido-glicolico" name="alergias" value="ácido glicólico">
-                                <label class="form-check-label" for="acido-glicolico">Ácido Glicólico</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input"  type="checkbox" id="cactus-marruecos" name="alergias" value="cactus de Marruecos">
-                                <label class="form-check-label" for="cactus-marruecos">Cactus de Marruecos</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input"  type="checkbox" id="manzanilla" name="alergias" value="manzanilla">
-                                <label class="form-check-label" for="manzanilla">Manzanilla</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input"  type="checkbox" id="pepino" name="alergias" value="pepino">
-                                <label class="form-check-label" for="pepino">Pepino</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input"  type="checkbox" id="acido-hialuronico" name="alergias" value="ácido hialurónico">
-                                <label class="form-check-label" for="acido-hialuronico">Ácido Hialurónico</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input"  type="checkbox" id="iris" name="alergias" value="iris">
-                                <label class="form-check-label" for="iris">Iris</label>
-                            </div>
-                        </div>
-            </div>
-            <div>
-                <div class="to-left" style="animation-delay: 1.6s;">
-                    <button type="submit" class="btn btn-success w-75">Guardar</button>
+                <div class="to-left mb-5" style="animation-delay: 1.6s;">
+                    <button class="btn btn-outline-danger w-75" onclick="selectAlergias()" id="btnTipoPiel" type="button">Alergias</button>
                 </div>
+            </div>
+
+            <div class="to-left" style="animation-delay: 1.6s;">
+                <button type="submit" class="btn btn-success w-75">Guardar</button>
+            </div>
             </div>
         </div>
     </div>

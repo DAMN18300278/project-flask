@@ -4,20 +4,60 @@
 {% endblock %}
 
 {% block content %}
-    <style>
-        h1{
-            font-size: 28px;
-        }
-        h2{
-            font-size: 25px;
-        }
-        h3{
-            font-size: 22px;
-        }
-        body{
-            display: contents;
-        }
-    </style>
+<style>
+    h1{
+        font-size: 28px;
+    }
+    h2{
+        font-size: 25px;
+    }
+    h3{
+        font-size: 22px;
+    }
+    body{
+        display: contents;
+    }
+</style>
+
+<div class="modal fade" tabindex="-1" role="dialog" id="cambiarContraseña">
+    <div class="modal-dialog mx-5" style="margin-top: 20%;" role="document">
+        <div class="modal-content p-5 justify-content-start">
+            <h3 class="fw-bolder text-start">Cambiar contraseña</h3>
+            <hr class="w-100">
+            <div class="form-group d-flex flex-column align-items-start" id="form">
+                <label class="form-label text-left mb-0 mt-2" style="font-size:12px">Contraseña anterior</label>
+                <div class="form-group position-relative w-100">
+                    <input type="text" autocomplete="off" class="form-control border-info border-2" placeholder="Escriba aqui" name="contraseñaAnt">
+                    <div class="h-100 pt-2 position-absolute icon" style="right: 0; bottom:0">
+                        <i class="bi bi-eye-slash mx-3 eye" style="font-size: x-large;" id="show-password-btn1"></i>
+                    </div>
+                </div>
+
+                <label class="form-label text-left mb-0 mt-5" style="font-size:12px">Contraseña nueva</label>
+                <div class="form-group position-relative w-100">
+                    <input type="text" autocomplete="off" class="form-control border-info border-2" placeholder="Escriba aqui" name="contraseñaNueva" minlength="8" maxlength="14" required pattern="^(?=.*[0-9])(?=.*[a-zA-Z])([a-zA-Z0-9]+)$" title="La contraseña debe contener al menos 8 caracteres y al menos un número">
+                    <div class="h-100 pt-2 position-absolute icon" style="right: 0; bottom:0">
+                        <i class="bi bi-eye-slash mx-3 eye" style="font-size: x-large;" id="show-password-btn1"></i>
+                    </div>
+                </div>
+                
+                <label class="form-label text-left mb-0 mt-5" style="font-size:12px">Confirmar contraseña</label>
+                <div class="form-group position-relative w-100">
+                    <input type="text" autocomplete="off" class="form-control border-info border-2" placeholder="Escriba aqui" name="contraseñaC" minlength="8" maxlength="14" required pattern="^(?=.*[0-9])(?=.*[a-zA-Z])([a-zA-Z0-9]+)$" title="La contraseña debe contener al menos 8 caracteres y al menos un número">
+                    <div class="h-100 pt-2 position-absolute icon" style="right: 0; bottom:0">
+                        <i class="bi bi-eye-slash mx-3 eye" style="font-size: x-large;" id="show-password-btn1"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="w-100 d-flex mt-5">
+                <button class="btn btn-danger me-auto px-4" data-bs-target="#cambiarContraseña" data-bs-toggle="modal" style="font-size: 14px;">Cancelar</button>
+                <button class="btn btn-danger ms-auto px-4" id="submitChange" style="font-size: 14px;">Cambiar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="animate__animated animate__fadeIn border h-100 container-div-index" style="animation-delay: 1s; ">
     <div style="height: 100%; width:100%">
         <a class="position-absolute text-dark" style="top: 3%; left: 5%; z-index: 3" href="/usuarios">
@@ -35,8 +75,10 @@
             <a class="btn btn-info profile-border w-75" style="margin-top: 2vh;height: fit-content;" href="/usuarios/updateProfile">
                 <span style="z-index: 2; height:fit-content">Datos personales</span>
             </a>
-            <ul class="w-75">
-                <hr class="my-5">
+            <ul class="w-75 d-flex justify-content-center align-items-center my-5">
+                <hr class="w-100">
+                <a data-bs-target="#cambiarContraseña" data-bs-toggle="modal">Cambiar contraseña</a>
+                <hr class="w-100">
             </ul>
             <button class="btn btn-info profile-border w-75 d-flex flex-column" style="height: fit-content;">
             {% if profileInfo[7] == 'activo' %}
@@ -57,8 +99,68 @@
                     <i>Guadalajara, Jalisco</i>
                 </div>
             </div>
-
         </div>
     </div>
 </div>
+
+<script>
+  $(".eye").click(function() {
+    var input = $(this).closest(".form-group").find("input");
+    if (input.attr("type") === "password") {
+      input.attr("type", "text");
+      $(this).removeClass("bi-eye-slash").addClass("bi-eye");
+    } else {
+      input.attr("type", "password");
+      $(this).removeClass("bi-eye").addClass("bi-eye-slash");
+    }
+  });
+
+  $('#submitChange').on('click', function(){
+    var contraseñaNueva = $('input[name="contraseñaNueva"]').val();
+    var alerta = $('<div/>', {
+      'class': 'alert alert-danger w-100 mt-5 text-dark bg-info border-info py-5 px-2 animate__animated animate__fadeInDown',
+      'text': 'Esta es una alerta de Bootstrap'
+    });
+    $('#form').append(alerta);
+    alerta.hide();
+
+    if (contraseñaNueva.length < 8 || contraseñaNueva.length > 14) {
+        alerta.text('La contraseña debe tener al menos 8 caracteres y un maximo de 14.');
+        alerta.show().delay(3500).fadeOut();
+        return;
+    }
+
+    if (!contraseñaNueva.match(/^(?=.*[0-9])(?=.*[a-zA-Z])([a-zA-Z0-9]+)$/)) {
+        alerta.text('La contraseña debe contener al menos un número y solo puede contener letras y números.');
+        alerta.show().delay(3500).fadeOut();
+        return;
+    }
+
+    if($('input[name="contraseñaNueva"]').val() === $('input[name="contraseñaC"]').val()){
+        $.ajax({
+            contentType: 'application/json',
+            dataType: 'json',
+            data: JSON.stringify({ contraseñaAnterior: $('input[name="contraseñaAnt"]').val(), contraseñaNueva: contraseñaNueva }),
+            url: '/usuarios/cambiarContrasena',
+            type: 'post',
+            success: function(response){
+                if(response.respuesta == 0){
+                    alerta.text('La contraseña anterior no es correcta.');
+                    alerta.show().delay(3500).fadeOut();
+                }
+            },
+            error: function(error){
+                alerta.text('Contraseña cambiada con exito!');
+                alerta.show().delay(3500).fadeOut();
+                setTimeout(() => {
+                    $('#cambiarContraseña').modal('hide')
+                }, 3500);
+            }
+        });
+    }else{
+        alerta.text('Las contraseñas no coinciden.');
+        alerta.show().delay(3500).fadeOut();
+    }
+  });
+</script>
 {% endblock %}

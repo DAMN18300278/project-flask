@@ -4,6 +4,7 @@ alertaOjos = document.getElementById("alertaOjos");
 alertaPiel = document.getElementById("alertaPiel");
 alertaColorPiel = document.getElementById("alertaColorPiel");
 alertaColorPelo = document.getElementById("alertaColorPelo");
+alertaAlergias = document.getElementById("alertaAlergias");
 valorOjos = document.getElementById("colorOjos");
 btnTipoPiel = document.getElementById("btnTipoPiel");
 btnColorOjos = document.getElementById("btnColorOjos");
@@ -23,6 +24,9 @@ function showSliderValue(){
 
 function selectEyes(){
     alertaOjos.style.display = "block";
+}
+function selectAlergias(){
+    alertaAlergias.style.display = "block";
 }
 
 function selectSkin(){
