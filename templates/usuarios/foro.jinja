@@ -100,50 +100,75 @@
             <a class="dropdown-item p-3 px-5" id="sortWorstRated">Calificacion más baja <i class="bi bi-arrow-down"></i></a>
             <hr class="dropdown-divider">
             <a class="dropdown-item p-3 px-5" id="sortId">Ordenar por id de producto </a>
+            <hr class="dropdown-divider">
+            <a class="dropdown-item p-3 px-5" id="sortBrand">Ordenar por marca </a>
+            <hr class="dropdown-divider">
+            <a class="dropdown-item p-3 px-5" id="sortCategorie">Ordenar por categoria </a>
         </ul>
     </div>
 
     <div id="alertas"></div>
-    <div style="overflow-y: scroll; max-height:88vh;">
-        <ul class="ps-0" id="pubList">
-        {% if forum is defined %}
-        {% for publicacion in forum %}
-            {% set producto = productos | selectattr('Id', '==', publicacion[1]) | first %}
-            {% set nombreUsuarioDes = publicacion[6].split()[:2] %}
-            {% set nombreUsuario = ' '.join(nombreUsuarioDes) %}
-            {% set fechaPub = publicacion[5].strftime('%d-%m-%Y') %}
-            <div class="p-3 pubListItem" 
-            data-nombre-producto="{{ producto['Nombre'] }}"
-            data-id-producto="{{ producto['Id'] }}"
-            data-nombre-usuario="{{ nombreUsuario }}"
-            data-fecha-publicacion="{{ publicacion[5] }}"
-            data-calificacion="{{ publicacion[4] }}">
-                <h1 class="p-3" style="font-size: 20px; font-weight:bold">{{ producto['Nombre'] }} <span style="font-size: 18px; color: gray; font-weight:100">#{{ publicacion[1] }}</span></h1>
-                <div class="d-flex align-items-center">
-                    {% set img = 'src/img' + publicacion[1]|string + '_1.jpg' %}
-                    <img style="width: 40%; height:60%" src="{{ url_for('static', filename = img) }}">
-                    <div class="d-flex flex-column align-items-start">
-                        <h1 class="text-start">{{ nombreUsuario }}:</h1>
-                        <h2 class="text-start">{{ publicacion[3] }}</h2>
-                        <div class="input-group mb-3 my-3 d-flex flex-column align-items-start" style="font-size: 15px;">
-                            <h2>Calificacion: </h2>
-                            <div style="font-size: 20px;">
+    <div style="overflow-y: scroll; max-height: 88vh; position:relative">
+        <ul class="nav nav-tabs bg-white my-0 py-0" id="myTab" role="tablist" style="position: sticky; top: 0; z-index:1">
+            {% set items_per_page = 5 %}
+            {% set num_pages = (forum|length // items_per_page) + 1 %}
+            {% set current_page = request.args.get('page', '1')|string|int %}
+            
+            {% for page_num in range(1, num_pages+1) %}
+            <style>
+                .nav-link.active{
+                    color: #2D033B !important; 
+                }
+            </style>
+            <li class="nav-item">
+                <a class="nav-link {% if current_page == page_num %}active{% endif %}" id="tab{{ page_num }}" data-bs-toggle="tab" href="#content{{ page_num }}" role="tab" aria-controls="content{{ page_num }}" aria-selected="{% if current_page == page_num %}true{% else %}false{% endif %}" style="color: rgb(229, 184, 244);" data-idnav="{{ page_num }}">Page {{ page_num }}</a>
+            </li>
+            {% endfor %}
+        </ul>
+
+        <div class="tab-content" id="myTabContent">
+            {% for page_num in range(1, num_pages+1) %}
+            {% set start_index = (page_num - 1) * items_per_page %}
+            {% set end_index = start_index + items_per_page %}
+            <div class="tab-pane fade {% if current_page == page_num %}show active{% endif %}" id="content{{ page_num }}" role="tabpanel" aria-labelledby="tab{{ page_num }}">
+                <ul class="ps-0" id="pubList">
+                {% for publicacion in forum[start_index:end_index] %}
+                    {% set producto = productos | selectattr('Id', '==', publicacion[1]) | first %}
+                    {% set nombreUsuarioDes = publicacion[6].split()[:2] %}
+                    {% set nombreUsuario = ' '.join(nombreUsuarioDes) %}
+                    {% set fechaPub = publicacion[5].strftime('%d-%m-%Y') %}
+
+                    <div class="p-3 pubListItem" data-nombre-producto="{{ producto['Nombre'] }}" data-id-producto="{{ producto['Id'] }}" data-nombre-usuario="{{ nombreUsuario }}" data-fecha-publicacion="{{ publicacion[5] }}" data-calificacion="{{ publicacion[4] }}" data-marca="{{ producto['Marca'] }}" data-categoria="{{ producto['Categoria'] }}">
+                        <h1 class="p-3" style="font-size: 20px; font-weight:bold">{{ producto['Nombre'] }} <span style="font-size: 18px; color: gray; font-weight:100">#{{ publicacion[1] }}</span></h1>
+                        <div class="d-flex align-items-center">
+                            {% set img = 'src/img' + publicacion[1]|string + '_1.jpg' %}
+                            <img style="width: 40%; height:60%" src="{{ url_for('static', filename = img) }}">
+                            <div class="d-flex flex-column align-items-start">
+                            <h1 class="text-start">{{ nombreUsuario }}:</h1>
+                            <h2 class="text-start">{{ publicacion[3] }}</h2>
+                            <div class="input-group mb-3 my-3 d-flex flex-column align-items-start" style="font-size: 15px;">
+                                <h2>Calificacion: </h2>
+                                <div style="font-size: 20px;">
                                 <i class="bi {% if publicacion[4] >= 1 %}bi-star-fill{% endif %}"></i>
                                 <i class="bi {% if publicacion[4] >= 2 %}bi-star-fill{% endif %}"></i>
                                 <i class="bi {% if publicacion[4] >= 3 %}bi-star-fill{% endif %}"></i>
                                 <i class="bi {% if publicacion[4] >= 4 %}bi-star-fill{% endif %}"></i>
                                 <i class="bi {% if publicacion[4] >= 5 %}bi-star-fill{% endif %}"></i>
+                                </div>
+                                <input type="number" name="puntuacion" class="d-none" id="puntuacionAddPub">
                             </div>
-                            <input type="number" name="puntuacion" class="d-none" id="puntuacionAddPub">
+                            <h4>Fecha de publicacion: {{ fechaPub }}</h4>
+                            <h4>Marca: {{ producto['Marca']|capitalize }}</h4>
+                            <h4>Categoria: {{ producto['Categoria']|capitalize }}</h4>
                         </div>
-                        <h4>Fecha de publicacion: {{ fechaPub }}</h4>
                     </div>
-                </div>
-                <hr>
+                    <hr>
+                    </div>
+                {% endfor %}
+                </ul>
             </div>
-        {% endfor %}
-        {% endif %}
-        </ul>
+            {% endfor %}
+        </div>
     </div>
 
     </button>

@@ -48,11 +48,17 @@
                 aria-expanded="false">
             </lord-icon>
             <ul class="dropdown-menu" aria-labelledby="dropdownFiltersOjos" style="font-size: 16px;">
-                <li><a class="dropdown-item p-3 px-5">Ordenar por nombre (A - Z)</a></li>
-                <li><a class="dropdown-item p-3 px-5">Ordenar por nombre (Z - A)</a></li>
-                <li><a class="dropdown-item p-3 px-5">Ordenar por precio</a></li>
-                <li><a class="dropdown-item p-3 px-5">Ordenar por tipo de piel</a></li>
-                <li><a class="dropdown-item p-3 px-5">Ordenar por colores</a></li>
+                <a class="dropdown-item p-3 px-5" id="sortA-ZOjos">Ordenar por nombre (A - Z)</a>
+                <hr class="dropdown-divider">
+                <a class="dropdown-item p-3 px-5" id="sortZ-AOjos">Ordenar por nombre (Z - A)</a>
+                <hr class="dropdown-divider">
+                <a class="dropdown-item p-3 px-5" id="sortPMaOjos">Ordenar por precio <i class="bi bi-arrow-up"></i></a>
+                <hr class="dropdown-divider">
+                <a class="dropdown-item p-3 px-5" id="sortPMeOjos">Ordenar por precio <i class="bi bi-arrow-down"></i></a>
+                <hr class="dropdown-divider">
+                <a class="dropdown-item p-3 px-5" id="sortColorsOjos">Ordenar por colores</i></a>
+                <hr class="dropdown-divider">
+                <a class="dropdown-item p-3 px-5" id="sortPielOjos">Ordenar por tipo de piel</i></a>
             </ul>
         </div>
 
@@ -80,7 +86,7 @@
                             {% for j in range(i+1, i+25)%}
                             {% if productosOjos[j] is defined %}
                                 {% with producto=productosOjos[j] %}
-                                <div class="col me-auto mb-4 productosOjos" data-nombre="{{producto['Nombre']}}" data-precio="{{producto['Precio u.']}}">
+                                <div class="col me-auto mb-4 productosOjos" data-nombre="{{producto['Nombre']}}" data-precio="{{producto['Precio u.']}}" data-color="{{ producto['Colores']['1']['Hex'] }}" data-piel="{{ producto['Tipo de piel'] }}">
                                         {% include "usuarios/productosCard.jinja" %}
                                 </div>
                                 {% endwith %}
