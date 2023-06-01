@@ -19,7 +19,7 @@
       <div class="d-flex flex-column justify-content-between align-items-center h-100 w-100">
         <div class="mb-3 w-100 form-group d-flex align-items-center flex-column">
           <label for="EmpNombre" class="form-label w-100">Nombre</label>
-          <input type="text" class="form-control" id="EmpNombre" name="EmpNombre" value="{{empleado[0]}}" required pattern="^[A-Za-z\s]{3,}$" title="El nombre debe tener un minimo de 3 caracteres y no se aceptan numeros">
+          <input type="text" class="form-control" id="EmpNombre" name="EmpNombre" value="{{empleado[0]}}" required pattern="^[A-Za-z\s]{3,}$" title="El nombre debe tener un mínimo de 3 caracteres y no se aceptan números">
         </div>
 
         <div class="mb-3 w-100 form-group d-flex align-items-center flex-column">
@@ -38,8 +38,18 @@
         </div>
 
         <div class="mb-3 w-100 form-group d-flex align-items-center flex-column">
+          <label for="EmpPassword2" class="form-label">Confirmar Contraseña</label>
+          <div class="form-group w-100 mt-4 position-relative">
+            <input type="password" class="form-control" id="EmpPassword2" name="EmpPassword2" required pattern="^(?=.*[0-9])(?=.*[a-zA-Z])([a-zA-Z0-9]{8,})$" title="La contraseña debe tener al menos 8 caracteres, contener al menos una letra y un número">
+            <div class="h-100 pt-2 position-absolute icon" style="right: 0; bottom:0">
+              <i class="bi bi-eye-slash mx-3" id="show-password-btn2" style="font-size: x-large;"></i>
+            </div>
+          </div>
+        </div>
+
+        <div class="mb-3 w-100 form-group d-flex align-items-center flex-column">
           <label for="EmpRFC" class="form-label">RFC</label>
-          <input type="text" class="form-control" id="EmpRFC" name="EmpRFC" value="{{empleado[3]}}" required pattern="[A-Za-z]{4}[0-9]{6}[A-Za-z0-9]{3}" title="El RFC debe tener 13 caracteres alfanuméricos formados por 4 letras con las iniciales de la persona fisica o moral, seguido de 6 numeros con la fecha de nacimiento o constitución y 3 caracteres más llamados “homoclave”" maxlength="13">
+          <input type="text" class="form-control" id="EmpRFC" name="EmpRFC" value="{{empleado[3]}}" required pattern="[A-Za-z]{4}[0-9]{6}[A-Za-z0-9]{3}" title="El RFC debe tener 13 caracteres alfanuméricos formados por 4 letras con las iniciales de la persona física o moral, seguido de 6 números con la fecha de nacimiento o constitución y 3 caracteres más llamados “homoclave”" maxlength="13">
         </div>
 
         <div class="mb-3 w-100 form-group d-flex align-items-center flex-column">
@@ -49,7 +59,7 @@
 
         <div class="mb-3 w-100 form-group d-flex align-items-center flex-column">
           <label for="EmpTelefono" class="form-label">Teléfono</label>
-          <input type="tel" class="form-control" id="EmpTelefono" name="EmpTelefono" value="{{empleado[5]}}" required pattern="[0-9]{10}" maxlength="10" title="Ingresa un número de telefono de 10 digitos valido">
+          <input type="tel" class="form-control" id="EmpTelefono" name="EmpTelefono" value="{{empleado[5]}}" required pattern="[0-9]{10}" maxlength="10" title="Ingresa un número de teléfono de 10 dígitos válido">
         </div>
 
         <div class="mb-3 w-100 form-group d-flex align-items-center flex-column">
@@ -65,7 +75,7 @@
             <option value="4">Encargado de almacen</option>
           </select>
         </div>
-        <button type="submit" class="btn btn-secondary w-50">Guardar</button>
+        <button type="submit" class="btn btn-secondary w-50" onclick="validatePasswords()">Guardar</button>
       </div>
 
     </form>
@@ -74,6 +84,9 @@
 <script>
     const passwordInput = document.getElementById('EmpPassword');
     showPasswordBtn = document.getElementById("show-password-btn3");
+
+    const passwordInput2 = document.getElementById('EmpPassword2');
+    showPasswordBtn2 = document.getElementById("show-password-btn2");
    
     showPasswordBtn.addEventListener("click", function() {
     if (passwordInput.type === "text") {
@@ -86,6 +99,28 @@
         showPasswordBtn.classList.add("bi-eye");
     }
     });
+
+    showPasswordBtn2.addEventListener("click", function() {
+    if (passwordInput2.type === "text") {
+        passwordInput2.type = "password";
+        showPasswordBtn2.classList.remove("bi-eye");
+        showPasswordBtn2.classList.add("bi-eye-slash");
+    } else {
+        passwordInput2.type = "text";
+        showPasswordBtn2.classList.remove("bi-eye-slash");
+        showPasswordBtn2.classList.add("bi-eye");
+    }
+    });
+
+    function validatePasswords() {
+      const password1 = document.getElementById('EmpPassword').value;
+      const password2 = document.getElementById('EmpPassword2').value;
+      
+      if (password1 !== password2) {
+        alert('Las contraseñas no coinciden. Por favor, inténtalo de nuevo.');
+        return false;
+      }
+    }
 </script>
 
 {% endblock %}
