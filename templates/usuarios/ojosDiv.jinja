@@ -1,5 +1,5 @@
 {% set productosOjos = [] %}
-{% for producto in productos %}
+{% for producto in populares %}
     {% if producto['Categoria'] == 'ojos' %}
         {% set _ = productosOjos.append(producto) %}
     {% endif %}
