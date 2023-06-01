@@ -361,7 +361,7 @@ $(document).ready(function ($) {
                 url: '/actualizarvistas',
                 contentType: 'application/json',
                 type: 'POST',
-                data: { productoid: productoId },
+                data: JSON.stringify({ productoid: productoId }),
                 dataType: 'json',
                 success: function(response) {
                     console.log(response);
@@ -548,6 +548,30 @@ $(document).ready(function ($) {
         });
         $('.productosLabiosContainer').empty().append(lista);
     });
+    $('#sortColorsLabios').on('click', function() {
+        var lista = $('.productosLabios');
+        lista.sort(function(a, b) {
+            var primerColor = $(a).data('color');
+            var segundoColor = $(b).data('color');
+            
+            // Compara los códigos hexadecimales
+            if (primerColor > segundoColor) {
+                return -1;
+            } else if (primerColor < segundoColor) {
+                return 1;
+            } else {
+                return 0;
+            }
+        });
+        $('.productosLabiosContainer').empty().append(lista);
+    });
+    $('#sortPielLabios').on('click', function() {
+        var lista = $('.productosLabios');
+        lista.sort(function(a, b) {
+            return $(a).data('piel') - $(b).data('piel');
+        });
+        $('.productosLabiosContainer').empty().append(lista);
+    });
 
     //ordenar productos de piel
     $('#sortA-ZPiel').on('click', function() {
@@ -575,6 +599,30 @@ $(document).ready(function ($) {
         var lista = $('.productosPiel');
         lista.sort(function(a, b) {
             return $(b).data('precio') - $(a).data('precio');
+        });
+        $('.productosPielContainer').empty().append(lista);
+    });
+    $('#sortColorsPiel').on('click', function() {
+        var lista = $('.productosPiel');
+        lista.sort(function(a, b) {
+            var primerColor = $(a).data('color');
+            var segundoColor = $(b).data('color');
+            
+            // Compara los códigos hexadecimales
+            if (primerColor > segundoColor) {
+                return -1;
+            } else if (primerColor < segundoColor) {
+                return 1;
+            } else {
+                return 0;
+            }
+        });
+        $('.productosPielContainer').empty().append(lista);
+    });
+    $('#sortPielPiel').on('click', function() {
+        var lista = $('.productosPiel');
+        lista.sort(function(a, b) {
+            return $(a).data('piel') - $(b).data('piel');
         });
         $('.productosPielContainer').empty().append(lista);
     });
@@ -608,6 +656,30 @@ $(document).ready(function ($) {
         });
         $('.productosOjosContainer').empty().append(lista);
     });
+    $('#sortColorsOjos').on('click', function() {
+        var lista = $('.productosOjos');
+        lista.sort(function(a, b) {
+            var primerColor = $(a).data('color');
+            var segundoColor = $(b).data('color');
+            
+            // Compara los códigos hexadecimales
+            if (primerColor > segundoColor) {
+                return -1;
+            } else if (primerColor < segundoColor) {
+                return 1;
+            } else {
+                return 0;
+            }
+        });
+        $('.productosOjosContainer').empty().append(lista);
+    });
+    $('#sortPielOjos').on('click', function() {
+        var lista = $('.productosOjos');
+        lista.sort(function(a, b) {
+            return $(a).data('piel') - $(b).data('piel');
+        });
+        $('.productosOjosContainer').empty().append(lista);
+    });
 
     //ordenar productos de skin
     $('#sortA-ZSkin').on('click', function() {
@@ -635,6 +707,30 @@ $(document).ready(function ($) {
         var lista = $('.productosSkin');
         lista.sort(function(a, b) {
             return $(b).data('precio') - $(a).data('precio');
+        });
+        $('.productosSkinContainer').empty().append(lista);
+    });
+    $('#sortColorsSkin').on('click', function() {
+        var lista = $('.productosSkin');
+        lista.sort(function(a, b) {
+            var primerColor = $(a).data('color');
+            var segundoColor = $(b).data('color');
+            
+            // Compara los códigos hexadecimales
+            if (primerColor > segundoColor) {
+                return -1;
+            } else if (primerColor < segundoColor) {
+                return 1;
+            } else {
+                return 0;
+            }
+        });
+        $('.productosSkinContainer').empty().append(lista);
+    });
+    $('#sortPielSkin').on('click', function() {
+        var lista = $('.productosSkin');
+        lista.sort(function(a, b) {
+            return $(a).data('piel') - $(b).data('piel');
         });
         $('.productosSkinContainer').empty().append(lista);
     });
@@ -668,6 +764,30 @@ $(document).ready(function ($) {
         });
         $('.productosAccesoriosContainer').empty().append(lista);
     });
+    $('#sortColorsAccesorios').on('click', function() {
+        var lista = $('.productosAccesorios');
+        lista.sort(function(a, b) {
+            var primerColor = $(a).data('color');
+            var segundoColor = $(b).data('color');
+            
+            // Compara los códigos hexadecimales
+            if (primerColor > segundoColor) {
+                return -1;
+            } else if (primerColor < segundoColor) {
+                return 1;
+            } else {
+                return 0;
+            }
+        });
+        $('.productosAccesoriosContainer').empty().append(lista);
+    });
+    $('#sortPielAccesorios').on('click', function() {
+        var lista = $('.productosAccesorios');
+        lista.sort(function(a, b) {
+            return $(a).data('piel') - $(b).data('piel');
+        });
+        $('.productosAccesoriosContainer').empty().append(lista);
+    });
 
 });
 
@@ -688,6 +808,13 @@ $(document).on('click', '.star', function(event) {
 });
 
 $(document).ready(function () {
+    var page_num = 1;
+
+    $('.nav-link').on('click', function(){
+        page_num = $(this).data('idnav');
+        console.log(page_num);
+    });
+
     $('.productAddPub').click(function () {
         const idProducto = $(this).data('id');
         const nombre = $(this).data('nombre');
@@ -722,7 +849,7 @@ $(document).ready(function () {
 
     $("#searchPubs").keyup(function() {
         var filter = $(this).val().toLowerCase();
-        var items = $("#pubList").find(".pubListItem");
+        var items = $('#content' + page_num + ' .pubListItem');
         items.each(function() {
             var productName = $(this).data("nombre-producto").toLowerCase();
             var userName = $(this).data("nombre-usuario").toLowerCase();
@@ -734,7 +861,7 @@ $(document).ready(function () {
 
     //ordenar productos de accesorios
     $('#sortDate').on('click', function() {
-        var lista = $('.pubListItem');
+        var lista = $('#content' + page_num + ' .pubListItem');
         var fechaActual = new Date(); // obtener la fecha actual
         lista.sort(function(a, b) {
             var fechaA = new Date($(a).data('fecha-publicacion'));
@@ -743,28 +870,47 @@ $(document).ready(function () {
             var diferenciaB = fechaActual - fechaB; // calcular la diferencia de fecha actual a fechaB
             return diferenciaA - diferenciaB; // ordenar por la diferencia desde la más reciente a la más vieja
         });
-        $('#pubList').empty().append(lista);
+        $('#content' + page_num + ' #pubList').empty().append(lista);
     });
-    $('#sortBestRated').on('click', function() {
-        var lista = $('.pubListItem');
+      
+      $('#sortBestRated').on('click', function() {
+        var lista = $('#content' + page_num + ' .pubListItem');
         lista.sort(function(a, b) {
             return $(b).data('calificacion') - $(a).data('calificacion');
         });
-        $('#pubList').empty().append(lista);
+        $('#content' + page_num + ' #pubList').empty().append(lista);
     });
+      
     $('#sortWorstRated').on('click', function() {
-        var lista = $('.pubListItem');
+        var lista = $('#content' + page_num + ' .pubListItem');
         lista.sort(function(a, b) {
             return $(a).data('calificacion') - $(b).data('calificacion');
         });
-        $('#pubList').empty().append(lista);
+        $('#content' + page_num + ' #pubList').empty().append(lista);
     });
+      
     $('#sortId').on('click', function() {
-        var lista = $('.pubListItem');
+        var lista = $('#content' + page_num + ' .pubListItem');
         lista.sort(function(a, b) {
             return $(a).data('id-producto') - $(b).data('id-producto');
         });
-        $('#pubList').empty().append(lista);
+        $('#content' + page_num + ' #pubList').empty().append(lista);
+    });
+
+    $('#sortBrand').on('click', function() {
+        var lista = $('#content' + page_num + ' .pubListItem');
+        lista.sort(function(a, b) {
+            return $(a).data('marca').localeCompare($(b).data('marca'));
+        });
+        $('#content' + page_num + ' #pubList').empty().append(lista);
+    });
+      
+    $('#sortCategorie').on('click', function() {
+        var lista = $('#content' + page_num + ' .pubListItem');
+        lista.sort(function(a, b) {
+            return $(a).data('categoria').localeCompare($(b).data('categoria'));
+        });
+        $('#content' + page_num + ' #pubList').empty().append(lista);
     });
 })
 // Seleccionar el botón externo y la lista de pestañas

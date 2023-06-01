@@ -811,7 +811,8 @@ def actualizaredad(id):
 
 @usuarios.route('/actualizarvistas', methods=['POST'])
 def actualizar_vistas():
-    productoid = request.form.get('productoid')
+    data = request.get_json() 
+    productoid = data['productoid']
     
     with mysql.connection.cursor() as cursor:
             cursor.execute("UPDATE recomendacion SET Promedio_Vistas = (Promedio_Vistas + 1) WHERE Id_Producto = %s", (productoid,))
@@ -854,7 +855,7 @@ def productsApiordenar(id=0, idUsuario = 0):
             cursor.execute("""SELECT productos.* FROM productos 
             inner join 
                 recomendacion on productos.Id_productos = recomendacion.Id_Producto 
-            order by Promedio_Vistas DESC Limit 10""")
+            order by recomendacion.Promedio_Vistas DESC""")
 
         elif id == "3":
             profileInfo = takeProfileInfo(idUsuario)
