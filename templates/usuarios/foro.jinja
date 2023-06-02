@@ -77,7 +77,7 @@
         </lord-icon>
         <div class="dropdown-menu px-5 mt-foro-search animate__animated animate__fadeInDown" aria-labelledby="dropdownSearchPubs" style="max-height:50%; font-size: 16px; overflow-y:scroll; margin-top:40%">
             <div class="input-group mb-3" style="font-size: 15px;">
-                <input type="text" class="form-control border border-2" placeholder="Buscar" aria-label="Search" aria-describedby="basic-addon2" id="searchPubs">
+                <input type="text" class="form-control border border-2" placeholder="Buscar" aria-label="Search" maxlength="50" aria-describedby="basic-addon2" id="searchPubs">
                 <h4>Buscar por Id de producto, nombre de usuario o nombre de producto </h4>
             </div>
         </div>
@@ -109,22 +109,9 @@
 
     <div id="alertas"></div>
     <div style="overflow-y: scroll; max-height: 88vh; position:relative">
-        <ul class="nav nav-tabs bg-white my-0 py-0" id="myTab" role="tablist" style="position: sticky; top: 0; z-index:1">
-            {% set items_per_page = 5 %}
-            {% set num_pages = (forum|length // items_per_page) + 1 %}
-            {% set current_page = request.args.get('page', '1')|string|int %}
-            
-            {% for page_num in range(1, num_pages+1) %}
-            <style>
-                .nav-link.active{
-                    color: #2D033B !important; 
-                }
-            </style>
-            <li class="nav-item">
-                <a class="nav-link {% if current_page == page_num %}active{% endif %}" id="tab{{ page_num }}" data-bs-toggle="tab" href="#content{{ page_num }}" role="tab" aria-controls="content{{ page_num }}" aria-selected="{% if current_page == page_num %}true{% else %}false{% endif %}" style="color: rgb(229, 184, 244);" data-idnav="{{ page_num }}">Page {{ page_num }}</a>
-            </li>
-            {% endfor %}
-        </ul>
+        {% set items_per_page = 5 %}
+        {% set num_pages = (forum|length // items_per_page) + 1 %}
+        {% set current_page = request.args.get('page', '1')|string|int %}
 
         <div class="tab-content" id="myTabContent">
             {% for page_num in range(1, num_pages+1) %}
@@ -169,6 +156,20 @@
             </div>
             {% endfor %}
         </div>
+        <ul class="nav nav-tabs bg-white my-0 px-4 pb-4" id="myTab" role="tablist" style="position: sticky; top: 0; z-index:1">            
+            <style>
+                .nav-link.active{
+                    color: #2D033B !important;
+                    border: 2px #2D033B solid !important;
+                    border-radius: 10px;
+                }
+            </style>
+            {% for page_num in range(1, num_pages+1) %}
+            <li class="nav-item ">
+                <a class="nav-link mx-3 {% if current_page == page_num %}active{% endif %}" id="tab{{ page_num }}" data-bs-toggle="tab" href="#content{{ page_num }}" role="tab" aria-controls="content{{ page_num }}" aria-selected="{% if current_page == page_num %}true{% else %}false{% endif %}" style="color: rgb(229, 184, 244); font-size:22px" data-idnav="{{ page_num }}">{{ page_num }}</a>
+            </li>
+            {% endfor %}
+        </ul>
     </div>
 
     </button>

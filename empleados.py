@@ -7,6 +7,7 @@ from flask_mail import Mail, Message
 from werkzeug.utils import secure_filename
 import requests
 from datetime import datetime, timedelta
+import hashlib
 
 
 empleados = Blueprint('empleados', __name__)
@@ -264,7 +265,9 @@ def GuardarEmp(id=None):
     tipo = request.form['ListaTipo']
     if id:
         with mysql.connection.cursor() as cursor:
-            cursor.execute("UPDATE cuenta SET Correo = %s, Contraseña = %s, Rol = %s WHERE Id_cuenta = %s", (email, password,tipo, id))
+            
+            contraseñaHash = hashlib.sha256(password.encode('UTF-8')).hexdigest()
+            cursor.execute("UPDATE cuenta SET Correo = %s, Contraseña = %s, Rol = %s WHERE Id_cuenta = %s", (email, contraseñaHash,tipo, id))
             mysql.connection.commit()
             cursor.execute("UPDATE empleado SET RFC = %s, Nombre_Empleado = %s, Telefono = %s, Direccion = %s WHERE Id_Empleado = %s",(rfc, nombre, tel, direccion, id))
             mysql.connection.commit()
@@ -277,7 +280,9 @@ def GuardarEmp(id=None):
             id_nuevo = max_id[0]+1
             #Insertar en la tabla cuenta con el id máximo + 1
         with mysql.connection.cursor() as cursor:
-            cursor.execute("INSERT INTO cuenta(Id_cuenta, Rol, Correo, Contraseña, estado) VALUES (%s, %s, %s, %s, %s)", (id_nuevo, tipo, email, password, 'Inactivo'))
+            
+            contraseñaHash = hashlib.sha256(password.encode('UTF-8')).hexdigest()
+            cursor.execute("INSERT INTO cuenta(Id_cuenta, Rol, Correo, Contraseña, estado) VALUES (%s, %s, %s, %s, %s)", (id_nuevo, tipo, email, contraseñaHash, 'Inactivo'))
             mysql.connection.commit()
             # Insertar en la tabla empleado con el mismo id_cuenta
             cursor.execute("INSERT INTO empleado(Id_Empleado, RFC, Nombre_Empleado, Telefono, Direccion) VALUES (%s, %s, %s, %s, %s)", (id_nuevo, rfc, nombre, tel, direccion))

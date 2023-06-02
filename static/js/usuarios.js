@@ -874,7 +874,6 @@ $(document).ready(function () {
 
     $('.nav-link').on('click', function(){
         page_num = $(this).data('idnav');
-        console.log(page_num);
     });
 
     $('.productAddPub').click(function () {
@@ -889,7 +888,6 @@ $(document).ready(function () {
         const idProducto = $('#idProductoAddPub').val();
         const descripcion = $('#descripcionAddPub').val();
         const puntuacion = $('#puntuacionAddPub').val();
-        console.log(puntuacion);
 
         $.ajax({
             url: '/usuarios/guardarPub',
@@ -909,21 +907,38 @@ $(document).ready(function () {
         })
     })
 
+    var itemsCopy = $('.pubListItem');
     $("#searchPubs").keyup(function() {
         var filter = $(this).val().toLowerCase();
-        var items = $('#content' + page_num + ' .pubListItem');
-        items.each(function() {
-            var productName = $(this).data("nombre-producto").toLowerCase();
-            var userName = $(this).data("nombre-usuario").toLowerCase();
-            var id = $(this).data("id-producto");
-            var match = productName.indexOf(filter) > -1 || userName.indexOf(filter) > -1 || id.toString().indexOf(filter) > -1;
-            $(this).toggle(match);
-        });
+        var items = $('.pubListItem');
+        if (filter.length == 0) {
+            $(`#content1 #pubList`).empty();
+            let pageIndex = 0;
+            for (let i = 0; i < itemsCopy.length; i++) {
+                if (i % 5 == 0) {
+                    pageIndex++;
+                }
+                $(`#content${pageIndex} #pubList`).append(itemsCopy[i]);
+            }
+        } else {
+            $('.tab-pane .pubListItem').appendTo(`#content1 #pubList`);
+            $(`#content1 #pubList`).empty();
+            items.each(function() {
+                var productName = $(this).data("nombre-producto").toLowerCase();
+                var userName = $(this).data("nombre-usuario").toLowerCase();
+                var id = $(this).data("id-producto");
+                var match = productName.indexOf(filter) > -1 || userName.indexOf(filter) > -1 || id.toString().indexOf(filter) > -1;
+                if (match) {
+                    $(this).appendTo(`#content1 #pubList`);
+                }
+            });
+        }
     });
+    
 
     //ordenar productos de accesorios
     $('#sortDate').on('click', function() {
-        var lista = $('#content' + page_num + ' .pubListItem');
+        var lista = $('.pubListItem');
         var fechaActual = new Date(); // obtener la fecha actual
         lista.sort(function(a, b) {
             var fechaA = new Date($(a).data('fecha-publicacion'));
@@ -932,47 +947,98 @@ $(document).ready(function () {
             var diferenciaB = fechaActual - fechaB; // calcular la diferencia de fecha actual a fechaB
             return diferenciaA - diferenciaB; // ordenar por la diferencia desde la más reciente a la más vieja
         });
-        $('#content' + page_num + ' #pubList').empty().append(lista);
+        let pageIndex = 0;
+        $(' #pubList').empty()
+        for (let i = 0; i < lista.length; i++) {
+            if(i % 5 == 0){
+                pageIndex++;
+            }
+            $(`#content${pageIndex} #pubList`).append(lista[i]);
+        }
+
+        itemsCopy = lista;
     });
       
       $('#sortBestRated').on('click', function() {
-        var lista = $('#content' + page_num + ' .pubListItem');
+        var lista = $('.pubListItem');
         lista.sort(function(a, b) {
             return $(b).data('calificacion') - $(a).data('calificacion');
         });
-        $('#content' + page_num + ' #pubList').empty().append(lista);
+        let pageIndex = 0;
+        $(' #pubList').empty()
+        for (let i = 0; i < lista.length; i++) {
+            if(i % 5 == 0){
+                pageIndex++;
+            }
+            $(`#content${pageIndex} #pubList`).append(lista[i]);
+        }
+        itemsCopy = lista;
     });
       
     $('#sortWorstRated').on('click', function() {
-        var lista = $('#content' + page_num + ' .pubListItem');
+        var lista = $('.pubListItem');
         lista.sort(function(a, b) {
             return $(a).data('calificacion') - $(b).data('calificacion');
         });
-        $('#content' + page_num + ' #pubList').empty().append(lista);
+        let pageIndex = 0;
+        $(' #pubList').empty()
+        for (let i = 0; i < lista.length; i++) {
+            if(i % 5 == 0){
+                pageIndex++;
+            }
+            $(`#content${pageIndex} #pubList`).append(lista[i]);
+        }
+        itemsCopy = lista;
     });
       
     $('#sortId').on('click', function() {
-        var lista = $('#content' + page_num + ' .pubListItem');
+        var lista = $('.pubListItem');
         lista.sort(function(a, b) {
             return $(a).data('id-producto') - $(b).data('id-producto');
         });
-        $('#content' + page_num + ' #pubList').empty().append(lista);
+        let pageIndex = 0;
+        $(' #pubList').empty()
+        for (let i = 0; i < lista.length; i++) {
+            if(i % 5 == 0){
+                pageIndex++;
+            }
+            $(`#content${pageIndex} #pubList`).append(lista[i]);
+        }
+        itemsCopy = lista;
     });
 
     $('#sortBrand').on('click', function() {
-        var lista = $('#content' + page_num + ' .pubListItem');
+        var lista = $('.pubListItem');
         lista.sort(function(a, b) {
             return $(a).data('marca').localeCompare($(b).data('marca'));
         });
-        $('#content' + page_num + ' #pubList').empty().append(lista);
+        let pageIndex = 0;
+        $(' #pubList').empty()
+        for (let i = 0; i < lista.length; i++) {
+            if(i % 5 == 0){
+                pageIndex++;
+            }
+            $(`#content${pageIndex} #pubList`).append(lista[i]);
+        }
+        itemsCopy = lista;
     });
       
     $('#sortCategorie').on('click', function() {
-        var lista = $('#content' + page_num + ' .pubListItem');
+        var lista = $('.pubListItem');
+
         lista.sort(function(a, b) {
             return $(a).data('categoria').localeCompare($(b).data('categoria'));
         });
-        $('#content' + page_num + ' #pubList').empty().append(lista);
+
+        let pageIndex = 0;
+        $(' #pubList').empty()
+        for (let i = 0; i < lista.length; i++) {
+            if(i % 5 == 0){
+                pageIndex++;
+            }
+            $(`#content${pageIndex} #pubList`).append(lista[i]);
+        }
+        itemsCopy = lista;
     });
 })
 // Seleccionar el botón externo y la lista de pestañas
