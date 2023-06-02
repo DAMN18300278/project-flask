@@ -1,0 +1,93 @@
+{% extends "empleados/empleadosMaster.jinja" %}
+{% block head %}
+    {{ super() }}
+{% endblock %}
+
+{% block content %}
+
+<div>
+    <form action="/administradores/GuardarUser/{{id}}" method="post" class="to-left position-absolute p-5 d-flex flex-column justify-content-center align-items-center h-100" style="top: 0; bottom: 0; left: 0; right: 0;">
+
+      <div class="mb-3">
+              
+            <a href="../administradores" class="position-absolute" style="top:0;left:0;" >
+                <i class="text-black bi bi-arrow-left" style="font-size: 25px;"></i>
+            </a>
+            <h1 style="font-size: 25px;">Informacion Usuario</h1>
+        
+        <div class="mb-3 w-100 form-group d-flex align-items-center flex-column">
+          <label for="EmpEmail" class="form-label">Correo</label>
+          <input type="email" class="form-control" id="EmpEmail" name="EmpEmail" value="{{user[0]}}" maxlength="100" required>
+        </div>
+
+        <div class="mb-3 w-100 form-group d-flex align-items-center flex-column">
+          <label for="EmpPassword" class="form-label">Contraseña</label>
+          <div class="form-group w-100 mt-4 position-relative">
+            <input type="password" class="form-control" id="EmpPassword" name="EmpPassword" value="{{user[1]}}" required pattern="^(?=.*[0-9])(?=.*[a-zA-Z])([a-zA-Z0-9]{8,})$" title="La contraseña debe tener al menos 8 caracteres, contener al menos una letra y un número">
+            <div class="h-100 pt-2 position-absolute icon" style="right: 0; bottom:0">
+              <i class="bi bi-eye-slash mx-3" id="show-password-btn3" style="font-size: x-large;"></i>
+            </div>
+          </div>
+        </div>
+
+        <div class="mb-3 w-100 form-group d-flex align-items-center flex-column">
+          <label for="EmpPassword2" class="form-label">Confirmar Contraseña</label>
+          <div class="form-group w-100 mt-4 position-relative">
+            <input type="password" class="form-control" id="EmpPassword2" name="EmpPassword2" required pattern="^(?=.*[0-9])(?=.*[a-zA-Z])([a-zA-Z0-9]{8,})$" title="La contraseña debe tener al menos 8 caracteres, contener al menos una letra y un número">
+            <div class="h-100 pt-2 position-absolute icon" style="right: 0; bottom:0">
+              <i class="bi bi-eye-slash mx-3" id="show-password-btn2" style="font-size: x-large;"></i>
+            </div>
+          </div>
+        </div>
+
+
+        <button type="submit" class="btn btn-secondary w-50" onclick="validatePasswords()">Guardar</button>
+      </div>
+
+    </form>
+</div>
+
+<script>
+    const passwordInput = document.getElementById('EmpPassword');
+    showPasswordBtn = document.getElementById("show-password-btn3");
+
+    const passwordInput2 = document.getElementById('EmpPassword2');
+    showPasswordBtn2 = document.getElementById("show-password-btn2");
+   
+    showPasswordBtn.addEventListener("click", function() {
+    if (passwordInput.type === "text") {
+        passwordInput.type = "password";
+        showPasswordBtn.classList.remove("bi-eye");
+        showPasswordBtn.classList.add("bi-eye-slash");
+    } else {
+        passwordInput.type = "text";
+        showPasswordBtn.classList.remove("bi-eye-slash");
+        showPasswordBtn.classList.add("bi-eye");
+    }
+    });
+
+    showPasswordBtn2.addEventListener("click", function() {
+    if (passwordInput2.type === "text") {
+        passwordInput2.type = "password";
+        showPasswordBtn2.classList.remove("bi-eye");
+        showPasswordBtn2.classList.add("bi-eye-slash");
+    } else {
+        passwordInput2.type = "text";
+        showPasswordBtn2.classList.remove("bi-eye-slash");
+        showPasswordBtn2.classList.add("bi-eye");
+    }
+    });
+
+    function validatePasswords() {
+      const password1 = document.getElementById('EmpPassword').value;
+      const password2 = document.getElementById('EmpPassword2').value;
+      
+      if (password1 !== password2) {
+        alert('Las contraseñas no coinciden. Por favor, inténtalo de nuevo.');
+        return false;
+      }
+    }
+
+</script>
+
+{% endblock %}

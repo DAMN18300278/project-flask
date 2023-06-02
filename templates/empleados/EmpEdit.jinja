@@ -10,7 +10,7 @@
 
       <div class="mb-3">
               
-            <a href="../administradores" class="position-absolute" style="top:0;left:0;" >
+            <a href="../../administradores/EmpleadosList" class="position-absolute" style="top:0;left:0;" >
                 <i class="text-black bi bi-arrow-left" style="font-size: 25px;"></i>
             </a>
             <h1 style="font-size: 25px;">Informacion Empleados</h1>
@@ -64,20 +64,28 @@
 
         <div class="mb-3 w-100 form-group d-flex align-items-center flex-column">
           <label for="ListaTipo" class="form-label">Puesto</label>
-          <select id="ListaTipo" name="ListaTipo" class="form-control form-control-lg h-25" required>
-            <option selected {%if empleado[6] == "Administrador"%} value="3" {%elif empleado[6] == "Supervisor"%} value="2"{%elif empleado[6] == "Encargado de caja"%} value="1"{%elif empleado[6] == "Encargado de almacen"%} value="4"{%endif%}>{{empleado[6]}}</option>
-            <option value="" disabled>Elige una opción...</option>
-            {% if tipo == 3 %}
-            <option value="3">Administrador</option>
-            <option value="2">Supervisor</option>
-            {%endif%}
-            <option value="1">Encargado de Caja</option>
-            <option value="4">Encargado de almacen</option>
-          </select>
+          <select   id="ListaTipo" name="ListaTipo" class="form-control form-control-lg h-25" required>
+            <option selected  {%if empleado[6] == "Administrador"%} value="3" {%elif empleado[6] == "Supervisor"%} value="2"{%elif empleado[6] == "Encargado de caja"%} value="1"{%elif empleado[6] == "Encargado de almacen"%} value="4"{%endif%}>{{empleado[6]}}</option>
+              <option value="" disabled>Elige una opción...</option>
+              {% if tipo == 3 %}
+              <option value="3">Administrador</option>
+              <option value="2">Supervisor</option>
+              {%endif%}
+              {% if tipo == 3 and empleado[6] != ""%}
+              <option value="1">Encargado de Caja</option>
+              <option value="4">Encargado de almacen</option>
+              {%endif%}
+              
+              {% if tipo == 2 and empleado[6] is not defined%}
+              <option value="1">Encargado de Caja</option>
+              <option value="4">Encargado de almacen</option>
+              {%endif%}
+              
+              </select>
         </div>
         <button type="submit" class="btn btn-secondary w-50" onclick="validatePasswords()">Guardar</button>
       </div>
-
+    
     </form>
 </div>
 

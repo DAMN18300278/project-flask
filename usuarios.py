@@ -5,7 +5,7 @@ from flask_mysqldb import MySQL
 from collections import OrderedDict
 import base64
 from flask_mail import Mail, Message
-from datetime import datetime
+from datetime import datetime, timedelta
 import cv2
 import numpy as np
 import base64
@@ -300,6 +300,15 @@ def RecogerCaja(id):
         if result and result[0] == 'activo':  # Verificar si existe el registro y si el estatus es 'activo'
             
             flash('pedido activo.')
+            subject = 'Pedido Pendiente'
+            sender = "decore.makeup.soporte@gmail.com"
+            with mysql.connect.cursor() as cursor:
+                cursor.execute("SELECT Correo FROM cuenta WHERE Id_Cuenta = %s", (session.get('id_usuario'),))
+                resultado = cursor.fetchone()
+            message = Message(subject, sender=sender, recipients=[resultado[0]])
+            message.body = f"Estimado Cliente,\n\nSe ha intentado realizar un pedido desde su cuenta pero ya tiene un pedido pendiente, por favor finalice su pedido para realizar otro. \n\nSaludos,\nEquipo de Decore"
+            mail.send(message)
+
             return redirect("/usuarios/ordencarrito/"+id)
         else:
             with mysql.connect.cursor() as cursor:
@@ -383,13 +392,21 @@ def takeProfileInfo(id = 0):
 @usuarios.route("/usuarios/perfil")
 def perfil():
     profileInfo = takeProfileInfo()
-    
+
     if profileInfo[7] == 'activo':
         with mysql.connect.cursor() as cursor:
-            cursor.execute("SELECT Id_Orden FROM ordenpago WHERE Id_Usuario = %s ORDER BY Id_Orden DESC", (session.get('id_usuario'),))
-            id_orden = cursor.fetchone()
-        return render_template("usuarios/perfil.jinja", profileInfo = profileInfo, id_orden = id_orden)
-    return render_template("usuarios/perfil.jinja", profileInfo = profileInfo)
+            cursor.execute("SELECT Id_Orden, Fecha FROM ordenpago WHERE Id_Usuario = %s ORDER BY Id_Orden DESC", (session.get('id_usuario'),))
+            id_orden, fecha_orden = cursor.fetchone()
+            fecha_actual = datetime.now()
+            
+            if fecha_orden + timedelta(days=3) > fecha_actual:
+                dias_restantes = (fecha_orden + timedelta(days=3) - fecha_actual).days
+            else:
+                dias_restantes = 0
+
+        return render_template("usuarios/perfil.jinja", profileInfo=profileInfo, id_orden=id_orden, dias_restantes=dias_restantes)
+    return render_template("usuarios/perfil.jinja", profileInfo=profileInfo)
+
 
 @usuarios.route("/usuarios/updateProfile")
 def updateProfile():
@@ -865,7 +882,15 @@ def productsApiordenar(id=0, idUsuario = 0):
             profileInfo = takeProfileInfo(idUsuario)
             cursor.execute("SELECT Hex FROM color_ojos WHERE Id_ColorOjos = %s", (profileInfo[3],))
             coloresOjos = cursor.fetchone()
-            cursor.execute("SELECT productos.* FROM productos INNER JOIN recomendacion ON productos.Id_Productos = recomendacion.Id_Producto ORDER BY CASE WHEN recomendacion.Color_Ojos LIKE %s THEN 1 ELSE 2 END, CASE WHEN recomendacion.Color_Pelo LIKE %s THEN 1 ELSE 2 END, CASE WHEN recomendacion.Color_Piel LIKE %s THEN 1 ELSE 2 END, CASE WHEN recomendacion.Promedio_Edad BETWEEN %s AND %s THEN 1 ELSE 2 END;", ("%" + str(coloresOjos[0]) + "%", "%" + str(profileInfo[6]) + "%", "%" + str(profileInfo[5]) + "%", int(profileInfo[2]) - 3, int(profileInfo[2]) + 3))
+            cursor.execute("""
+                    SELECT productos.* FROM productos
+                    INNER JOIN recomendacion ON productos.Id_Productos = recomendacion.Id_Producto
+                    ORDER BY 
+                        CASE WHEN recomendacion.Color_Ojos LIKE %s THEN 1 ELSE 2 END,
+                        CASE WHEN recomendacion.Color_Pelo LIKE %s THEN 1 ELSE 2 END,
+                        CASE WHEN recomendacion.Color_Piel LIKE %s THEN 1 ELSE 2 END,
+                        CASE WHEN recomendacion.Promedio_Edad BETWEEN %s AND %s THEN 1 ELSE 2 END;
+                """, ("%" + str(coloresOjos[0]) + "%", "%" + str(profileInfo[6]) + "%", "%" + str(profileInfo[5]) + "%", int(profileInfo[2]) - 3, int(profileInfo[2]) + 3))
 
         rows = cursor.fetchall()
         for item in rows:

@@ -252,9 +252,11 @@ $(document).ready(function ($) {
         var modal = $(this);
 
         var alergias = boton.data('alergias');
+        console.log(alergias)
         var ingredientesString = boton.data('ingredientes')
+        
         var ingredientes = ingredientesString.split('|');
-
+        console.log(ingredientes)
         var contentImgs = '';
         contentColores = '';
         var tiposPiel = {
@@ -297,9 +299,9 @@ $(document).ready(function ($) {
 
 
         var indice = alergias.indexOf(productoId);
-        
-        if (indice !== -1) {
-            modal.find('#alergiasInfoProductos').text("El producto contiene ingredientes como: "+ingredientes[indice]+". Le recomendamos que use este producto con precaucion debido a sus alergias");
+        console.log(indice)
+        if (indice != -1) {
+            modal.find('#alergiasInfoProductos').text("El producto contiene ingredientes como: "+ingredientes[indice]+". Le recomendamos que use este producto con precaucion debido a sus alergias").show();
         } else {
            
             modal.find('#alergiasInfoProductos').hide();

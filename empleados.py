@@ -403,6 +403,49 @@ def solicitudes():
         resultado = cursor.fetchall()
     return render_template("empleados/solicitudes.jinja", resultados = resultado,tipo = tipo)
 
+@empleados.route("/administradores/users")
+def users():
+    _, tipo = asignarNombre()
+    with mysql.connect.cursor() as cursor:
+        cursor.execute("SELECT usuarios.id_Usuario, usuarios.Nombre , cuenta.correo FROM usuarios INNER JOIN cuenta ON usuarios.id_Usuario = cuenta.Id_cuenta WHERE usuarios.Id_Usuario != 1")
+        resultado = cursor.fetchall()
+    return render_template("empleados/users.jinja", resultados = resultado,tipo = tipo)
+
+@empleados.route("/administradores/Borrarcliente/<int:id>", methods=['GET', 'POST'])
+def borrar_cliente(id):
+    with mysql.connection.cursor() as cursor:
+        # Eliminar el usuario de la tabla "cuenta"
+        cursor.execute("DELETE FROM cuenta WHERE Id_Usuario = %s", (id,))
+        # Eliminar el usuario de la tabla "usuarios"
+        cursor.execute("DELETE FROM usuarios WHERE Id_Usuario = %s", (id,))
+        mysql.connection.commit()
+
+    # Redirigir a la página que muestra la lista de usuarios actualizada
+    return redirect("/administradores/users")
+
+@empleados.route("/administradores/modificarcliente/<int:id>", methods=['GET', 'POST'])
+def modificar_cliente(id):
+    
+        with mysql.connect.cursor() as cursor:
+            # Actualizar el correo y la contraseña del usuario en la tabla "cuenta"
+            cursor.execute("SELECT Correo,Contraseña FROM Cuenta WHERE Id_Cuenta = %s",(id,))
+            results = cursor.fetchone()
+        # Redirigir a la página que muestra los detalles del usuario actualizado
+     
+        return render_template("empleados/UserEdit.jinja",id=id, user=results)
+
+@empleados.route("/administradores/GuardarUser/<int:id>", methods=['POST'])
+def guardar_usuario(id):
+    nuevo_correo = request.form['EmpEmail']
+    nueva_contrasena = request.form['EmpPassword']
+
+    with mysql.connection.cursor() as cursor:
+        # Actualizar el correo y la contraseña del usuario en la tabla "cuenta"
+        cursor.execute("UPDATE cuenta SET Correo = %s, Contraseña = %s WHERE Id_Cuenta = %s", (nuevo_correo, nueva_contrasena, id))
+        mysql.connection.commit()
+
+    # Redirigir a la página que muestra los detalles del usuario actualizado
+    return redirect("/administradores/users")
 
 @empleados.route("/administradores/aceptarsolicitud/<int:id>")
 def aceptarsolicitud(id):

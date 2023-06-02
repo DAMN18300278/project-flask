@@ -3,6 +3,7 @@ from flask import render_template, Response, request, redirect, flash, session, 
 from flask_mail import Mail, Message
 from flask_session import Session
 from empleados import empleados
+from user_agents import parse
 from flask import jsonify
 from usuarios import usuarios
 from flask_apscheduler import APScheduler
@@ -398,7 +399,7 @@ def validar_correo():
 def noAdec():
     return render_template('index/screen.jinja')
 
-@app.before_request
+#@app.before_request
 def before_request():
     ruta = request.path
 
@@ -407,6 +408,10 @@ def before_request():
 
     if not 'id_administrador' in session and '/administradores' in ruta:
         return redirect("/")
+    
+    user_agent = parse(request.headers.get('User-Agent'))
+    if not user_agent.is_mobile:
+        return render_template('index/screen.jinja')
 
 def procesar_ordenes_pago():
     with app.app_context():
@@ -480,7 +485,7 @@ def run_scheduler():
     
 
 if __name__ == "__main__":
-    sched.add_job(id='run_scheduler', func=run_scheduler, trigger='cron', day_of_week='*', hour=19, minute=25)
+    sched.add_job(id='run_scheduler', func=run_scheduler, trigger='cron', day_of_week='*', hour=23, minute=59)
     sched.start()
 
     app.run(debug=True, host="0.0.0.0", port="3000", threaded=True)
