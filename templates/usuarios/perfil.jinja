@@ -80,11 +80,11 @@
                 <a data-bs-target="#cambiarContraseña" data-bs-toggle="modal">Cambiar contraseña</a>
                 <hr class="w-100">
             </ul>
-            <button class="btn btn-info profile-border w-75 d-flex flex-column" style="height: fit-content;">
+            <button class="btn btn-info profile-border w-75 d-flex flex-column" style="height: auto;">
             {% if profileInfo[7] == 'activo' %}
                 <span style="z-index: 2; height:fit-content; font-weight:bold">Pedido pendiente:</span>
-                <span style="z-index: 2; height:fit-content">ID: #{{ id_orden[0] }}</span>
-                <span style="z-index: 2; height:fit-content">Tiempo restante:</span>
+                <span style="z-index: 2; height:fit-content">ID: #{{ id_orden }}</span>
+                <span style="z-index: 2; height:fit-content">Tiempo restante: {{ dias_restantes}} dias</span>
             {% else %}
                 <span style="z-index: 2; height:fit-content">Por el momento no tiene ningun pedido activo</span>
             {% endif %}

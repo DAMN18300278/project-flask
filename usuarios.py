@@ -5,7 +5,7 @@ from flask_mysqldb import MySQL
 from collections import OrderedDict
 import base64
 from flask_mail import Mail, Message
-from datetime import datetime
+from datetime import datetime, timedelta
 import cv2
 import numpy as np
 import base64
@@ -383,13 +383,21 @@ def takeProfileInfo(id = 0):
 @usuarios.route("/usuarios/perfil")
 def perfil():
     profileInfo = takeProfileInfo()
-    
+
     if profileInfo[7] == 'activo':
         with mysql.connect.cursor() as cursor:
-            cursor.execute("SELECT Id_Orden FROM ordenpago WHERE Id_Usuario = %s ORDER BY Id_Orden DESC", (session.get('id_usuario'),))
-            id_orden = cursor.fetchone()
-        return render_template("usuarios/perfil.jinja", profileInfo = profileInfo, id_orden = id_orden)
-    return render_template("usuarios/perfil.jinja", profileInfo = profileInfo)
+            cursor.execute("SELECT Id_Orden, Fecha FROM ordenpago WHERE Id_Usuario = %s ORDER BY Id_Orden DESC", (session.get('id_usuario'),))
+            id_orden, fecha_orden = cursor.fetchone()
+            fecha_actual = datetime.now()
+            
+            if fecha_orden + timedelta(days=3) > fecha_actual:
+                dias_restantes = (fecha_orden + timedelta(days=3) - fecha_actual).days
+            else:
+                dias_restantes = 0
+
+        return render_template("usuarios/perfil.jinja", profileInfo=profileInfo, id_orden=id_orden, dias_restantes=dias_restantes)
+    return render_template("usuarios/perfil.jinja", profileInfo=profileInfo)
+
 
 @usuarios.route("/usuarios/updateProfile")
 def updateProfile():
