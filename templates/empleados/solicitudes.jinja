@@ -35,8 +35,8 @@
                 {% endfor %} #}
                 </div>
             </div>
-        <div class="table table-hover containerEmp ">
-        <table >
+        <div class="table table-hover containerEmp w-100">
+        <table class="w-100 overflow-hidden">
             <thead style="padding: 5px;">
                 <tr>
                     <th>Id de la Solicitud</th>
@@ -59,19 +59,11 @@
             <td><button class="btn btn-outline-warning" style="font-size: 12px;border-color: rgb(229, 247, 74); color: rgb(247, 149, 58);">{{row[3]}}</button></td>
             {% if row[3] != 'Aprobada'%}
             <td>
-            <a href="Borrarsolicitud/{{row[0]}}" onclick="return confirm('¿Estás seguro de que deseas eliminar la solicitud de producto: {{row[0]}} ?');"><button class="btn btn-outline-danger" style="font-size: 12px;border-color: rgb(92, 4, 16); color: rgb(150, 7, 14);">Deshechar</button></td>
-            {# {%if tipo == 3%} #}
-            </a><td>
+            <a href="Borrarsolicitud/{{row[0]}}" onclick="return confirm('¿Estás seguro de que deseas eliminar la solicitud de producto: {{row[0]}} ?');"><button class="btn btn-outline-danger" style="font-size: 12px;border-color: rgb(92, 4, 16); color: rgb(150, 7, 14);">Deshechar</button></a></td>
             
             <td>
-            <a href="aceptarsolicitud/{{row[0]}}" onclick="return confirm('¿Estás seguro de que deseas aceptar la solicitud de producto: {{row[0]}} ?');"><button class="btn btn-outline-danger" style="font-size: 12px;border-color: rgb(11, 99, 45); color: rgb(10, 85, 22);">Aprobar</button></td>
-            {# {%if tipo == 3%} #}
-            </a><td>
+            <a href="aceptarsolicitud/{{row[0]}}" onclick="return confirm('¿Estás seguro de que deseas aceptar la solicitud de producto: {{row[0]}} ?');"><button class="btn btn-outline-danger" style="font-size: 12px;border-color: rgb(11, 99, 45); color: rgb(10, 85, 22);">Aprobar</button></a></td>
             {%endif%}
-            
-            {# {%if tipo == 3%} #}
-            
-            {# {%endif%} #}
         </tr>
         {% endfor%}
         </tbody>

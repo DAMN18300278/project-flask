@@ -384,10 +384,30 @@ hr{
     font-size: 25px;
 }
 
+#sidebar-exit{
+    transition: all 0.3s ease-out;
+    position: fixed;
+    right: 55px;
+    height: 5vh;
+    width: 10vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 .bi{
     transition: all 0.3s ease-out;
 }
 
 .productLabios, .productPestañas, .productSombras{
     transition: all 0.3s ease-in-out;
+}
+
+input[type=checkbox]{
+    width: 2.5vh;
+    height: 2.5vh;
+}
+
+input[type=checkbox]:checked{
+    background: var(--bs-danger);
 }
