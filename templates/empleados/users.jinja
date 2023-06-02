@@ -1,0 +1,69 @@
+{% extends "empleados/empleadosMaster.jinja" %}
+{% block head %}
+    {{ super() }}
+{% endblock %}
+
+{% block content %}
+    <div class="p-3 py-4">
+        <div class="pt-3 d-flex align-items-center justify-content-center position-relative">
+            <a href="../administradores" class="position-absolute" style="top:0;left:0;" >
+                <i class="text-black bi bi-arrow-left" style="font-size: 25px;"></i>
+            </a>
+
+            <h1 style="font-size: 25px;">Clientes</h1>
+        </div>
+
+        <div class="input-group justify-content-center">
+            <div class="form-outline">
+                <input type="search" id="search" class="form-control" placeholder="search"/>
+            </div>
+            <button type="button" class="btn btn-search" style="background-color: transparent; box-shadow:none"
+                            id="dropdownSearchOjos"
+                type="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false">
+                <i class="bi bi-search"></i>
+            </button>
+        </div>
+        <div class="dropdown-menu px-5 h-50" aria-labelledby="dropdownSearchOjos" style="font-size: 16px; overflow-y:scroll;">
+                <div class="input-group mb-3" style="font-size: 15px;">
+                    <input type="text" class="form-control border border-2" placeholder="Buscar" aria-label="Search" aria-describedby="basic-addon2">
+                </div>
+                <div class="h-100" style="overflow-y: scroll;">
+                {# {% for i in range(1, subelementos) %}
+                    <a class="dropdown-item p-2" href="#" data-bs-toggle="modal" data-bs-target="#infoProducto">Pestaña 3D {{ i }}</a>
+                {% endfor %} #}
+                </div>
+            </div>
+        <div class="table table-hover containerEmp w-100">
+        <table class="w-100 overflow-hidden">
+            <thead style="padding: 5px;">
+                <tr>
+                    <th>Id Usuario</th>
+                    <th>Nombre</th>
+                    <th>Correo</th>
+                                        
+                </tr>
+            </thead>
+            <tbody>
+        {%for row in resultados%}
+        <tr> 
+            <td>{{row[0]}}</td>
+            <td>{{row[1]}}</td>
+            <td>{{row[2]}}</td>
+          
+            {% if row[3] != 'Aprobada'%}
+            <td>
+            <a href="Borrarcliente/{{row[0]}}" onclick="return confirm('¿Estás seguro de que deseas eliminar al usuario con id: {{row[0]}} ?');"><button class="btn btn-outline-danger" style="font-size: 12px;border-color: rgb(92, 4, 16); color: rgb(150, 7, 14);">Borrar</button></a></td>
+            
+            <td>
+            <a href="modificarcliente/{{row[0]}}" ><button class="btn btn-outline-danger" style="font-size: 12px;border-color: rgb(11, 99, 45); color: rgb(10, 85, 22);">Editar</button></a></td>
+            {%endif%}
+        </tr>
+        {% endfor%}
+        </tbody>
+        </table>
+        </div> 
+    
+    </div>
+{% endblock %}
