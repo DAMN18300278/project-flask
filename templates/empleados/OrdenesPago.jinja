@@ -11,6 +11,23 @@
             </a>
 
             <h1 style="font-size: 25px;">Ordenes de pago</h1>
+            <lord-icon
+                src="https://cdn.lordicon.com/sbiheqdr.json"
+                trigger="click"
+                colors="primary:#000,secondary:#810CA8"
+                style="width:40px;height:40px;position:absolute; top:10%; right:-3%"
+                id="dropdownFilterPubs"
+                type="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false">
+            </lord-icon>
+            <ul class="dropdown-menu" aria-labelledby="dropdownFilterPubs" style="font-size: 16px;">
+                <a class="dropdown-item p-3 px-5" id="sortDate">Compras recientes</a>
+                <hr class="dropdown-divider">
+                <a class="dropdown-item p-3 px-5" id="sortUser">Ordenar por usuario</a>
+                <hr class="dropdown-divider">
+                <a class="dropdown-item p-3 px-5" id="sortType">Tipo de entrega</a>
+            </ul>
         </div>
 
         <div class="input-group justify-content-center">
@@ -47,27 +64,27 @@
                     
                 </tr>
             </thead>
-            <tbody>
-        {%for row in resultados%}
-        <tr> 
-            <td>{{row[0]}}</td>
-            <td>{{row[1]}}</td>
-            <td>{{row[2]}}</td>
-            <td><a href="/administradores/OrdenEspecifica/{{row[0]}}"> <button class="btn btn-outline-danger" style="font-size: 12px;">Ver Orden</button></a> </td>
-            <td><button class="btn btn-outline-warning" style="font-size: 12px;border-color: rgb(10, 92, 4); color: rgb(7, 150, 24);">{{row[3]}}</button></td>
-            {# {%if tipo == 3%} #}
-            <td>
-            <a href="BorrarOrden/{{row[0]}}" onclick="return confirm('¿Estás seguro de que deseas borrar la orden de pago: {{row[0]}} ?');">
-                <lord-icon
-                    src="https://cdn.lordicon.com/jmkrnisz.json"
-                    trigger="click"
-                    style="width:26px;height:26px" onclick="">
-                </lord-icon> 
-            </a></td>
-            {# {%endif%} #}
-        </tr>
-        {% endfor%}
-        </tbody>
+            <tbody id="tbodyOrdenes">
+                {%for row in resultados%}
+                <tr class="ordenesListItem" data-id="{{ row[0] }}" data-entregado="{{ row[3] }}" data-usuario="{{ row[1] }}"> 
+                    <td>{{row[0]}}</td>
+                    <td>{{row[1]}}</td>
+                    <td>{{row[2]}}</td>
+                    <td><a href="/administradores/OrdenEspecifica/{{row[0]}}"> <button class="btn btn-outline-danger" style="font-size: 12px;">Ver Orden</button></a> </td>
+                    <td><button class="btn btn-outline-warning" style="font-size: 12px;border-color: rgb(10, 92, 4); color: rgb(7, 150, 24);">{{row[3]}}</button></td>
+                    {# {%if tipo == 3%} #}
+                    <td>
+                    <a href="BorrarOrden/{{row[0]}}" onclick="return confirm('¿Estás seguro de que deseas borrar la orden de pago: {{row[0]}} ?');">
+                        <lord-icon
+                            src="https://cdn.lordicon.com/jmkrnisz.json"
+                            trigger="click"
+                            style="width:26px;height:26px" onclick="">
+                        </lord-icon> 
+                    </a></td>
+                    {# {%endif%} #}
+                </tr>
+                {% endfor%}
+            </tbody>
         </table>
         </div> 
     

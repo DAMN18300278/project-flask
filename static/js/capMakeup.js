@@ -46,11 +46,13 @@ navigator.getMedia.getUserMedia({video:true})
 
 const sidebar = document.getElementById('sidebar');
 const sidebarToggle = document.getElementById('sidebar-toggle');
+const sidebarExit = document.getElementById('sidebar-exit');
 const iconSidebar = document.getElementById('iconSidebar');
 
 sidebarToggle.addEventListener('click', function() {
   sidebar.style.right = sidebar.style.right === '0%' ? '-43%' : '0%';
   sidebarToggle.style.right = sidebarToggle.style.right === '43%' ? '0' : '43%';
+  sidebarExit.style.right = sidebarExit.style.right === 'calc(43% + 55px)' ? '55px' : 'calc(43% + 55px)';
   iconSidebar.style.rotate = iconSidebar.style.rotate === '180deg' ? '0deg' : '180deg';
 
   if($('#sidebar').hasClass('active')){
@@ -86,28 +88,23 @@ $('#capture-btn').on('click', function(){
           capture = !capture;
           // Mostrar el modal
           $('#modal-text').text("Foto tomada exitosamente!");
+          $('#modal-title').text('Mensaje');
           $('#modal-alerts').modal('show');
           $('#capture-btn').hide();
           $('#options').show();
           $('#video').hide();
         
-          // Establecer el temporizador para ocultar el modal después de 3 segundos (3000 ms)
-          setTimeout(function() {
-            $('#modal-alerts').modal('hide');
-          }, 3000);
         }else{
           imageData = '';
           $('#canvasFoto').hide();
           $('#canvasResult').hide();
           
           // Mostrar el modal
+          $('#modal-title').text('Error en la foto');
           $('#modal-text').text("Por favor intente colocar su cabeza un poco más derecha para facilitar el sistema de probado");
           $('#modal-alerts').modal('show');
         
           // Establecer el temporizador para ocultar el modal después de 3 segundos (3000 ms)
-          setTimeout(function() {
-            $('#modal-alerts').modal('hide');
-          }, 3000);
         }
       }
     });

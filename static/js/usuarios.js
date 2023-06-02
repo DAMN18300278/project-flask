@@ -144,6 +144,7 @@ function snapContainerTranslateRight(e) {
     }
 }
 
+
 $(document).ready(function ($) {
     
     document.getElementById("body").style.display = "block"; 
@@ -372,6 +373,7 @@ $(document).ready(function ($) {
             });
         }, 3000);
 
+        var inner = "";
         $.ajax({
             url: '/usuarios/conjunto',
             contentType: 'application/json',
@@ -379,14 +381,52 @@ $(document).ready(function ($) {
             data: JSON.stringify({ productoid: productoId }),
             dataType: 'json',
             success: function(response) {
-                console.log(response);
+                $('#conjuntos').empty();
+                if(response.length > 0){
+
+                    let count = 1;
+                    response.forEach(element => {
+                        if(count < 7){
+                            $.ajax({
+                                url: `/productsApi/${element}`,
+                                type: 'GET',
+                                success: function (response2){
+                                    var producto = response2['Productos'][0];
+                                    var imgInner = `static/src/img${element}_1.jpg`;
+                                    inner += 
+                                    `<div class="w-50 mx-3">
+                                        <div class="border border-1 box-shadow1 position-relative productConjunto"
+                                        data-bs-toggle="modal"
+                                        data-
+                                        data-bs-target="#infoProducto" 
+                                        data-producto="${JSON.stringify(producto)}"
+                                        onclick="$('#infoProducto').modal('show')"
+                                        data-alergias="${alergias}"
+                                        data-ingredientes="${ingredientes}" style="width:6.5em; height:6.5em;">
+                                            <img src="${imgInner}" style="width:6em; height:6em;">
+                                            <div class="position-absolute border border-danger bg-white py-1 px-2" style="bottom: 5%; left: 5%; overflow:hidden; max-width:90%">
+                                                <p class="mb-0 text-start" style="font-size: 9px;letter-spacing:1px;white-space:break-spaces">${producto['Nombre']}</p>
+                                                <p class="mb-0 text-start" style="font-size: 8px;letter-spacing:1px;font-weight: bold;">$${producto['Precio u.']}</p>
+                                            </div>
+                                        </div>
+                                    </div>`;
+                                    $('#conjuntos').html(inner);
+                                },
+                                error: function (error) {
+                                    console.log(error);
+                                }
+                            });
+                        }
+                    count++;
+                });
+                }
             },
             error: function(error) {
                 console.log(error);
             }
         });
     });
-
+    
     $('#infoProducto').on('hidden.bs.modal', function(){
         clearTimeout(timeoutId);
         var modal = $(this);
@@ -500,14 +540,14 @@ $(document).ready(function ($) {
         }
       });
       
-      $('#btn-plus').click(function() {
-        var input = $('#cantidad');
-        var value = parseInt(input.val());
-        var max = parseInt(input.attr('max')); // Obtener el valor de max
-        if (value < max || isNaN(max)) { // Verificar si value es menor a max
-          input.val(value + 1);
-        }
-      });
+    $('#btn-plus').click(function() {
+    var input = $('#cantidad');
+    var value = parseInt(input.val());
+    var max = parseInt(input.attr('max')); // Obtener el valor de max
+    if (value < max || isNaN(max)) { // Verificar si value es menor a max
+        input.val(value + 1);
+    }
+    });
 
     $('#btn-addcarrito').click(function() {
       
@@ -805,6 +845,14 @@ $(document).ready(function ($) {
 
 });
 
+// $(document).on('click', '.productConjunto', function(){
+//     $('#infoProducto').modal('hide');
+//     console.log($(this));
+//     setTimeout(() => {
+//         $(this).trigger('data-bs-toggle');
+//     }, 1000)
+// });
+
 $(document).on('click', '.star', function(event) {
     $items = $('.star')
     $($items).removeClass('starSelected')
@@ -948,7 +996,6 @@ $(document).on('click', '.colores-info', function(event){
     
     output.text(nombreColor)
 });
-
 
 const animateCSS = (element, animation, prefix = 'animate__') =>
 // We create a Promise and return it
