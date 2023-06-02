@@ -19,7 +19,7 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h1 class="modal-title ">Alertas</h1>
+          <h1 class="modal-title" id="modal-title">Mensaje</h1>
           <h3 class="close" data-dismiss="modal"><i class="bi bi-x-lg"></i></s>
         </div>
         <div class="modal-body">
@@ -29,14 +29,18 @@
     </div>
   </div>
 
+  {% if productos is defined %}
   <div class="container" style="z-index: 4;" id="sideBarDiv">
+    <a href="/usuarios" class="mt-5 btn btn-info px-4" id="sidebar-exit" style="color:black; text-decoration:none">
+      Salir
+    </a>
     <div class="mt-5" id="sidebar-toggle"><i class="bi bi-caret-left-fill d-grid place-items-center text-danger" id="iconSidebar" style="rotate: 0deg"></i></div>
     <div id="sidebar" class="p-4" style="overflow-y: scroll;">
       {% set productosLabios = [] %}
       {% set productosPestañas = [] %}
       {% set productosSombras = [] %}
       {% for producto in productos %}
-          {% if 'labial' in producto['Tipo']|lower or 'gloss' in producto['Tipo'] %}
+          {% if 'labial' in producto['Tipo']|lower or 'gloss' in producto['Tipo']|lower %}
               {% set _ = productosLabios.append(producto) %}
           {% endif %}
           {% if 'pestaña' in producto['Tipo']|lower %}
@@ -90,6 +94,7 @@
       {% endfor %}
     </div>
   </div>
+  {% endif %}
 
   <div class="d-flex flex-column align-items-center justify-content-center" id="containerFilter">
     <video id="video" class="position-absolute" style="z-index: 0;object-fit:cover;left:0;right:0;bottom:0;top:0;max-height:100%"></video>
@@ -104,6 +109,8 @@
       </div>
     </div>
 
+    {% if productos is defined %}
+    
     <div id="optionsColors" style="z-index: 5;">
       <div class="position-absolute w-100 d-flex justify-content-center" style="bottom: 10%; left: 0%;">
         <div class="filter-container">
@@ -115,6 +122,7 @@
         </div>
       </div>
     </div>
+    {% endif %}
   </div>
 
   {% if starter != "" %}

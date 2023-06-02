@@ -208,54 +208,6 @@ def statusEntregado(id):
         
     return redirect("/administradores/OrdenesPago")
 
-@empleados.route("/administradores/OrdenEspecifica/crearorden/<string:id>")
-def crearorden(id):
-    
-    with mysql.connect.cursor() as cursor:
-        cursor.execute("SELECT Estatus_Pedido FROM usuarios WHERE Id_Usuario = %s", (id,))
-        result = cursor.fetchone()
-        cursor.execute("SELECT Correo FROM usuarios WHERE Id_Usuario = %s", (id,))
-        print(result)
-        if result and result[0] == 'activo':  # Verificar si existe el registro y si el estatus es 'activo'
-            
-            flash('pedido activo.')
-            return redirect("/usuarios/ordencarrito/"+id)
-        else:
-            with mysql.connect.cursor() as cursor:
-                cursor.execute("SELECT carrito From usuarios where Id_Usuario = %s",(id,))
-                fetch = cursor.fetchone()
-                carrito = fetch[0].split('|') 
-                
-                numero = len(carrito)
-                
-                i = 0
-                for producto in carrito:
-                    producto = producto.split(',')
-                    productos.append(producto)
-                 
-                    with mysql.connect.cursor() as cursor:
-                        cursor.execute("SELECT Cantidad,Nombre From productos where Id_Productos = %s",(producto[0],))
-                        result = cursor.fetchone()
-                        cantidad = int(result[0])
-                        nombre= result[1]
-                       
-                        if cantidad > int(producto[1]) :
-                            cantidad = cantidad - int(producto[1])
-
-                            with mysql.connection.cursor() as cursor:
-                                cursor.execute("UPDATE productos SET Cantidad = %s WHERE Id_Productos = %s", (cantidad,producto[0]))
-                        else:
-                                flash('No hay suficiente cantidad del producto ' + nombre)
-                                return redirect("/usuarios/ordencarrito/"+id)
-            with mysql.connection.cursor() as cursor:
-                cursor.execute("INSERT INTO ordenpago(Id_Orden, Id_Usuario, Fecha, Status) VALUES (NULL, %s, NOW(), 'Pagado, recoger en caja')", (id,))
-                cursor.execute("UPDATE usuarios SET Estatus_Pedido = 'activo' WHERE Id_Usuario = %s", (id,))
-                mysql.connection.commit()
-            flash('Se ha insertado la orden de pago exitosamente.')
-            numeroorden(id)
-            actualizaredad(id)
-    return redirect("/administradores/OrdenesPago")
-
 @empleados.route("/administradores/OrdenEspecifica/<string:id>")
 def OrdenUsuario(id):
 

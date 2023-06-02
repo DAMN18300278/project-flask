@@ -1,6 +1,6 @@
 import flask
 import requests
-from flask import session, render_template, redirect, jsonify, make_response, url_for, request, flash, Response
+from flask import session, render_template, redirect, jsonify, make_response, url_for, request, flash
 from flask_mysqldb import MySQL
 from collections import OrderedDict
 import base64
@@ -778,35 +778,38 @@ def actualizar_promedios():
 @usuarios.route("/usuarios/probado")
 @usuarios.route("/usuarios/probado/<string:starter>", methods=['GET', 'POST'])
 def tasks(starter = ""):
-    products = starter.split(',')
+    if starter != "":
+        products = starter.split(',')
 
-    labialId = products[0].split(':')[0]
-    sombrasId = products[2].split(':')[0]
-    pestañasId = products[1]
+        labialId = products[0].split(':')[0]
+        sombrasId = products[2].split(':')[0]
+        pestañasId = products[1]
 
-    if labialId != '0':
-        idProduct = labialId
-    elif sombrasId != '0':
-        idProduct = sombrasId
-    elif pestañasId != '0':
-        idProduct = pestañasId
+        if labialId != '0':
+            idProduct = labialId
+        elif sombrasId != '0':
+            idProduct = sombrasId
+        elif pestañasId != '0':
+            idProduct = pestañasId
 
-    link = url_for('usuarios.productsApi', _external=True, id = idProduct)
-    response = requests.get(link).json()
-    data = response['Productos'][0]
-    if data['Categoria'] == 'labios':
-        initialPart = 0
-    elif 'Pestaña' in data['Tipo']:
-        initialPart = 1
+        link = url_for('usuarios.productsApi', _external=True, id = idProduct)
+        response = requests.get(link).json()
+        data = response['Productos'][0]
+        if data['Categoria'] == 'labios':
+            initialPart = 0
+        elif 'Pestaña' in data['Tipo']:
+            initialPart = 1
+        else:
+            initialPart = 2
+        coloresIniciales = data['Colores']
+
+        link = url_for('usuarios.productsApi', _external=True)
+        response = requests.get(link).json()
+        listProducts = response['Productos']
+
+        return render_template("usuarios/cam.jinja", starter = starter, colores = coloresIniciales, idProductStarter = idProduct, productos = listProducts, initialPart = initialPart)
     else:
-        initialPart = 2
-    coloresIniciales = data['Colores']
-
-    link = url_for('usuarios.productsApi', _external=True)
-    response = requests.get(link).json()
-    listProducts = response['Productos']
-
-    return render_template("usuarios/cam.jinja", starter = starter, colores = coloresIniciales, idProductStarter = idProduct, productos = listProducts, initialPart = initialPart)
+        return render_template("usuarios/cam.jinja", starter = starter)
 
 def actualizaredad(id):
     with mysql.connect.cursor() as cursor:
@@ -937,3 +940,79 @@ def obtener_productos_relacionados():
         conjunto_ordenado = sorted(conjunto_compras.keys(), key=lambda x: conjunto_compras[x], reverse=True)
 
         return jsonify(conjunto_ordenado)
+
+@usuarios.route("/usuarios/OrdenEspecifica/crearorden/<string:id>")
+def crearorden(id):
+    productos = []
+    with mysql.connect.cursor() as cursor:
+        cursor.execute("SELECT Estatus_Pedido FROM usuarios WHERE Id_Usuario = %s", (id,))
+        result = cursor.fetchone()
+        
+        if result and result[0] == 'activo':  # Verificar si existe el registro y si el estatus es 'activo'
+            
+            flash('pedido activo.')
+            return redirect("/usuarios/ordencarrito/"+id)
+        else:
+            with mysql.connect.cursor() as cursor:
+                cursor.execute("SELECT carrito From usuarios where Id_Usuario = %s",(id,))
+                fetch = cursor.fetchone()
+                carrito = fetch[0].split('|') 
+                
+                numero = len(carrito)
+                i = 0
+                for producto in carrito:
+                    producto = producto.split(',')
+                    productos.append(producto)
+                 
+                    with mysql.connect.cursor() as cursor:
+                        cursor.execute("SELECT Cantidad,Nombre From productos where Id_Productos = %s",(producto[0],))
+                        result = cursor.fetchone()
+                        cantidad = int(result[0])
+                        nombre= result[1]
+                       
+                        if cantidad > int(producto[1]) :
+                            cantidad = cantidad - int(producto[1])
+
+                            with mysql.connection.cursor() as cursor:
+                                cursor.execute("UPDATE productos SET Cantidad = %s WHERE Id_Productos = %s", (cantidad,producto[0]))
+                        else:
+                                flash('No hay suficiente cantidad del producto ' + nombre)
+                                return redirect("/usuarios/ordencarrito/"+id)
+                with mysql.connection.cursor() as cursor:
+                    cursor.execute("UPDATE usuarios SET carrito = '' WHERE Id_Usuario = %s", (id,))
+                    cursor.execute("INSERT INTO ordenpago(Id_Usuario, Fecha, Status,carrito) VALUES (%s, NOW(), 'Pagado, recoger en caja', %s)", (id,fetch))
+                    cursor.execute("UPDATE usuarios SET Estatus_Pedido = 'activo' WHERE Id_Usuario = %s", (id,))
+                    mysql.connection.commit()
+            flash('Se ha insertado la orden de pago exitosamente.')
+            numeroorden(id)
+            actualizaredad(id)
+    return redirect("/usuarios")
+
+def numeroorden(id):
+    subject = 'Pedido Realizado con éxito'
+    sender = "decore.makeup.soporte@gmail.com"
+    with mysql.connect.cursor() as cursor:
+        cursor.execute("SELECT MAX(ordenpago.Id_Orden) AS Orden, cuenta.Correo FROM cuenta INNER JOIN usuarios ON cuenta.Id_Cuenta = usuarios.Id_Usuario INNER JOIN ordenpago ON usuarios.Id_Usuario = ordenpago.Id_Usuario WHERE cuenta.Id_Cuenta = %s GROUP BY cuenta.Correo", (id,))
+        resultado = cursor.fetchone()
+    message = Message(subject, sender=sender, recipients=[resultado[1]])
+    message.body = f"Estimado Cliente,\n\nSe ha realizado su pedido correctamente. Su número de orden es:\n\n{resultado[0]}\n\nSaludos,\nEquipo de Decore"
+    mail.send(message)
+
+def actualizaredad(id):
+    with mysql.connect.cursor() as cursor:
+        # Obtener la orden de pago con el Id_Orden más grande
+        cursor.execute("SELECT usuarios.Edad, ordenpago.carrito FROM usuarios INNER JOIN ordenpago ON ORDENPAGO.Id_Usuario = usuarios.Id_Usuario WHERE ordenpago.Id_Usuario = %s ORDER BY ordenpago.Id_Orden DESC LIMIT 1", (id,))
+        result = cursor.fetchone()
+
+        if result:
+            carrito = result[1].split("|")  # Separar los valores por el carácter "|"
+            edad = int(result[0])  # Obtener la edad del usuario
+            
+            with mysql.connection.cursor() as cursor:
+                for item in carrito:
+                    values = item.split(",")  # Separar los valores por el carácter ","
+                    print(values)
+                    producto_id = int(values[0])  # Obtener el primer dígito (Id_Producto)
+                    print(producto_id)
+                    cursor.execute("UPDATE recomendacion SET Promedio_Edad = (Promedio_Edad + %s), NumVentas = (NumVentas+1) WHERE Id_Producto = %s", (edad, producto_id))
+                mysql.connection.commit()

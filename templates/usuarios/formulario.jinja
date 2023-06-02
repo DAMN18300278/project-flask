@@ -45,215 +45,264 @@
     </div>
 
     <div class="position-absolute w-100 h-100" id="alertaAlergias" style="z-index: 2; display: none; background-color: rgba(0, 0, 0, 0.152); top: 0;">
-        <div class="to-left position-relative justify-content-center align-items-center d-flex" style="top: 30%; animation-duration: 0.7s;">
+        <div class="to-left position-relative justify-content-center align-items-center d-flex h-75" style="top: 10%; animation-duration: 0.7s;">
             <div>
-                <svg class="position-absolute" width="30" height="30" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round" style="top: 10; right: 12%;" onclick="document.getElementById('alertaOjos').style.display = 'none'">
+                <svg class="position-absolute" width="30" height="30" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round" style="top: 15%; right: 12%;" onclick="document.getElementById('alertaAlergias').style.display = 'none'">
                     <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
                     <circle cx="12" cy="12" r="9" />
                     <path d="M10 10l4 4m0 -4l-4 4" />
                 </svg>
             </div>
-            <div class="text-center p-4" style="width: 80%; height: fit-content; background-color: white; border-radius: 10px;">
+            <div class="text-center p-5 h-75" style="width: 80%; background-color: white; border-radius: 10px;">
                 <p class="display-4">Alergias</p>
                 
-            <div>
+            <div class="overflow-scroll " style="height: 90%;">
                 <div class="col-md-6">
+                    <hr class="w-100">
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="propilparabeno" name="alergias" value="propilparabeno">
+                        <input class="form-check-input" {% if profileInfo is defined %}{% if 'propilparabeno' in profileInfo[10] %}checked{% endif %}{% endif %} type="checkbox" id="propilparabeno" name="alergias" value="propilparabeno">
                         <label class="form-check-label" for="propilparabeno">Propilparabeno</label>
                     </div>
+                    <hr class="w-100">
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="dioxido-titanio" name="alergias" value="dióxido de titanio">
+                        <input class="form-check-input" {% if profileInfo is defined %}{% if 'dióxido de titanio' in profileInfo[10] %}checked{% endif %}{% endif %} type="checkbox" id="dioxido-titanio" name="alergias" value="dióxido de titanio">
                         <label class="form-check-label" for="dioxido-titanio">Dióxido de Titanio</label>
                     </div>
+                    <hr class="w-100">
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="oxido-hierro" name="alergias" value="óxido de hierro">
+                        <input class="form-check-input" {% if profileInfo is defined %}{% if 'óxido de hierro' in profileInfo[10] %}checked{% endif %}{% endif %} type="checkbox" id="oxido-hierro" name="alergias" value="óxido de hierro">
                         <label class="form-check-label" for="oxido-hierro">Óxido de Hierro</label>
                     </div>
+                    <hr class="w-100">
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="glicerina" name="alergias" value="glicerina">
+                        <input class="form-check-input" {% if profileInfo is defined %}{% if 'glicerina' in profileInfo[10] %}checked{% endif %}{% endif %} type="checkbox" id="glicerina" name="alergias" value="glicerina">
                         <label class="form-check-label" for="glicerina">Glicerina</label>
                     </div>
+                    <hr class="w-100">
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="dimeticona" name="alergias" value="dimeticona">
+                        <input class="form-check-input" {% if profileInfo is defined %}{% if 'dimeticona' in profileInfo[10] %}checked{% endif %}{% endif %} type="checkbox" id="dimeticona" name="alergias" value="dimeticona">
                         <label class="form-check-label" for="dimeticona">Dimeticona</label>
                     </div>
+                    <hr class="w-100">
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="pentylene-glycol" name="alergias" value="pentylene glycol">
+                        <input class="form-check-input" {% if profileInfo is defined %}{% if 'pentylene glycol' in profileInfo[10] %}checked{% endif %}{% endif %} type="checkbox" id="pentylene-glycol" name="alergias" value="pentylene glycol">
                         <label class="form-check-label" for="pentylene-glycol">Pentylene Glycol</label>
                     </div>
+                    <hr class="w-100">
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="ethylhexylglycerin" name="alergias" value="ethylhexylglycerin">
+                        <input class="form-check-input" {% if profileInfo is defined %}{% if 'ethylhexylglycerin' in profileInfo[10] %}checked{% endif %}{% endif %} type="checkbox" id="ethylhexylglycerin" name="alergias" value="ethylhexylglycerin">
                         <label class="form-check-label" for="ethylhexylglycerin">Ethylhexylglycerin</label>
                     </div>
+                    <hr class="w-100">
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="ricinus-communis" name="alergias" value="ricino">
+                        <input class="form-check-input" {% if profileInfo is defined %}{% if 'ricino' in profileInfo[10] %}checked{% endif %}{% endif %} type="checkbox" id="ricinus-communis" name="alergias" value="ricino">
                         <label class="form-check-label" for="ricino">Ricino</label>
                     </div>
+                    <hr class="w-100">
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="tocopherol" name="alergias" value="tocopherol">
+                        <input class="form-check-input" {% if profileInfo is defined %}{% if 'tocopherol' in profileInfo[10] %}checked{% endif %}{% endif %} type="checkbox" id="tocopherol" name="alergias" value="tocopherol">
                         <label class="form-check-label" for="tocopherol">Tocopherol</label>
                     </div>
+                    <hr class="w-100">
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="bismuth-oxychloride" name="alergias" value="bismuth oxychloride">
+                        <input class="form-check-input" {% if profileInfo is defined %}{% if 'bismuth oxychloride' in profileInfo[10] %}checked{% endif %}{% endif %} type="checkbox" id="bismuth-oxychloride" name="alergias" value="bismuth oxychloride">
                         <label class="form-check-label" for="bismuth-oxychloride">Bismuth Oxychloride</label>
                     </div>
+                    <hr class="w-100">
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="carmine" name="alergias" value="carmine">
+                        <input class="form-check-input" {% if profileInfo is defined %}{% if 'carmine' in profileInfo[10] %}checked{% endif %}{% endif %} type="checkbox" id="carmine" name="alergias" value="carmine">
                         <label class="form-check-label" for="carmine">Carmine</label>
                     </div>
+                    <hr class="w-100">
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="silice" name="alergias" value="sílice">
+                        <input class="form-check-input" {% if profileInfo is defined %}{% if 'sílice' in profileInfo[10] %}checked{% endif %}{% endif %} type="checkbox" id="silice" name="alergias" value="sílice">
                         <label class="form-check-label" for="silice">Sílice</label>
                     </div>
+                    <hr class="w-100">
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="mica" name="alergias" value="mica">
+                        <input class="form-check-input" {% if profileInfo is defined %}{% if 'mica' in profileInfo[10] %}checked{% endif %}{% endif %} type="checkbox" id="mica" name="alergias" value="mica">
                         <label class="form-check-label" for="mica">Mica</label>
                     </div>
+                    <hr class="w-100">
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="tocoferol" name="alergias" value="tocoferol">
+                        <input class="form-check-input" {% if profileInfo is defined %}{% if 'tocoferol' in profileInfo[10] %}checked{% endif %}{% endif %} type="checkbox" id="tocoferol" name="alergias" value="tocoferol">
                         <label class="form-check-label" for="tocoferol">Tocoferol</label>
                     </div>
+                    <hr class="w-100">
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="oxidos-hierro" name="alergias" value="óxidos de hierro">
+                        <input class="form-check-input" {% if profileInfo is defined %}{% if 'óxidos de hierro' in profileInfo[10] %}checked{% endif %}{% endif %} type="checkbox" id="oxidos-hierro" name="alergias" value="óxidos de hierro">
                         <label class="form-check-label" for="oxidos-hierro">Óxidos de Hierro</label>
                     </div>
+                    <hr class="w-100">
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="acido-dehydroacetico" name="alergias" value="ácido dehydroacético">
+                        <input class="form-check-input" {% if profileInfo is defined %}{% if 'ácido dehydroacético' in profileInfo[10] %}checked{% endif %}{% endif %} type="checkbox" id="acido-dehydroacetico" name="alergias" value="ácido dehydroacético">
                         <label class="form-check-label" for="acido-dehydroacetico">Ácido Dehydroacético</label>
                     </div>
+                    <hr class="w-100">
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="acido-isostearico" name="alergias" value="ácido isostearico">
+                        <input class="form-check-input" {% if profileInfo is defined %}{% if 'ácido isostearico' in profileInfo[10] %}checked{% endif %}{% endif %} type="checkbox" id="acido-isostearico" name="alergias" value="ácido isostearico">
                         <label class="form-check-label" for="acido-isostearico">Ácido Isostearico</label>
                     </div>
+                    <hr class="w-100">
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="aceite-mineral" name="alergias" value="aceite mineral">
+                        <input class="form-check-input" {% if profileInfo is defined %}{% if 'aceite mineral' in profileInfo[10] %}checked{% endif %}{% endif %} type="checkbox" id="aceite-mineral" name="alergias" value="aceite mineral">
                         <label class="form-check-label" for="aceite-mineral">Aceite Mineral</label>
                     </div>
+                    <hr class="w-100">
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="palmitato-etilhexilo" name="alergias" value="palmitato de etilhexilo">
+                        <input class="form-check-input" {% if profileInfo is defined %}{% if 'palmitato de etilhexilo' in profileInfo[10] %}checked{% endif %}{% endif %} type="checkbox" id="palmitato-etilhexilo" name="alergias" value="palmitato de etilhexilo">
                         <label class="form-check-label" for="palmitato-etilhexilo">Palmitato de Etilhexilo</label>
                     </div>
+                    <hr class="w-100">
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="parafina" name="alergias" value="parafina">
+                        <input class="form-check-input" {% if profileInfo is defined %}{% if 'parafina' in profileInfo[10] %}checked{% endif %}{% endif %} type="checkbox" id="parafina" name="alergias" value="parafina">
                         <label class="form-check-label" for="parafina">Parafina</label>
                     </div>
+                    <hr class="w-100">
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="ceresina" name="alergias" value="ceresina">
+                        <input class="form-check-input" {% if profileInfo is defined %}{% if 'ceresina' in profileInfo[10] %}checked{% endif %}{% endif %} type="checkbox" id="ceresina" name="alergias" value="ceresina">
                         <label class="form-check-label" for="ceresina">Ceresina</label>
                     </div>
+                    <hr class="w-100">
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="alcohol-denat" name="alergias" value="alcohol denat">
+                        <input class="form-check-input" {% if profileInfo is defined %}{% if 'alcohol denat' in profileInfo[10] %}checked{% endif %}{% endif %} type="checkbox" id="alcohol-denat" name="alergias" value="alcohol denat">
                         <label class="form-check-label" for="alcohol-denat">Alcohol Denat</label>
                     </div>
+                    <hr class="w-100">
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="bht" name="alergias" value="BHT">
+                        <input class="form-check-input" {% if profileInfo is defined %}{% if 'BHT' in profileInfo[10] %}checked{% endif %}{% endif %} type="checkbox" id="bht" name="alergias" value="BHT">
                         <label class="form-check-label" for="bht">BHT</label>
                     </div>
+                    <hr class="w-100">
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="metilparabeno" name="alergias" value="metilparabeno">
+                        <input class="form-check-input" {% if profileInfo is defined %}{% if 'metilparabeno' in profileInfo[10] %}checked{% endif %}{% endif %} type="checkbox" id="metilparabeno" name="alergias" value="metilparabeno">
                         <label class="form-check-label" for="metilparabeno">Metilparabeno</label>
                     </div>
+                    <hr class="w-100">
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="goma-xantana" name="alergias" value="goma xantana">
+                        <input class="form-check-input" {% if profileInfo is defined %}{% if 'goma xantana' in profileInfo[10] %}checked{% endif %}{% endif %} type="checkbox" id="goma-xantana" name="alergias" value="goma xantana">
                         <label class="form-check-label" for="goma-xantana">Goma Xantana</label>
                     </div>
+                    <hr class="w-100">
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="ciclometicona" name="alergias" value="ciclometicona">
+                        <input class="form-check-input" {% if profileInfo is defined %}{% if 'ciclometicona' in profileInfo[10] %}checked{% endif %}{% endif %} type="checkbox" id="ciclometicona" name="alergias" value="ciclometicona">
                         <label class="form-check-label" for="ciclometicona">Ciclometicona</label>
                     </div>
+                    <hr class="w-100">
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="isododecano" name="alergias" value="isododecano">
+                        <input class="form-check-input" {% if profileInfo is defined %}{% if 'isododecano' in profileInfo[10] %}checked{% endif %}{% endif %} type="checkbox" id="isododecano" name="alergias" value="isododecano">
                         <label class="form-check-label" for="isododecano">Isododecano</label>
                     </div>
+                    <hr class="w-100">
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="glicol-propileno" name="alergias" value="glicol propileno">
+                        <input class="form-check-input" {% if profileInfo is defined %}{% if 'glicol propileno' in profileInfo[10] %}checked{% endif %}{% endif %} type="checkbox" id="glicol-propileno" name="alergias" value="glicol propileno">
                         <label class="form-check-label" for="glicol-propileno">Glicol Propileno</label>
                     </div>
+                    <hr class="w-100">
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="ciclopentasiloxano" name="alergias" value="ciclopentasiloxano">
+                        <input class="form-check-input" {% if profileInfo is defined %}{% if 'ciclopentasiloxano' in profileInfo[10] %}checked{% endif %}{% endif %} type="checkbox" id="ciclopentasiloxano" name="alergias" value="ciclopentasiloxano">
                         <label class="form-check-label" for="ciclopentasiloxano">Ciclopentasiloxano</label>
                     </div>
+                    <hr class="w-100">
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="fenoxietanol" name="alergias" value="fenoxietanol">
+                        <input class="form-check-input" {% if profileInfo is defined %}{% if 'fenoxietanol' in profileInfo[10] %}checked{% endif %}{% endif %} type="checkbox" id="fenoxietanol" name="alergias" value="fenoxietanol">
                         <label class="form-check-label" for="fenoxietanol">Fenoxietanol</label>
                     </div>
+                    <hr class="w-100">
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="ethylhexyl-palmitate" name="alergias" value="ethylhexyl palmitate">
+                        <input class="form-check-input" {% if profileInfo is defined %}{% if 'ethylhexyl palmitate' in profileInfo[10] %}checked{% endif %}{% endif %} type="checkbox" id="ethylhexyl-palmitate" name="alergias" value="ethylhexyl palmitate">
                         <label class="form-check-label" for="ethylhexyl-palmitate">Ethylhexyl Palmitate</label>
                     </div>
+                    <hr class="w-100">
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="verbena" name="alergias" value="verbena">
+                        <input class="form-check-input" {% if profileInfo is defined %}{% if 'verbena' in profileInfo[10] %}checked{% endif %}{% endif %} type="checkbox" id="verbena" name="alergias" value="verbena">
                         <label class="form-check-label" for="verbena">Verbena</label>
                     </div>
                 </div>
-                <div class="col-md-6">
+                <div class="col-
+                    <hr class="w-100">md-6">
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="polietileno-tereftalato" name="alergias" value="polietileno tereftalato">
+                        <input class="form-check-input" {% if profileInfo is defined %}{% if 'polietileno tereftalato' in profileInfo[10] %}checked{% endif %}{% endif %} type="checkbox" id="polietileno-tereftalato" name="alergias" value="polietileno tereftalato">
                         <label class="form-check-label" for="polietileno-tereftalato">Polietileno Tereftalato</label>
                     </div>
+                    <hr class="w-100">
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="copolimero-acrilatos" name="alergias" value="copolímero de acrilatos">
+                        <input class="form-check-input" {% if profileInfo is defined %}{% if 'copolímero de acrilatos' in profileInfo[10] %}checked{% endif %}{% endif %} type="checkbox" id="copolimero-acrilatos" name="alergias" value="copolímero de acrilatos">
                         <label class="form-check-label" for="copolimero-acrilatos">Copolímero de Acrilatos</label>
                     </div>
+                    <hr class="w-100">
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="fluorflogopita-sintetica" name="alergias" value="fluorflogopita sintética">
+                        <input class="form-check-input" {% if profileInfo is defined %}{% if 'fluorflogopita sintética' in profileInfo[10] %}checked{% endif %}{% endif %} type="checkbox" id="fluorflogopita-sintetica" name="alergias" value="fluorflogopita sintética">
                         <label class="form-check-label" for="fluorflogopita-sintetica">Fluorflogopita Sintética</label>
                     </div>
+                    <hr class="w-100">
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="poliuretano" name="alergias" value="poliuretano">
+                        <input class="form-check-input" {% if profileInfo is defined %}{% if 'poliuretano' in profileInfo[10] %}checked{% endif %}{% endif %} type="checkbox" id="poliuretano" name="alergias" value="poliuretano">
                         <label class="form-check-label" for="poliuretano">Poliuretano</label>
                     </div>
+                    <hr class="w-100">
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="alcohol-polivinilico" name="alergias" value="alcohol polivinílico">
+                        <input class="form-check-input" {% if profileInfo is defined %}{% if 'alcohol polivinílico' in profileInfo[10] %}checked{% endif %}{% endif %} type="checkbox" id="alcohol-polivinilico" name="alergias" value="alcohol polivinílico">
                         <label class="form-check-label" for="alcohol-polivinilico">Alcohol Polivinílico</label>
                     </div>
+                    <hr class="w-100">
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="trimetilsiloxisilicato" name="alergias" value="trimetilsiloxisilicato" >
+                        <input class="form-check-input" {% if profileInfo is defined %}{% if 'trimetilsiloxisilicato' in profileInfo[10] %}checked{% endif %}{% endif %} type="checkbox" id="trimetilsiloxisilicato" name="alergias" value="trimetilsiloxisilicato">
                         <label class="form-check-label" for="trimetilsiloxisilicato">Trimetilsiloxisilicato</label>
                     </div>
+                    <hr class="w-100">
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="pantenol" name="alergias" value="pantenol">
+                        <input class="form-check-input" {% if profileInfo is defined %}{% if 'pantenol' in profileInfo[10] %}checked{% endif %}{% endif %} type="checkbox" id="pantenol" name="alergias" value="pantenol">
                         <label class="form-check-label" for="pantenol">Pantenol</label>
                     </div>
+                    <hr class="w-100">
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="biotina" name="alergias" value="biotina">
+                        <input class="form-check-input" {% if profileInfo is defined %}{% if 'biotina' in profileInfo[10] %}checked{% endif %}{% endif %} type="checkbox" id="biotina" name="alergias" value="biotina">
                         <label class="form-check-label" for="biotina">Biotina</label>
                     </div>
+                    <hr class="w-100">
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="etilhexilglicerina" name="alergias" value="etilhexilglicerina">
+                        <input class="form-check-input" {% if profileInfo is defined %}{% if 'etilhexilglicerina' in profileInfo[10] %}checked{% endif %}{% endif %} type="checkbox" id="etilhexilglicerina" name="alergias" value="etilhexilglicerina">
                         <label class="form-check-label" for="etilhexilglicerina">Etilhexilglicerina</label>
                     </div>
+                    <hr class="w-100">
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="butilenglicol" name="alergias" value="butilenglicol">
+                        <input class="form-check-input" {% if profileInfo is defined %}{% if 'butilenglicol' in profileInfo[10] %}checked{% endif %}{% endif %} type="checkbox" id="butilenglicol" name="alergias" value="butilenglicol">
                         <label class="form-check-label" for="butilenglicol">Butilenglicol</label>
                     </div>
+                    <hr class="w-100">
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="clorfenesina" name="alergias" value="clorfenesina">
+                        <input class="form-check-input" {% if profileInfo is defined %}{% if 'clorfenesina' in profileInfo[10] %}checked{% endif %}{% endif %} type="checkbox" id="clorfenesina" name="alergias" value="clorfenesina">
                         <label class="form-check-label" for="clorfenesina">Clorfenesina</label>
                     </div>
+                    <hr class="w-100">
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="acido-glicolico" name="alergias" value="ácido glicólico">
+                        <input class="form-check-input" {% if profileInfo is defined %}{% if 'ácido glicólico' in profileInfo[10] %}checked{% endif %}{% endif %} type="checkbox" id="acido-glicolico" name="alergias" value="ácido glicólico">
                         <label class="form-check-label" for="acido-glicolico">Ácido Glicólico</label>
                     </div>
+                    <hr class="w-100">
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="cactus-marruecos" name="alergias" value="cactus de Marruecos">
+                        <input class="form-check-input" {% if profileInfo is defined %}{% if 'cactus de Marruecos' in profileInfo[10] %}checked{% endif %}{% endif %} type="checkbox" id="cactus-marruecos" name="alergias" value="cactus de Marruecos">
                         <label class="form-check-label" for="cactus-marruecos">Cactus de Marruecos</label>
                     </div>
+                    <hr class="w-100">
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="manzanilla" name="alergias" value="manzanilla">
+                        <input class="form-check-input" {% if profileInfo is defined %}{% if 'manzanilla' in profileInfo[10] %}checked{% endif %}{% endif %} type="checkbox" id="manzanilla" name="alergias" value="manzanilla">
                         <label class="form-check-label" for="manzanilla">Manzanilla</label>
                     </div>
+                    <hr class="w-100">
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="pepino" name="alergias" value="pepino">
+                        <input class="form-check-input" {% if profileInfo is defined %}{% if 'pepino' in profileInfo[10] %}checked{% endif %}{% endif %} type="checkbox" id="pepino" name="alergias" value="pepino">
                         <label class="form-check-label" for="pepino">Pepino</label>
                     </div>
+                    <hr class="w-100">
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="acido-hialuronico" name="alergias" value="ácido hialurónico">
+                        <input class="form-check-input" {% if profileInfo is defined %}{% if 'ácido hialurónico' in profileInfo[10] %}checked{% endif %}{% endif %} type="checkbox" id="acido-hialuronico" name="alergias" value="ácido hialurónico">
                         <label class="form-check-label" for="acido-hialuronico">Ácido Hialurónico</label>
                     </div>
+                    <hr class="w-100">
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="iris" name="alergias" value="iris">
+                        <input class="form-check-input" {% if profileInfo is defined %}{% if 'iris' in profileInfo[10] %}checked{% endif %}{% endif %} type="checkbox" id="iris" name="alergias" value="iris">
                         <label class="form-check-label" for="iris">Iris</label>
                     </div>
                 </div>
@@ -275,7 +324,7 @@
                 <p class="display-4">Tipo de piel</p>
                 <div class="w-50 d-inline-block" style="font-size: larger;">
                     <div class="form-check" onclick="textoPiel('Normal')">
-                        <input class="form-check-input"  type="radio" name="tipoPiel" id="normal" value="1">
+                        <input class="form-check-input"  type="radio" name="tipoPiel" id="normal" value="1" required>
                         <label class="form-check-label" for="normal">Normal</label>
                     </div>
                     <div class="form-check" onclick="textoPiel('Seca')">
@@ -600,7 +649,7 @@
                         {% endif %}
                     </button>
                     {% if profileInfo is defined %}
-                        <input type="text" id="colorOjos" value="{{ profileInfo[3] }}" name="colorOjos" style="display: none;">
+                        <input type="text" id="colorOjos" value="{{ profileInfo[3] }}" name="colorOjos" style="display: none;" required>
                         <script>
                         $('#btnColorOjos').css('background-color', '#{{ coloresOjos[1] }}'); 
                         if($('#colorOjos').val() < 6 && $('#colorOjos').val() > 2){
@@ -634,12 +683,12 @@
                     <div style="flex: auto; margin-left: 10px;" onclick="document.getElementById('alertaColorPiel').style.display = 'block'">
                         {% if profileInfo is defined %}
                         <div id="divColorPiel" class="input-color" style="background-color: #{{profileInfo[9]}};"></div>
-                        <input type="text" name="colorPiel" id="inputColorPiel" value="{{profileInfo[5]}}" style="display: none;">
-                        <input type="text" name="colorPielForm" id="inputColorPielForm" value="{{profileInfo[9]}}" style="display: none;">
+                        <input type="text" name="colorPiel" id="inputColorPiel" value="{{profileInfo[5]}}" style="display: none;" required>
+                        <input type="text" name="colorPielForm" id="inputColorPielForm" value="{{profileInfo[9]}}" style="display: none;" required>
                         {% else %}
                         <div id="divColorPiel" class="input-color" style="background-color: #fdddca;"></div>
-                        <input type="text" name="colorPiel" id="inputColorPiel" value="fdddca" style="display: none;">
-                        <input type="text" name="colorPielForm" id="inputColorPielForm" value="fdddca" style="display: none;">
+                        <input type="text" name="colorPiel" id="inputColorPiel" value="fdddca" style="display: none;" required>
+                        <input type="text" name="colorPielForm" id="inputColorPielForm" value="fdddca" style="display: none;" required>
                         {% endif %}
                     </div>
                 </div>
@@ -651,10 +700,10 @@
                     <div style="flex: auto; margin-left: 10px;" onclick="document.getElementById('alertaColorPelo').style.display = 'block'">
                         {% if profileInfo is defined %}
                         <div id="divColorCabello" class="input-color" style="background-color: #{{profileInfo[6]}};"></div>
-                        <input type="text" name="colorCabello" id="inputColorCabello" value="{{profileInfo[6]}}" style="display: none;">
+                        <input type="text" name="colorCabello" id="inputColorCabello" value="{{profileInfo[6]}}" style="display: none;" required>
                         {% else %}
                         <div id="divColorCabello" class="input-color" style="background-color: #8d5535;"></div>
-                        <input type="text" name="colorCabello" id="inputColorCabello" style="display: none;">
+                        <input type="text" name="colorCabello" id="inputColorCabello" style="display: none;" required>
                         {% endif %}
                     </div>
                 </div>
