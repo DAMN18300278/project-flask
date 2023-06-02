@@ -31,7 +31,3 @@ $(document).ready(function() {
       $('#tbodyOrdenes').empty().append(lista);
     });
   });
-
-if(window.innerHeight < window.innerWidth){
-    document.location.href = '/noAdec';
-}

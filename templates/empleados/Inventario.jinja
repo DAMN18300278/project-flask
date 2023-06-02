@@ -22,7 +22,8 @@
         <form action="/administradores/reportedeescazes" method="post" onsubmit="mostrarMensaje()">
             <div class="mb-3">
                 <label for="reporteInput" class="form-label">Ingrese la información del reporte:</label>
-                <input type="text" id="reporteInput" name="reporteInput" class="form-control" required>
+                <textarea rows="25" cols="20" maxlength="500" type="text" id="reporteInput" name="reporteInput" class="form-control" required></textarea>
+                <h3 class="w-100 text-start mt-2 text-danger" id="lengthReporte">0 / 500</h3>
             </div>
             <div class="mb-3">
                 <label for="fechaInput" class="form-label">Fecha del reporte:</label>
@@ -106,5 +107,9 @@
     function mostrarMensaje() {
         alert('Reporte enviado');
     }
+
+    $('#reporteInput').keyup(function(){
+        $('#lengthReporte').text(`${$(this).val().length} / 500`)
+    });
     </script>
 {% endblock %}

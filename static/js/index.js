@@ -55,10 +55,6 @@ const validarPass2 = () => {
 }
 
 
-if(window.innerHeight < window.innerWidth && !document.location.href.includes('/noAdec')){
-    document.location.href = '/noAdec';
-}
-
 $(document).ready(function(){
     
     contraA.addEventListener('keyup', ValidarForm);

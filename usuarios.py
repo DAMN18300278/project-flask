@@ -11,6 +11,7 @@ import numpy as np
 import base64
 import mediapipe as mp
 import math
+import hashlib
 
 usuarios = flask.Blueprint('usuarios', __name__)
 mysql = MySQL()
@@ -727,13 +728,12 @@ def processShape():
 @usuarios.route("/usuarios/cambiarContrasena", methods=['POST'])
 def cambiarContraseña():
     data = request.get_json()
-    contraseñaAnterior = data['contraseñaAnterior']
-    contraseñaNueva = data['contraseñaNueva']
+    contraseñaAnterior = hashlib.sha256(data['contraseñaAnterior'].encode('UTF-8')).hexdigest()
+    contraseñaNueva = hashlib.sha256(data['contraseñaNueva'].encode('UTF-8')).hexdigest()
 
     with mysql.connect.cursor() as cursor:
         cursor.execute("SELECT Contraseña FROM cuenta WHERE Id_cuenta = %s", (session.get('id_usuario'),))
         profileInfo = cursor.fetchone()
-    print(profileInfo[0])
 
     if profileInfo[0] != contraseñaAnterior:
         response = {
