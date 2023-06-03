@@ -319,10 +319,6 @@ def validar_correo():
         # El correo no existe
         return jsonify({"existe": False})
 
-@app.route("/noAdec")
-def noAdec():
-    return render_template('index/screen.jinja')
-
 #@app.before_request
 def before_request():
     ruta = request.path
