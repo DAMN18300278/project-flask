@@ -6,12 +6,12 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Decòre</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename= 'bootstrap/dist/css/bootstrap.min.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename= 'css/head.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename= 'css/styles.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename= 'css/stylesIndex.css') }}">
-    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename= 'bootstrap/dist/css/bootstrap.min.css') }}"/>
+    <link rel="stylesheet" href="{{ url_for('static', filename= 'css/head.css') }}"/>
+    <link rel="stylesheet" href="{{ url_for('static', filename= 'css/styles.css') }}"/>
+    <link rel="stylesheet" href="{{ url_for('static', filename= 'css/stylesIndex.css') }}"/>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -54,27 +54,29 @@
     </div>
 
     <script>
+    if($('#g')[0]){
         setTimeout(function(){
-      document.getElementById('g').style.stroke = '#000';
+            document.getElementById('g').style.stroke = '#000';
 
-      anime({
-        targets: '#iconLogin',
-        strokeDashoffset: [anime.setDashoffset, 0],
-        duration: 7000,
-        endDelay: 1000,
-        easing: 'linear',
-        loop: false
-      });
+            anime({
+                targets: '#iconLogin',
+                strokeDashoffset: [anime.setDashoffset, 0],
+                duration: 7000,
+                endDelay: 1000,
+                easing: 'linear',
+                loop: false
+            });
 
-      anime({
-        targets: '#iconLogin',
-        fill: '#000',
-        duration: 2000,
-        endDelay: 1000,
-        easing: 'linear',
-        loop: false
-      });
-    }, 800);
+            anime({
+                targets: '#iconLogin',
+                fill: '#000',
+                duration: 2000,
+                endDelay: 1000,
+                easing: 'linear',
+                loop: false
+            });
+        }, 800);
+    }
     </script>
 
 </body>

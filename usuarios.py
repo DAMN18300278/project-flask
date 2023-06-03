@@ -524,9 +524,9 @@ def waysToMakeup(face_landmarks, image):
         contourSection1 = (345, 436, 416, 367, 434, 430, 394, 379, 365, 397, 288, 366)
         contourSection2 = (116, 216, 192, 138, 214, 210, 169, 150, 136, 172, 58, 137)
     
-    else:
-        contourSection1 = (0, 0)
-        contourSection2 = (0, 0)
+    elif 'Redondo' in face_shape or 'Cuadrado' in face_shape:
+        contourSection1 = (34, 116, 123, 207, 213, 138, 172, 58, 132, 93, 234, 127, 34)
+        contourSection2 = (264, 345, 352, 411, 427, 433, 367, 397, 288, 361, 323, 454, 356, 264)
 
     suject7 = np.array([(face_landmarks.landmark[i].x * image.shape[1], face_landmarks.landmark[i].y * image.shape[0]) for i in contourSection2])
     suject6 = np.array([(face_landmarks.landmark[i].x * image.shape[1], face_landmarks.landmark[i].y * image.shape[0]) for i in contourSection1])
@@ -534,7 +534,7 @@ def waysToMakeup(face_landmarks, image):
     colorContour = 255 - 255, 255 - 197, 255 - 229
     cv2.fillPoly(mask2, [suject6.astype(np.int32)], colorContour)
     cv2.fillPoly(mask2, [suject7.astype(np.int32)], colorContour)
-    mask2 = cv2.GaussianBlur(mask2, (39, 39), 0) # Aplicamos un desenfoque gaussiano para suavizar los bordes de la máscar
+    mask2 = cv2.GaussianBlur(mask2, (23, 23), 0) # Aplicamos un desenfoque gaussiano para suavizar los bordes de la máscar
     image = cv2.addWeighted(image, 1, mask2, -0.9, 0)
 
     return image

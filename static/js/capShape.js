@@ -1,5 +1,6 @@
 $('#options').hide();
 $('#options2').hide();
+$('#resultWays').hide();
 
 // Acceder al video y al botón de captura
 const video = document.getElementById('video');
@@ -69,10 +70,6 @@ $('#capture-btn').on('click', function(){
           $('#options').show();
           $('#video').hide();
         
-          // Establecer el temporizador para ocultar el modal después de 3 segundos (3000 ms)
-          setTimeout(function() {
-            $('#modal-alerts').modal('hide');
-          }, 3000);
         }else{
           imageData = '';
           $('#canvasFoto').hide();
@@ -82,10 +79,6 @@ $('#capture-btn').on('click', function(){
           $('#modal-text').text("Por favor intente colocar su cabeza un poco más derecha para facilitar el sistema de probado");
           $('#modal-alerts').modal('show');
         
-          // Establecer el temporizador para ocultar el modal después de 3 segundos (3000 ms)
-          setTimeout(function() {
-            $('#modal-alerts').modal('hide');
-          }, 3000);
         }
       }
     });
@@ -126,7 +119,18 @@ $('#continuar').on('click', function(){
       }
       processedImage.src = 'data:image/png;base64,' + response.processedImageUrl;
       $('#canvasResult').show();
-        $('#continuar').text(response.Forma);
+      $('#options').hide();
+      $('#resultWays').show();
+      $('#forma').text(`Forma del rostro: ${response.Forma}`);
+      $.ajax({
+        url: `/productsApiordenar/3?0`,
+        type: 'GET',
+        success: function (response) {
+          response.forEach(element => {
+            console.log(element);
+          });
+        }
+      })
     }
   });
 });

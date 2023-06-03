@@ -2,6 +2,7 @@ $('#capture-btn').show();
 $('#options').hide();
 $('#optionsColors').hide();
 $('#sideBarDiv').hide();
+$('#resultWays').hide();
 
 // Acceder al video y al botón de captura
 const video = document.getElementById('video');

@@ -29,10 +29,6 @@ function verificarConexion() {
     });
 }
 
-if(window.innerHeight < window.innerWidth){
-    document.location.href = '/noAdec';
-}
-
 function ircarrito(){
     window.location.href = "/usuarios/ordencarrito/"+idUsuario;
 }
@@ -252,11 +248,9 @@ $(document).ready(function ($) {
         var modal = $(this);
 
         var alergias = boton.data('alergias');
-        console.log(alergias)
         var ingredientesString = boton.data('ingredientes')
-        
         var ingredientes = ingredientesString.split('|');
-        console.log(ingredientes)
+
         var contentImgs = '';
         contentColores = '';
         var tiposPiel = {
@@ -299,9 +293,9 @@ $(document).ready(function ($) {
 
 
         var indice = alergias.indexOf(productoId);
-        console.log(indice)
-        if (indice != -1) {
-            modal.find('#alergiasInfoProductos').text("El producto contiene ingredientes como: "+ingredientes[indice]+". Le recomendamos que use este producto con precaucion debido a sus alergias").show();
+        
+        if (indice !== -1) {
+            modal.find('#alergiasInfoProductos').text("El producto contiene ingredientes como: "+ingredientes[indice]+". Le recomendamos que use este producto con precaucion debido a sus alergias");
         } else {
            
             modal.find('#alergiasInfoProductos').hide();
