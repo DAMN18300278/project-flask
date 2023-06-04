@@ -89,11 +89,10 @@ def añadir_producto():
         tipo_piel = request.form['TipoPiel']
         tipo = request.form['Tipo']
         recomendacion = request.form['Recomendacion']
-        imagen_filtro = request.files.getlist('Imagen_fil[]')
-        filtronames = ','.join([file.filename for file in imagen_filtro])
+       
 
     with mysql.connection.cursor() as cursor:
-            cursor.execute("INSERT INTO productos(Nombre, Imagen, Descripcion, Precio, Nombre_Color, Color_RGBA, Categoria, Recomendacion, Marca, Cantidad , Tipo_Piel, Imagen_filtro, Tipo) VALUES ( %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", ( nombre,num_imagenes, descripcion, precio, nombre_color, color_rgba, categoria, recomendacion, marca, cantidad, tipo_piel, filtronames, tipo))
+            cursor.execute("INSERT INTO productos(Nombre, Imagen, Descripcion, Precio, Nombre_Color, Color_RGBA, Categoria, Recomendacion, Marca, Cantidad , Tipo_Piel, Tipo) VALUES ( %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", ( nombre,num_imagenes, descripcion, precio, nombre_color, color_rgba, categoria, recomendacion, marca, cantidad, tipo_piel, tipo))
             mysql.connection.commit()
             
     return redirect("/administradores/inventario")
@@ -141,14 +140,13 @@ def modificar_producto(id):
         tipo_piel = request.form['TipoPiel']
         tipo = request.form['Tipo']
         recomendacion = request.form['Recomendacion']
-        imagen_filtro = request.files.getlist('Imagen_fil[]')
-        filtronames = ','.join([file.filename for file in imagen_filtro])
+     
 
     with mysql.connection.cursor() as cursor:
             if num_imagenes > 0:
-                cursor.execute("UPDATE productos SET Nombre = %s, Imagen = %s, Descripcion = %s, Precio = %s, Nombre_Color = %s, Color_RGBA = %s, Categoria = %s, Recomendacion = %s, Marca = %s, Cantidad = %s, Tipo_Piel = %s, Imagen_filtro = %s, Tipo = %s WHERE Id_Productos = %s", ( nombre,num_imagenes, descripcion, precio, nombre_color, color_rgba, categoria, recomendacion, marca, cantidad, tipo_piel, filtronames, tipo, id))
+                cursor.execute("UPDATE productos SET Nombre = %s, Imagen = %s, Descripcion = %s, Precio = %s, Nombre_Color = %s, Color_RGBA = %s, Categoria = %s, Recomendacion = %s, Marca = %s, Cantidad = %s, Tipo_Piel = %s, Tipo = %s WHERE Id_Productos = %s", ( nombre,num_imagenes, descripcion, precio, nombre_color, color_rgba, categoria, recomendacion, marca, cantidad, tipo_piel, tipo, id))
             else:
-                cursor.execute("UPDATE productos SET Nombre = %s, Descripcion = %s, Precio = %s, Nombre_Color = %s, Color_RGBA = %s, Categoria = %s, Recomendacion = %s, Marca = %s, Cantidad = %s, Tipo_Piel = %s, Imagen_filtro = %s, Tipo = %s WHERE Id_Productos = %s", ( nombre, descripcion, precio, nombre_color, color_rgba, categoria, recomendacion, marca, cantidad, tipo_piel, filtronames, tipo, id))
+                cursor.execute("UPDATE productos SET Nombre = %s, Descripcion = %s, Precio = %s, Nombre_Color = %s, Color_RGBA = %s, Categoria = %s, Recomendacion = %s, Marca = %s, Cantidad = %s, Tipo_Piel = %s, Tipo = %s WHERE Id_Productos = %s", ( nombre, descripcion, precio, nombre_color, color_rgba, categoria, recomendacion, marca, cantidad, tipo_piel, tipo, id))
 
             mysql.connection.commit()
             

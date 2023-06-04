@@ -54,7 +54,6 @@ def productsApi(id=0):
     'Marca',
     'Stock',
     'Tipo de piel',
-    'Imagenes filtro',
     'Tipo'
     ]
     
@@ -118,11 +117,11 @@ def index():
     data = response['Productos']
 
 
-    link2 = url_for('usuarios.productsApiordenar', _external=True, id ="1", idUsuario = session.get("id_usuario"))
+    link2 = url_for('usuarios.productsApiordenar', _external=True, id ="1", idUsuario = session.get("id_usuario"), tipo="1")
     response2 = requests.get(link2).json()
     data2 = response2['Productos']
 
-    link3 = url_for('usuarios.productsApiordenar', _external=True, id ="2", idUsuario = session.get("id_usuario"))
+    link3 = url_for('usuarios.productsApiordenar', _external=True, id ="2", idUsuario = session.get("id_usuario"), tipo="1")
     response3 = requests.get(link3).json()
     data3 = response3['Productos']
     print(type(session.get("id_usuario")))
@@ -132,7 +131,7 @@ def index():
         response = requests.get(link).json()
         data4 = response['Productos']
     else:
-        link4 = url_for('usuarios.productsApiordenar', _external=True, id ="3", idUsuario = session.get("id_usuario"))
+        link4 = url_for('usuarios.productsApiordenar', _external=True, id ="3", idUsuario = session.get("id_usuario"), tipo="  ")
         response4 = requests.get(link4).json()
         data4 = response4['Productos']
    
@@ -198,7 +197,7 @@ def addcarrito():
 @usuarios.route('/usuarios/kits')
 def kits():
     nombre = asignarNombre()
-    link4 = url_for('usuarios.productsApiordenar', _external=True, id ="3", idUsuario = session.get("id_usuario"))
+    link4 = url_for('usuarios.productsApiordenar', _external=True, id ="3", idUsuario = session.get("id_usuario"), tipo="")
     response4 = requests.get(link4).json()
     data4 = response4['Productos']
 
@@ -207,7 +206,6 @@ def kits():
         del producto['Imagenes']
         del producto['Marca']
         del producto['Tipo de piel']
-        del producto['Imagenes filtro']
         del producto['Tipo']
         del producto['Recomendacion']
 
@@ -806,10 +804,22 @@ def tasks(starter = ""):
         link = url_for('usuarios.productsApi', _external=True)
         response = requests.get(link).json()
         listProducts = response['Productos']
+        with mysql.connect.cursor() as cursor:
+            cursor.execute("Select Tipo from productos where id_productos = %s",(idProduct,))
+            tipo = cursor.fetchone()[0]
 
-        return render_template("usuarios/cam.jinja", starter = starter, colores = coloresIniciales, idProductStarter = idProduct, productos = listProducts, initialPart = initialPart)
+            link2 = url_for('usuarios.productsApiordenar', _external=True, id ="5",idUsuario = session.get("id_usuario"),tipo=tipo)
+            response2 = requests.get(link2).json()
+            data2 = response2['Productos']
+            print(data2)
+        
+
+        return render_template("usuarios/cam.jinja",similares=data2, starter = starter, colores = coloresIniciales, idProductStarter = idProduct, productos = listProducts, initialPart = initialPart)
     else:
-        return render_template("usuarios/cam.jinja", starter = starter)
+        link2 = url_for('usuarios.productsApiordenar', _external=True, id ="4",idUsuario = session.get("id_usuario"),tipo="Piel")
+        response2 = requests.get(link2).json()
+        data2 = response2['Productos']
+        return render_template("usuarios/cam.jinja", starter = starter,similares=data2)
 
 def actualizaredad(id):
     with mysql.connect.cursor() as cursor:
@@ -842,8 +852,8 @@ def actualizar_vistas():
     return jsonify({'success': True})
 
 @usuarios.route("/productsApiordenar")
-@usuarios.route("/productsApiordenar/<string:id>?<string:idUsuario>", methods=['GET'])
-def productsApiordenar(id=0, idUsuario = 0):
+@usuarios.route("/productsApiordenar/<string:id>?<string:idUsuario>?<string:tipo>", methods=['GET'])
+def productsApiordenar(id=0, idUsuario = 0, tipo=""):
     keys = [
     'Id',
     'Nombre', 
@@ -857,7 +867,6 @@ def productsApiordenar(id=0, idUsuario = 0):
     'Marca',
     'Stock',
     'Tipo de piel',
-    'Imagenes filtro',
     'Tipo'
     ]
     
@@ -889,8 +898,27 @@ def productsApiordenar(id=0, idUsuario = 0):
                         CASE WHEN recomendacion.Color_Ojos LIKE %s THEN 1 ELSE 2 END,
                         CASE WHEN recomendacion.Color_Pelo LIKE %s THEN 1 ELSE 2 END,
                         CASE WHEN recomendacion.Color_Piel LIKE %s THEN 1 ELSE 2 END,
-                        CASE WHEN recomendacion.Promedio_Edad BETWEEN %s AND %s THEN 1 ELSE 2 END;
+                        CASE WHEN (recomendacion.Promedio_Edad/recomendacion.NumVentas)  BETWEEN %s AND %s THEN 1 ELSE 2 END;
                 """, ("%" + str(coloresOjos[0]) + "%", "%" + str(profileInfo[6]) + "%", "%" + str(profileInfo[5]) + "%", int(profileInfo[2]) - 3, int(profileInfo[2]) + 3))
+        
+        elif id == "4":
+            profileInfo = takeProfileInfo(idUsuario)
+            cursor.execute("SELECT Hex FROM color_ojos WHERE Id_ColorOjos = %s", (profileInfo[3],))
+            coloresOjos = cursor.fetchone()
+            cursor.execute("""
+                    SELECT productos.* FROM productos
+                    INNER JOIN recomendacion ON productos.Id_Productos = recomendacion.Id_Producto
+                    WHERE productos.Categoria = %s
+                    ORDER BY 
+                        CASE WHEN recomendacion.Color_Ojos LIKE %s THEN 1 ELSE 2 END,
+                        CASE WHEN recomendacion.Color_Pelo LIKE %s THEN 1 ELSE 2 END,
+                        CASE WHEN recomendacion.Color_Piel LIKE %s THEN 1 ELSE 2 END,
+                        CASE WHEN (recomendacion.Promedio_Edad/recomendacion.NumVentas) BETWEEN %s AND %s THEN 1 ELSE 2 END
+                """, (tipo , "%" + str(coloresOjos[0]) + "%", "%" + str(profileInfo[6]) + "%", "%" + str(profileInfo[5]) + "%", int(profileInfo[2]) - 3, int(profileInfo[2]) + 3))
+
+        elif id == "5":
+            cursor.execute("SELECT productos.* FROM productos INNER JOIN recomendacion ON productos.Id_productos = recomendacion.Id_Producto WHERE productos.tipo LIKE %s", (f"%{tipo}%",))
+
 
         rows = cursor.fetchall()
         for item in rows:
@@ -940,6 +968,28 @@ def obtener_productos_relacionados():
         conjunto_ordenado = sorted(conjunto_compras.keys(), key=lambda x: conjunto_compras[x], reverse=True)
 
         return jsonify(conjunto_ordenado)
+
+# @usuarios.route("/usuarios/conjunto", methods=['POST','GET'])
+# def obtener_productos_relacionados():
+#     id_producto = request.json.get('productoid')
+#     with mysql.connect.cursor() as cursor:
+#         cursor.execute("SELECT Carrito FROM ordenpago")  # Obtener todas las órdenes de pago
+#         ordenes_pago = cursor.fetchall()
+        
+#         conjunto_compras = {}
+
+#         for orden in ordenes_pago:
+#             productos = orden[0].split('|')
+#             for producto in productos:
+#                 producto_id = int(producto.split(',')[0])
+#                 if producto_id == id_producto:
+#                     conjunto_ids = [int(p.split(',')[0]) for p in productos if int(p.split(',')[0]) != id_producto]
+#                     for conjunto_id in conjunto_ids:
+#                         conjunto_compras[conjunto_id] = conjunto_compras.get(conjunto_id, 0) + 1
+
+#         conjunto_ordenado = sorted(conjunto_compras.keys(), key=lambda x: conjunto_compras[x], reverse=True)
+
+#         return jsonify(conjunto_ordenado)
 
 @usuarios.route("/usuarios/OrdenEspecifica/crearorden/<string:id>")
 def crearorden(id):
