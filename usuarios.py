@@ -816,11 +816,9 @@ def tasks(starter = ""):
 
         return render_template("usuarios/cam.jinja",similares=data2, starter = starter, colores = coloresIniciales, idProductStarter = idProduct, productos = listProducts, initialPart = initialPart)
     else:
-        link2 = url_for('usuarios.productsApiordenar', _external=True, id ="5",idUsuario = session.get("id_usuario"),tipo="Labial en barra")
+        link2 = url_for('usuarios.productsApiordenar', _external=True, id ="4",idUsuario = session.get("id_usuario"),tipo="Piel")
         response2 = requests.get(link2).json()
         data2 = response2['Productos']
-
-        print(data2)
         return render_template("usuarios/cam.jinja", starter = starter,similares=data2)
 
 def actualizaredad(id):
@@ -903,8 +901,12 @@ def productsApiordenar(id=0, idUsuario = 0, tipo=""):
                         CASE WHEN (recomendacion.Promedio_Edad/recomendacion.NumVentas)  BETWEEN %s AND %s THEN 1 ELSE 2 END;
                 """, ("%" + str(coloresOjos[0]) + "%", "%" + str(profileInfo[6]) + "%", "%" + str(profileInfo[5]) + "%", int(profileInfo[2]) - 3, int(profileInfo[2]) + 3))
         
+        elif id == "4":
+            cursor.execute("SELECT * FROM productos WHERE Categoria = %s", (tipo,))
+
         elif id == "5":
             cursor.execute("SELECT productos.* FROM productos INNER JOIN recomendacion ON productos.Id_productos = recomendacion.Id_Producto WHERE productos.tipo LIKE %s", (f"%{tipo}%",))
+
 
         rows = cursor.fetchall()
         for item in rows:
