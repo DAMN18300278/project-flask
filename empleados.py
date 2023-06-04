@@ -38,10 +38,11 @@ def Agregar():
 
 @empleados.route("/administradores/inventario")
 def invAdmin():
+    nombre, tipo = asignarNombre()
     with mysql.connect.cursor() as cursor:
         cursor.execute("SELECT Id_Productos, Nombre, Cantidad From productos")
         resultado = cursor.fetchall()
-    return render_template("empleados/inventario.jinja" , resultados = resultado)
+    return render_template("empleados/inventario.jinja" , resultados = resultado, tipo=tipo)
 
 @empleados.route("/administradores/inventario/<int:id>", methods=['POST', 'GET'])
 def UpCantidad(id):
@@ -99,6 +100,7 @@ def añadir_producto():
 
 @empleados.route("/administradores/editarProducto/UpdateProducto/<int:id>", methods=['POST','GET'])
 def modificar_producto(id):
+
     if request.method == 'POST':
         nombre = request.form['Nombre']
         imagenes = request.files.getlist('Imagen[]')
