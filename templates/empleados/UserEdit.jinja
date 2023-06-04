@@ -6,15 +6,18 @@
 {% block content %}
 
 <div>
-    <form action="/administradores/GuardarUser/{{id}}" method="post" class="to-left position-absolute p-5 d-flex flex-column justify-content-center align-items-center h-100" style="top: 0; bottom: 0; left: 0; right: 0;">
+
+          
+    <form action="/administradores/GuardarUser/{{id}}" method="post" class="to-left p-5 d-flex flex-column justify-content-center align-items-center h-100" style="top: 0; bottom: 0; left: 0; right: 0;">
 
       <div class="mb-3">
               
-            <a href="../administradores" class="position-absolute" style="top:0;left:0;" >
+            <a href="../users" class="position-absolute" style="top:0;left:0;" >
                 <i class="text-black bi bi-arrow-left" style="font-size: 25px;"></i>
             </a>
             <h1 style="font-size: 25px;">Informacion Usuario</h1>
         
+      </div>
         <div class="mb-3 w-100 form-group d-flex align-items-center flex-column">
           <label for="EmpEmail" class="form-label">Correo</label>
           <input type="email" class="form-control" id="EmpEmail" name="EmpEmail" value="{{user[0]}}" maxlength="100" required>

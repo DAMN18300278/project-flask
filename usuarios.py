@@ -117,11 +117,11 @@ def index():
     data = response['Productos']
 
 
-    link2 = url_for('usuarios.productsApiordenar', _external=True, id ="1", idUsuario = session.get("id_usuario"), tipo="1")
+    link2 = url_for('usuarios.productsApiordenar', _external=True, id ="1", idUsuario = session.get("id_usuario"), tipo=" ")
     response2 = requests.get(link2).json()
     data2 = response2['Productos']
 
-    link3 = url_for('usuarios.productsApiordenar', _external=True, id ="2", idUsuario = session.get("id_usuario"), tipo="1")
+    link3 = url_for('usuarios.productsApiordenar', _external=True, id ="2", idUsuario = session.get("id_usuario"), tipo=" ")
     response3 = requests.get(link3).json()
     data3 = response3['Productos']
     print(type(session.get("id_usuario")))
@@ -131,7 +131,7 @@ def index():
         response = requests.get(link).json()
         data4 = response['Productos']
     else:
-        link4 = url_for('usuarios.productsApiordenar', _external=True, id ="3", idUsuario = session.get("id_usuario"), tipo="  ")
+        link4 = url_for('usuarios.productsApiordenar', _external=True, id ="3", idUsuario = session.get("id_usuario"), tipo=" ")
         response4 = requests.get(link4).json()
         data4 = response4['Productos']
    
@@ -197,7 +197,7 @@ def addcarrito():
 @usuarios.route('/usuarios/kits')
 def kits():
     nombre = asignarNombre()
-    link4 = url_for('usuarios.productsApiordenar', _external=True, id ="3", idUsuario = session.get("id_usuario"), tipo="")
+    link4 = url_for('usuarios.productsApiordenar', _external=True, id ="3", idUsuario = session.get("id_usuario"), tipo=" ")
     response4 = requests.get(link4).json()
     data4 = response4['Productos']
 
@@ -756,13 +756,15 @@ def numeroorden(id):
         cursor.execute("SELECT MAX(ordenpago.Id_Orden) AS Orden, cuenta.Correo FROM cuenta INNER JOIN usuarios ON cuenta.Id_Cuenta = usuarios.Id_Usuario INNER JOIN ordenpago ON usuarios.Id_Usuario = ordenpago.Id_Usuario WHERE cuenta.Id_Cuenta = %s GROUP BY cuenta.Correo", (id,))
         resultado = cursor.fetchone()
     message = Message(subject, sender=sender, recipients=[resultado[1]])
-    message.body = f"Estimado Cliente,\n\nSe ha realizado su pedido correctamente. Su número de orden es:\n\n{resultado[0]}\n\nSaludos,\nEquipo de Decore"
+    
+    message.html = render_template("empleados/emailidorden.jinja", numero_orden=resultado[0])
+    
     mail.send(message)
 
 
 def actualizar_promedios():
     with mysql.connect.cursor() as cursor:
-        cursor.execute("SELECT Id_producto, AVG(Calificacion) AS PromedioCalificacion FROM Foro GROUP BY Id_producto")
+        cursor.execute("SELECT Id_producto, AVG(Calificacion) AS PromedioCalificacion FROM Foro WHERE Fecha >= DATE_SUB(CURDATE(), INTERVAL 3 DAY)  GROUP BY Id_producto;")
         resultados = cursor.fetchall()
 
         for resultado in resultados:
@@ -879,13 +881,13 @@ def productsApiordenar(id=0, idUsuario = 0, tipo=""):
             cursor.execute("""SELECT productos.* FROM productos 
             inner join 
                 recomendacion on productos.Id_productos = recomendacion.Id_Producto 
-            order by NumVentas DESC """)
+            order by (NumVentas+NumVentas2+NumVentas3) DESC """)
 
         elif id == "2":
             cursor.execute("""SELECT productos.* FROM productos 
             inner join 
                 recomendacion on productos.Id_productos = recomendacion.Id_Producto 
-            order by recomendacion.Promedio_Vistas DESC""")
+            order by (recomendacion.Promedio_Vistas + recomendacion.Promedio_Vistas2 +recomendacion.Promedio_Vistas3) DESC""")
 
         elif id == "3":
             profileInfo = takeProfileInfo(idUsuario)
@@ -1038,15 +1040,6 @@ def crearorden(id):
             actualizaredad(id)
     return redirect("/usuarios")
 
-def numeroorden(id):
-    subject = 'Pedido Realizado con éxito'
-    sender = "decore.makeup.soporte@gmail.com"
-    with mysql.connect.cursor() as cursor:
-        cursor.execute("SELECT MAX(ordenpago.Id_Orden) AS Orden, cuenta.Correo FROM cuenta INNER JOIN usuarios ON cuenta.Id_Cuenta = usuarios.Id_Usuario INNER JOIN ordenpago ON usuarios.Id_Usuario = ordenpago.Id_Usuario WHERE cuenta.Id_Cuenta = %s GROUP BY cuenta.Correo", (id,))
-        resultado = cursor.fetchone()
-    message = Message(subject, sender=sender, recipients=[resultado[1]])
-    message.body = f"Estimado Cliente,\n\nSe ha realizado su pedido correctamente. Su número de orden es:\n\n{resultado[0]}\n\nSaludos,\nEquipo de Decore"
-    mail.send(message)
 
 def actualizaredad(id):
     with mysql.connect.cursor() as cursor:

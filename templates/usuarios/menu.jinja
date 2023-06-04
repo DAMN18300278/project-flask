@@ -1,3 +1,4 @@
+{%if idUsuario != 1%}
 <div class="bg-menu dropdown-menu position-fixed animate__animated animate__fadeInDown w-100" aria-labelledby="menu" 
       style=" color: #000; bottom:0; top:45px; left:0; right:0; height:fit-content" id="menuResult">
   <ul class="menu p-5" style="font-size: 16px;">
@@ -34,3 +35,8 @@
   </ul>
 </div>
   
+  {% endif %}
+
+  <script>
+  console.log(idUsuario);
+  </script>
