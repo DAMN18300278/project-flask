@@ -902,7 +902,19 @@ def productsApiordenar(id=0, idUsuario = 0, tipo=""):
                 """, ("%" + str(coloresOjos[0]) + "%", "%" + str(profileInfo[6]) + "%", "%" + str(profileInfo[5]) + "%", int(profileInfo[2]) - 3, int(profileInfo[2]) + 3))
         
         elif id == "4":
-            cursor.execute("SELECT * FROM productos WHERE Categoria = %s", (tipo,))
+            profileInfo = takeProfileInfo(idUsuario)
+            cursor.execute("SELECT Hex FROM color_ojos WHERE Id_ColorOjos = %s", (profileInfo[3],))
+            coloresOjos = cursor.fetchone()
+            cursor.execute("""
+                    SELECT productos.* FROM productos
+                    INNER JOIN recomendacion ON productos.Id_Productos = recomendacion.Id_Producto
+                    WHERE productos.Categoria = %s
+                    ORDER BY 
+                        CASE WHEN recomendacion.Color_Ojos LIKE %s THEN 1 ELSE 2 END,
+                        CASE WHEN recomendacion.Color_Pelo LIKE %s THEN 1 ELSE 2 END,
+                        CASE WHEN recomendacion.Color_Piel LIKE %s THEN 1 ELSE 2 END,
+                        CASE WHEN (recomendacion.Promedio_Edad/recomendacion.NumVentas) BETWEEN %s AND %s THEN 1 ELSE 2 END
+                """, (tipo , "%" + str(coloresOjos[0]) + "%", "%" + str(profileInfo[6]) + "%", "%" + str(profileInfo[5]) + "%", int(profileInfo[2]) - 3, int(profileInfo[2]) + 3))
 
         elif id == "5":
             cursor.execute("SELECT productos.* FROM productos INNER JOIN recomendacion ON productos.Id_productos = recomendacion.Id_Producto WHERE productos.tipo LIKE %s", (f"%{tipo}%",))
