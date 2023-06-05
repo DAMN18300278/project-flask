@@ -21,10 +21,6 @@ mail = Mail()
 mp_face_mesh = mp.solutions.face_mesh
 face_mesh = mp_face_mesh.FaceMesh()
 
-# Inicializar el modelo FaceMesh de MediaPipe
-mp_face_mesh = mp.solutions.face_mesh
-face_mesh = mp_face_mesh.FaceMesh()
-
 def asignarNombre():
     with mysql.connect.cursor() as cursor:
         cursor.execute('SELECT Nombre FROM usuarios WHERE Id_usuario = %s', (session.get('id_usuario'),))
@@ -109,42 +105,7 @@ def productsApi(id=0):
     response.headers["Content-type"] = "application/json"
     return response
 
-@usuarios.route("/usuarios")
-def index():
-    nombre = asignarNombre()
-    link = url_for('usuarios.productsApi', _external=True)
-    response = requests.get(link).json()
-    data = response['Productos']
-
-
-    link2 = url_for('usuarios.productsApiordenar', _external=True, id ="1", idUsuario = session.get("id_usuario"), tipo="1")
-    response2 = requests.get(link2).json()
-    data2 = response2['Productos']
-
-    link3 = url_for('usuarios.productsApiordenar', _external=True, id ="2", idUsuario = session.get("id_usuario"), tipo="1")
-    response3 = requests.get(link3).json()
-    data3 = response3['Productos']
-    print(type(session.get("id_usuario")))
-
-    if session.get("id_usuario") == 1:
-        link = url_for('usuarios.productsApi', _external=True)
-        response = requests.get(link).json()
-        data4 = response['Productos']
-    else:
-        link4 = url_for('usuarios.productsApiordenar', _external=True, id ="3", idUsuario = session.get("id_usuario"), tipo="  ")
-        response4 = requests.get(link4).json()
-        data4 = response4['Productos']
-   
-
-    with mysql.connect.cursor() as cursor:
-        cursor.execute("SELECT Carrito FROM usuarios WHERE Id_Usuario = %s", (session.get('id_usuario'),))
-        fetch = cursor.fetchone()
-        if fetch is None or not fetch[0]:
-            numero = 0
-        else:
-            carritoNum = fetch[0].split("|")
-            numero = len(carritoNum)
-
+def takeAlergies():
     # Obtén las alergias del usuario desde la tabla usuarios
     with mysql.connect.cursor() as cursor:
         cursor.execute("SELECT alergias FROM usuarios WHERE Id_Usuario = %s", (session.get('id_usuario'),))
@@ -166,7 +127,6 @@ def index():
     # Combina las condiciones con OR
     query += " OR ".join(conditions)
 
-
     with mysql.connect.cursor() as cursor:
         cursor.execute(query, params)
         resultados = cursor.fetchall()
@@ -174,6 +134,45 @@ def index():
     # Obtén los Id_producto y los ingredientes coincidentes de los resultados
     id_productos = [resultado[0] for resultado in resultados]
     ingredientes_string = " | ".join([resultado[1] for resultado in resultados])
+
+    return id_productos, ingredientes_string
+
+@usuarios.route("/usuarios")
+def index():
+    nombre = asignarNombre()
+    link = url_for('usuarios.productsApi', _external=True)
+    response = requests.get(link).json()
+    data = response['Productos']
+
+
+    link2 = url_for('usuarios.productsApiordenar', _external=True, id ="1", idUsuario = session.get("id_usuario"), tipo="1")
+    response2 = requests.get(link2).json()
+    data2 = response2['Productos']
+
+    link3 = url_for('usuarios.productsApiordenar', _external=True, id ="2", idUsuario = session.get("id_usuario"), tipo="1")
+    response3 = requests.get(link3).json()
+    data3 = response3['Productos']
+
+    if session.get("id_usuario") == 1:
+        link = url_for('usuarios.productsApi', _external=True)
+        response = requests.get(link).json()
+        data4 = response['Productos']
+    else:
+        link4 = url_for('usuarios.productsApiordenar', _external=True, id ="3", idUsuario = session.get("id_usuario"), tipo="  ")
+        response4 = requests.get(link4).json()
+        data4 = response4['Productos']
+   
+
+    with mysql.connect.cursor() as cursor:
+        cursor.execute("SELECT Carrito FROM usuarios WHERE Id_Usuario = %s", (session.get('id_usuario'),))
+        fetch = cursor.fetchone()
+        if fetch is None or not fetch[0]:
+            numero = 0
+        else:
+            carritoNum = fetch[0].split("|")
+            numero = len(carritoNum)
+
+    id_productos, ingredientes_string = takeAlergies()
     
     return render_template("usuarios/landing.jinja", alergias=id_productos, ingredientes=ingredientes_string, recomendados=data4, populares=data3, ventas=data2, productos=data, idUsuario=session.get('id_usuario'), carrito=numero, nombre=nombre)
 
@@ -181,7 +180,6 @@ def index():
 @usuarios.route("/usuarios/addcarrito", methods=['POST', 'GET'])
 def addcarrito():
     carritoData = request.form['carritoData']
-    print(carritoData)
     idUsuario = session.get('id_usuario')
     with mysql.connect.cursor() as cursor:
         cursor.execute("SELECT Carrito FROM usuarios WHERE Id_Usuario = %s", (session.get('id_usuario'),))
@@ -228,7 +226,6 @@ def eliminar_producto(id):
     with mysql.connect.cursor() as cursor:
         cursor.execute("SELECT Carrito FROM usuarios WHERE Id_Usuario = %s",(id,))
         fetch = cursor.fetchone()
-        print(fetch)
         carrito = fetch[0].split('|')
 
         if not carrito:
@@ -277,7 +274,6 @@ def ordencarrito(id):
 
                 productos[i].append(color[indice_color])
 
-                #print(color[int(productos[int(productos[i][2])])])
                 cursor.execute("SELECT Nombre,Precio FROM productos WHERE Id_Productos = %s", (productos[i][0],))
                 datos = cursor.fetchone()
                 
@@ -369,8 +365,6 @@ def guardarPub():
     Id_producto = request.form['Id_producto']
     Descripcion = request.form['Descripcion']
     Puntuacion = request.form['Puntuacion']
-
-    print(Id_usuario, Id_producto, Descripcion, Puntuacion)
 
     with mysql.connection.cursor() as cursor:
         cursor.execute("INSERT INTO foro(Id_usuario, Id_producto, Descripcion, Calificacion, Fecha) VALUES(%s,%s,%s,%s, CURDATE())", (Id_usuario, Id_producto, Descripcion, Puntuacion))
@@ -679,8 +673,10 @@ def procesar_imagen():
             imagen = capMakeup(imagen, face_landmarks, hexSombras, 1)
 
         if pestañasId != '0':
-            imagen = capEyelash(face_landmarks.landmark[193], face_landmarks.landmark[124], face_landmarks.landmark[163].y, 'static/img/left_eye2.png', imagen, angle=0)
-            imagen = capEyelash(face_landmarks.landmark[353], face_landmarks.landmark[417], face_landmarks.landmark[390].y, 'static/img/right_eye2.png', imagen, angle=0)
+            imgLeft = "static/img/left_eye" + str(pestañasId.split(':')[0]) + ".png"
+            imgRight = "static/img/right_eye" + str(pestañasId.split(':')[0]) + ".png"
+            imagen = capEyelash(face_landmarks.landmark[193], face_landmarks.landmark[124], face_landmarks.landmark[163].y, imgLeft, imagen, angle=0)
+            imagen = capEyelash(face_landmarks.landmark[353], face_landmarks.landmark[417], face_landmarks.landmark[390].y, imgRight, imagen, angle=0)
         
 
     # Convertir la imagen procesada de nuevo a base64
@@ -811,10 +807,19 @@ def tasks(starter = ""):
             link2 = url_for('usuarios.productsApiordenar', _external=True, id ="5",idUsuario = session.get("id_usuario"),tipo=tipo)
             response2 = requests.get(link2).json()
             data2 = response2['Productos']
-            print(data2)
         
+        alergias, ingredientes = takeAlergies()
 
-        return render_template("usuarios/cam.jinja",similares=data2, starter = starter, colores = coloresIniciales, idProductStarter = idProduct, productos = listProducts, initialPart = initialPart)
+        with mysql.connect.cursor() as cursor:
+            cursor.execute("SELECT Carrito FROM usuarios WHERE Id_Usuario = %s", (session.get('id_usuario'),))
+            fetch = cursor.fetchone()
+            if fetch is None or not fetch[0]:
+                numero = 0
+            else:
+                carritoNum = fetch[0].split("|")
+                numero = len(carritoNum)
+
+        return render_template("usuarios/cam.jinja", idUsuario=session.get('id_usuario'), carrito = numero, alergias = alergias, ingredientes = ingredientes,similares=data2, starter = starter, colores = coloresIniciales, idProductStarter = idProduct, productos = listProducts, initialPart = initialPart)
     else:
         link2 = url_for('usuarios.productsApiordenar', _external=True, id ="4",idUsuario = session.get("id_usuario"),tipo="Piel")
         response2 = requests.get(link2).json()
@@ -835,8 +840,6 @@ def actualizaredad(id):
                 for item in carrito:
                     values = item.split(",")  # Separar los valores por el carácter ","
                     producto_id = int(values[0])  # Obtener el primer dígito (Id_Producto)
-                    print(edad)
-                    print(producto_id)
                     cursor.execute("UPDATE recomendacion SET Promedio_Edad = (Promedio_Edad + %s), NumVentas = (NumVentas+1) WHERE Id_Producto = %s", (edad, producto_id))
                 mysql.connection.commit()
 
@@ -852,8 +855,9 @@ def actualizar_vistas():
     return jsonify({'success': True})
 
 @usuarios.route("/productsApiordenar")
-@usuarios.route("/productsApiordenar/<string:id>?<string:idUsuario>?<string:tipo>", methods=['GET'])
+@usuarios.route("/productsApiordenar/<string:id>&<string:idUsuario>&<string:tipo>", methods=['GET'])
 def productsApiordenar(id=0, idUsuario = 0, tipo=""):
+    print(tipo)
     keys = [
     'Id',
     'Nombre', 
@@ -969,28 +973,6 @@ def obtener_productos_relacionados():
 
         return jsonify(conjunto_ordenado)
 
-# @usuarios.route("/usuarios/conjunto", methods=['POST','GET'])
-# def obtener_productos_relacionados():
-#     id_producto = request.json.get('productoid')
-#     with mysql.connect.cursor() as cursor:
-#         cursor.execute("SELECT Carrito FROM ordenpago")  # Obtener todas las órdenes de pago
-#         ordenes_pago = cursor.fetchall()
-        
-#         conjunto_compras = {}
-
-#         for orden in ordenes_pago:
-#             productos = orden[0].split('|')
-#             for producto in productos:
-#                 producto_id = int(producto.split(',')[0])
-#                 if producto_id == id_producto:
-#                     conjunto_ids = [int(p.split(',')[0]) for p in productos if int(p.split(',')[0]) != id_producto]
-#                     for conjunto_id in conjunto_ids:
-#                         conjunto_compras[conjunto_id] = conjunto_compras.get(conjunto_id, 0) + 1
-
-#         conjunto_ordenado = sorted(conjunto_compras.keys(), key=lambda x: conjunto_compras[x], reverse=True)
-
-#         return jsonify(conjunto_ordenado)
-
 @usuarios.route("/usuarios/OrdenEspecifica/crearorden/<string:id>")
 def crearorden(id):
     productos = []
@@ -1061,8 +1043,6 @@ def actualizaredad(id):
             with mysql.connection.cursor() as cursor:
                 for item in carrito:
                     values = item.split(",")  # Separar los valores por el carácter ","
-                    print(values)
                     producto_id = int(values[0])  # Obtener el primer dígito (Id_Producto)
-                    print(producto_id)
                     cursor.execute("UPDATE recomendacion SET Promedio_Edad = (Promedio_Edad + %s), NumVentas = (NumVentas+1) WHERE Id_Producto = %s", (edad, producto_id))
                 mysql.connection.commit()

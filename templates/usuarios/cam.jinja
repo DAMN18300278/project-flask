@@ -15,6 +15,10 @@
 
 {% block content %}
 
+{% with producto=productos[0] %}
+  {% include "usuarios/infoProducto.jinja" %}
+{% endwith %}
+
   <div id="modal-alerts" style="display: none;" class="modal fade p-5">
     <div class="modal-dialog">
       <div class="modal-content">
@@ -57,9 +61,25 @@
       </div>
       {% for producto in productosSombras %}
         {% if producto['Id']|string == idProductStarter|string %}
-          <div class="border border-1 border-danger box-shadow1 position-relative mx-auto mb-5 productSombras" style="max-width:6.5em; max-height:6.5em;" data-id="{{ producto['Id'] }}" data-colores="{{ producto['Colores'] }}">
+          <div class="border border-1 border-danger box-shadow1 position-relative mx-auto mb-5 productSombras" style="max-width:6.5em; max-height:6.5em;" 
+          data-id="{{ producto['Id'] }}" 
+          data-colores="{{ producto['Colores'] }}" 
+          data-tipo="{{ producto['Tipo'] }}"
+          data-bs-toggle="modal" 
+          data-bs-target="#infoProducto" 
+          data-producto="{{ producto }}"
+          data-alergias="{{ alergias }}"
+          data-ingredientes="{{ ingredientes }}">
         {% else %}
-          <div class="border border-1 position-relative mx-auto mb-5 productSombras" style="max-width:6.5em; max-height:6.5em;" data-id="{{ producto['Id'] }}" data-colores="{{ producto['Colores'] }}">
+          <div class="border border-1 position-relative mx-auto mb-5 productSombras" style="max-width:6.5em; max-height:6.5em;" 
+          data-id="{{ producto['Id'] }}" 
+          data-colores="{{ producto['Colores'] }}" 
+          data-tipo="{{ producto['Tipo'] }}" 
+          data-bs-toggle="modal" 
+          data-bs-target="#infoProducto" 
+          data-producto="{{ producto }}"
+          data-alergias="{{ alergias }}"
+          data-ingredientes="{{ ingredientes }}">
         {% endif %}
           {% include "usuarios/productosCardProb.jinja" %}
         </div>
@@ -71,9 +91,25 @@
       </div>
       {% for producto in productosPestañas %}
         {% if producto['Id']|string == idProductStarter|string %}
-          <div class="border border-1 border-danger box-shadow1 position-relative mx-auto mb-5 productPestañas" style="max-width:6.5em; max-height:6.5em;" data-id="{{ producto['Id'] }}" data-colores="{{ producto['Colores'] }}">
+          <div class="border border-1 border-danger box-shadow1 position-relative mx-auto mb-5 productPestañas" style="max-width:6.5em; max-height:6.5em;" 
+          data-id="{{ producto['Id'] }}" 
+          data-colores="{{ producto['Colores'] }}" 
+          data-tipo="{{ producto['Tipo'] }}"
+          data-bs-toggle="modal" 
+          data-bs-target="#infoProducto" 
+          data-producto="{{ producto }}"
+          data-alergias="{{ alergias }}"
+          data-ingredientes="{{ ingredientes }}">
         {% else %}
-          <div class="border border-1 position-relative mx-auto mb-5 productPestañas" style="max-width:6.5em; max-height:6.5em;" data-id="{{ producto['Id'] }}" data-colores="{{ producto['Colores'] }}">
+          <div class="border border-1 position-relative mx-auto mb-5 productPestañas" style="max-width:6.5em; max-height:6.5em;" 
+          data-id="{{ producto['Id'] }}" 
+          data-colores="{{ producto['Colores'] }}" 
+          data-tipo="{{ producto['Tipo'] }}"
+          data-bs-toggle="modal" 
+          data-bs-target="#infoProducto" 
+          data-producto="{{ producto }}"
+          data-alergias="{{ alergias }}"
+          data-ingredientes="{{ ingredientes }}">
         {% endif %}
           {% include "usuarios/productosCardProb.jinja" %}
         </div>
@@ -85,9 +121,25 @@
       </div>
       {% for producto in productosLabios %}
         {% if producto['Id']|string == idProductStarter|string %}
-          <div class="border border-1 border-danger box-shadow1 position-relative mx-auto mb-5 productLabios" style="max-width:6.5em; max-height:6.5em;" data-id="{{ producto['Id'] }}" data-colores="{{ producto['Colores'] }}">
+          <div class="border border-1 border-danger box-shadow1 position-relative mx-auto mb-5 productLabios" style="max-width:6.5em; max-height:6.5em;" 
+          data-id="{{ producto['Id'] }}" 
+          data-colores="{{ producto['Colores'] }}" 
+          data-tipo="{{ producto['Tipo'] }}"
+          data-bs-toggle="modal" 
+          data-bs-target="#infoProducto" 
+          data-producto="{{ producto }}"
+          data-alergias="{{ alergias }}"
+          data-ingredientes="{{ ingredientes }}">
         {% else %}
-          <div class="border border-1 position-relative mx-auto mb-5 productLabios" style="max-width:6.5em; max-height:6.5em;" data-id="{{ producto['Id'] }}" data-colores="{{ producto['Colores'] }}">
+          <div class="border border-1 position-relative mx-auto mb-5 productLabios" style="max-width:6.5em; max-height:6.5em;" 
+          data-id="{{ producto['Id'] }}" 
+          data-colores="{{ producto['Colores'] }}" 
+          data-tipo="{{ producto['Tipo'] }}"
+          data-bs-toggle="modal" 
+          data-bs-target="#infoProducto" 
+          data-producto="{{ producto }}"
+          data-alergias="{{ alergias }}"
+          data-ingredientes="{{ ingredientes }}">
         {% endif %}
           {% include "usuarios/productosCardProb.jinja" %}
         </div>
@@ -109,7 +161,7 @@
       </div>
     </div>
 
-    {% if productos is defined %}
+    {% if starter != "" %}
     
     <div id="optionsColors" style="z-index: 5;">
       <div class="position-absolute w-100 d-flex justify-content-center" style="bottom: 10%; left: 0%;">
@@ -120,33 +172,37 @@
             {% endfor %}
           </div>
         </div>
-
-                <div class="filter-slider d-flex flex-column justify-content-start ">
-                    <h3 class="text-start px-5">Le sugerimos los siguientes productos:</h3>
-                    <div class="d-flex justify-content-start align-items-center w-100 overflow-scroll px-5 pb-5" id="recomendadosPiel">
-                    
-                    
-                    {%if similares is defined%}
-                        {% for producto in similares %}
-
-                            <div class="border border-1 position-relative mx-auto mb-5 productLabios" style="max-width:8em; max-height:8em;" data-id="{{ producto['Id'] }}" data-colores="{{ producto['Colores'] }}">
-
-                            {% set img = 'src/img' + producto['Id']|string + '_1.jpg' %}
-                            <img src="{{ url_for('static', filename = img) }}" style="width:8em; height:8em;">
-                            <div class="position-absolute border  bg-white py-1 px-2" style="bottom: 5%; left: 5%; overflow:hidden; max-width:90%">
-                                <p class="mb-0 text-start" style="font-size: 10px;letter-spacing:1px;white-space:break-spaces; color:black">{{ producto['Nombre'] }} <span style="color: rgb(15, 5, 5);">#{{ producto['Id'] }}</span></p>
-                                <p class="mb-0 text-start" style="font-size: 10px;letter-spacing:1px;font-weight: bold;">${{ producto['Precio u.'] }}</p>
-                            </div>
-                          </div>
-                        {% endfor %}
-                    {%endif%}
-                    </div>
-                </div>
       </div>
     </div>
 
-    
-    {% endif %}
+    <div id="optionsRecomended" style="z-index: 5">
+      <div class="d-flex flex-column justify-content-start position-absolute bg-white" style="top: 20px; left: 15px;">
+        <h3 class="text-start text-dark p-4">Productos similares:</h3>
+        <div class="snap-vertical" id="productosRecomendados">
+        
+        {%if similares is defined%}
+            {% for producto in similares %}
+              <div class="border border-1 position-relative mb-5 snap-section-vertical" style="max-width:7em; max-height:7em;" data-id="{{ producto['Id'] }}" data-colores="{{ producto['Colores'] }}">
+
+                {% set img = 'src/img' + producto['Id']|string + '_1.jpg' %}
+                <img src="{{ url_for('static', filename = img) }}" style="width:7em; height:7em;">
+                <div class="position-absolute border  bg-white py-1 px-2" style="bottom: 5%; left: 5%; overflow:hidden; max-width:90%">
+                    <p class="mb-0 text-start" style="font-size: 10px;letter-spacing:1px;white-space:break-spaces; color:black">{{ producto['Nombre'] }} <span style="color: rgb(15, 5, 5);">#{{ producto['Id'] }}</span></p>
+                    <p class="mb-0 text-start" style="font-size: 10px;letter-spacing:1px;font-weight: bold;">${{ producto['Precio u.'] }}</p>
+                </div>
+              </div>
+            {% endfor %}
+        {%endif%}
+      </div>
+      <div class="position-relative d-flex justify-content-center">
+        <div class="going-down-snap" id="recommendedToggle">
+          <i class="bi bi-caret-down-fill pt-4 text-danger" id="iconRecommended"></i>
+        </div>
+      </div>
+    </div>
+    </div>
+
+    {% else %}
     <div id="resultWays" style="z-index: 5;">
       <div class="position-absolute w-100 d-flex flex-column justify-content-start align-items-center" style="bottom: 10%; left: 0%; color:white">
         <h1 id="forma">Forma del rostro: </h1>
@@ -159,17 +215,13 @@
           <h2 class="mb-0">Aplicar iluminador</h2>
         </div>
 
-        <!-- el siguiente div con el id 'recomedadosPiel' es el que va a contener todos los productos similares, revisa la linea 372 del usuarios.js para la informacion de como se ingresa cada uno de los productos !-->
-        <!-- el comienzo del codigo para ingresar los productos aqui está en la linea 125 del capShape.js !-->
-        
         <div class="d-flex flex-column justify-content-start ">
             <h3 class="text-start px-5">Le sugerimos los siguientes productos:</h3>
             <div class="d-flex justify-content-start align-items-center w-100 overflow-scroll px-5 pb-5" id="recomendadosPiel">
             {%if similares is defined%}
                 {% for producto in similares %}
-                    {# no jala esta mierda para quitar el repetido #}
                     {% if producto['Id']|string != idProductStarter|string %}
-                    <div class="border border-1 position-relative mx-auto mb-5 productLabios" style="max-width:8em; max-height:8em;" data-id="{{ producto['Id'] }}" data-colores="{{ producto['Colores'] }}">
+                    <div class="border border-1 position-relative mx-auto mb-5 productLabios" style="max-width:8em; max-height:8em;" data-id="{{ producto['Id'] }}" data-colores="{{ producto['Colores'] }}" data-tipo="{{ producto['Tipo'] }}">
 
                     {% set img = 'src/img' + producto['Id']|string + '_1.jpg' %}
                     <img src="{{ url_for('static', filename = img) }}" style="width:8em; height:8em;">
@@ -183,9 +235,24 @@
             {%endif%}
             </div>
         </div>
-
-        <!-------------------------------------------------------------------------------------------!-->
       </div>
+    </div>
+    {% endif %}
+  </div>
+
+  <div id="divCarrito">
+    <div class="position-absolute d-flex align-items-center p-2 m-5" id="carrito" style="border: 2px solid rgba(140, 140, 140, 0.586); background-color:rgba(251, 229, 255, 0.789); border-radius:50%; bottom:0; right:0; z-index:5">
+        <lord-icon
+            src="https://cdn.lordicon.com/ggihhudh.json"
+            trigger="click"
+            colors="primary:#121331,secondary:#646e78,tertiary:#E5B8F4"
+            style="width:50px;height:50px; z-index:2"
+            onclick="ircarrito()">
+        </lord-icon>
+
+        <div class="position-absolute bg-white" style="top: -2px; right: -2px; width: 25px; height:25px; z-index:3; border: 2px solid rgba(140, 140, 140, 0.807);border-radius:50%; ">
+            <p class="mb-0 ms-1" id="cantidadCarrito" style="font-size: 14px; text-align:center;font-weight:500; letter-spacing:1px">{{ carrito }}</p>
+        </div>
     </div>
   </div>
 
@@ -193,6 +260,7 @@
     <script>
       var initialJsonProbado = "{{ starter }}";
       var initialPart = "{{ initialPart }}";
+      var idUsuario = "{{ idUsuario }}"
     </script>
     <script src="{{ url_for('static', filename='js/capMakeup.js') }}"></script>
   {% else %}
