@@ -110,7 +110,7 @@
                         {% for i in range(0, subelementos, 24) %}
                         <div class="tab-pane fade {% if loop.first %}show active{% endif %}" id="tab{{ loop.index }}">
                             <div class="row justify-content-start w-100 ms-0 productosLabiosContainer">
-                            {% for j in range(i+2, i+25)%}
+                            {% for j in range(i+2, i+12)%}
                             {% if productosLabios[j] is defined and productosOjos[j] is defined and productosSkinCare[j] is defined and productosPiel[j] is defined%}
                                 {% with producto=productosLabios[j] %}
                                 {% set producto2 = productosPiel[j]%}
@@ -162,12 +162,6 @@
                         </div>
                         {% endfor %}
                     </div>
-                </div>
-
-                <div id="tabs" class="nav nav-tabs" role="tablist">
-                    {% for i in range(0, subelementos, 24) %}
-                    <button class="btn btn-outline-danger m-3 {% if loop.first %}active" aria-selected="true" {%else%} aria-selected="false" {% endif %} id="tablink{{ loop.index }}" data-bs-target="#tab{{ loop.index }}" aria-controls="tab{{ loop.index }}" data-bs-toggle="tab" style="font-size: 15px;">{{ loop.index }}</button>
-                    {% endfor %}
                 </div>
             </div>
         </div>

@@ -25,15 +25,14 @@
                 <textarea rows="25" cols="20" maxlength="500" type="text" id="reporteInput" name="reporteInput" class="form-control" required></textarea>
                 <h3 class="w-100 text-start mt-2 text-danger" id="lengthReporte">0 / 500</h3>
             </div>
-            <div class="mb-3">
-                <label for="fechaInput" class="form-label">Fecha del reporte:</label>
-                <input type="date" id="fechaInput" name="fechaInput" class="form-control" required>
-            </div>
+
             <button type="submit" class="btn btn-danger mt-4" style="font-size: 13px;">Enviar Reporte</button>
         </form>
+        {% if tipo == 3 or tipo == 2%}
         <div>
             <a href="/administradores/inventario/Agregar"><button class="btn btn-danger mt-5" style="font-size: 13px;">Añadir producto</button></a>
         </div>
+        {%endif%}
 
         <hr class="w-100 my-5">
 
@@ -52,7 +51,9 @@
                         <th>Id Producto</th>
                         <th>Nombre Prodcuto</th>
                         <th>Cantidad</th>
+                        {% if tipo == 3 or tipo == 2%}
                         <th>Editar</th>
+                        {%endif%}
                     </tr>
                 </thead>
                 <tbody>
@@ -68,6 +69,7 @@
                                 </form>
                             </div>
                         </td>
+                        {% if tipo == 3 or tipo == 2%}
                         <td>
                             <a href="/administradores/editarProducto/{{row[0]}}"> 
                                 <lord-icon
@@ -76,6 +78,7 @@
                                     style="width:26px;height:26px">
                                 </lord-icon> 
                             </a>
+                        {%endif%}
                         <td style="width: 50px;">
                             <div class="form-group">
                                 <form method="post" action="/administradores/reportedeescazes/{{row[0]}}"  onsubmit="return confirm('¿Desea generar el reporte?')">
