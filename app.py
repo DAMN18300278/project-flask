@@ -314,7 +314,7 @@ def validar_correo():
         # El correo no existe
         return jsonify({"existe": False})
 
-#@app.before_request
+@app.before_request
 def before_request():
     ruta = request.path
 
@@ -324,9 +324,9 @@ def before_request():
     if not 'id_administrador' in session and '/administradores' in ruta:
         return redirect("/")
     
-    user_agent = parse(request.headers.get('User-Agent'))
-    if not user_agent.is_mobile:
-        return render_template('index/screen.jinja')
+    # user_agent = parse(request.headers.get('User-Agent'))
+    # if not user_agent.is_mobile:
+    #     return render_template('index/screen.jinja')
 
 def procesar_ordenes_pago():
     with app.app_context():

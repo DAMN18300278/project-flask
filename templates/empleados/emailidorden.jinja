@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        /* Estilos CSS para el card */
+        .card {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #ffffff;
+            border: 1px solid #cccccc;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .card-header {
+            background-color: #6f42c1;
+            color: #ffffff;
+            padding: 10px;
+            font-size: 20px;
+            text-align: center;
+        }
+        .card-content {
+            padding: 10px;
+            color: #9d7cbf;
+        }
+        .card-content p {
+            margin-bottom: 10px;
+        }
+        .card-content h2 {
+            text-align: center;
+            font-size: 24px;
+        }
+        .card-content h1.align-center {
+            text-align: center;
+            font-size: 36px;
+        }
+        .card-footer {
+            padding: 10px;
+            text-align: center;
+            color: black;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="card-header">
+            <h1>Estimado Cliente</h1>
+        </div>
+        <div class="card-content">
+            <h2 style="color:black">Se ha realizado su pedido correctamente. Su número de orden es:</h2>
+            <h1 class="align-center">{{ numero_orden }}</h1>
+        </div>
+        <div class="card-footer">
+            <p>Saludos,</p>
+            <p>Equipo de Decore</p>
+        </div>
+    </div>
+</body>
+</html>

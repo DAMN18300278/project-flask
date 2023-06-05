@@ -7,7 +7,13 @@
 
 {% block content %}
     {% include "usuarios/nav.jinja" %}
-    {% include "usuarios/menu.jinja" %} 
+    <script>
+    var idUsuario = {{ idUsuario }};
+    
+    </script>
+   
+    {% include "usuarios/menu.jinja" %}
+   
     <div class="horizontal-menu position-relative" style="animation-delay:0.3s;" role="tablist" id="tabsMenu">
         <a class="horizontal-menu-hover horizontal-menu-unset btn-opm" data-index="0" onclick="horizontalMenuChange(1)" id="inicioMenu" style="border-bottom-left-radius: 10px; border-top-left-radius: 10px;">Inicio</a>
         <a class="horizontal-menu-unset btn-opm" data-index="1" onclick="horizontalMenuChange(2)" id="pielMenu">Piel</a>
@@ -40,8 +46,6 @@
         </div>
     </div>
 
-    <script>
-    var idUsuario = {{ idUsuario }};
-    </script>
+    
 
 {% endblock %}
