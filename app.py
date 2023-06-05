@@ -399,13 +399,8 @@ def procesar_ordenes_pago():
 
 sched = APScheduler()
 
-def run_scheduler():
-    print("se ejecuto")
-    procesar_ordenes_pago()
-    
-
 if __name__ == "__main__":
-    sched.add_job(id='run_scheduler', func=run_scheduler, trigger='cron', day_of_week='*', hour=23, minute=59)
+    sched.add_job(id='run_scheduler', func=procesar_ordenes_pago, trigger='cron', day_of_week='*', hour=23, minute=59)
     sched.start()
 
     app.run(debug=True, host="0.0.0.0", port="3000", threaded=True)

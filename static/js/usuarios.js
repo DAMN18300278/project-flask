@@ -281,7 +281,7 @@ $(document).ready(function ($) {
         var precio = productJson['Precio u.'];
 
         for (var i = 0; i < cantidadImgs; i++) {
-            var imgModal = 'static/src/img' + productoId + '_' + (i+1) + '.jpg';
+            var imgModal = '/static/src/img' + productoId + '_' + (i+1) + '.jpg';
             contentImgs += '<div class="snap-section"><img class="imgInfo" src="' + imgModal + '"></div>';
         }
         
@@ -335,10 +335,10 @@ $(document).ready(function ($) {
 
         modal.find('#hexColorInfoProductos').find('.colores-info').first().trigger('click');
 
-        if (tipo.toString().toLowerCase().includes('labial') ||
+        if ((tipo.toString().toLowerCase().includes('labial') ||
             tipo.toString().toLowerCase().includes('pestaña') ||
             tipo.toString().toLowerCase().includes('sombra') ||
-            tipo.toString().toLowerCase().includes('gloss')){
+            tipo.toString().toLowerCase().includes('gloss')) && !document.location.href.includes('probado')){
                 var link;
             
                 switch (categoria) {
@@ -357,7 +357,7 @@ $(document).ready(function ($) {
                 var inner = "<a type='button' class='btn btn-danger me-auto px-4 py-2 d-flex align-items-center' style='border-radius: 0px; font-size:15px' href='\\usuarios\\probado\\" + link + "' id='btnProbar'>Probar</a>"
                 $('#btn-addcarrito').before(inner);
         }else{
-            var inner = "<button type='button' class='btn btn-danger me-auto px-4 py-2 d-flex align-items-center' data-bs-dismiss='modal' style='border-radius: 0px; font-size:15px' id='btnProbar'>Cancelar</button>"
+            var inner = "<button type='button' class='btn btn-danger me-auto px-4 py-2 d-flex align-items-center' data-bs-dismiss='modal' style='border-radius: 0px; font-size:15px' id='btnProbar'>Cerrar</button>"
             $('#btn-addcarrito').before(inner);
         }
     
@@ -396,7 +396,7 @@ $(document).ready(function ($) {
                                 type: 'GET',
                                 success: function (response2){
                                     var producto = response2['Productos'][0];
-                                    var imgInner = `static/src/img${element}_1.jpg`;
+                                    var imgInner = `/static/src/img${element}_1.jpg`;
                                     inner += 
                                     `<div class="w-50 mx-3">
                                         <div class="border border-1 box-shadow1 position-relative productConjunto"

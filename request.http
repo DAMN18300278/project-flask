@@ -1,5 +1,4 @@
 @baseUrl = http://127.0.0.1:3000
-GET {{baseUrl}}/productsApi/1
-
+GET {{baseUrl}}/productsApiordenar/1
 
 
