@@ -254,7 +254,6 @@ def ordencarrito(id):
             
             carrito = fetch[0].split('|') 
             
-
             numero = len(carrito)
             productos = []
             i = 0

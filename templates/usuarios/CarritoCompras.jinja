@@ -130,7 +130,7 @@
             onApprove: function(data, actions){
                 //en detalles se va a guardar todo lo que pase en nuestro pago
                 actions.order.capture().then(function (detalles){
-                   
+                
                     window.location.href="/usuarios/OrdenEspecifica/crearorden/{{id}}"
                 });
             },

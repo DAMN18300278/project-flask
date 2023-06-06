@@ -63,51 +63,6 @@ paypalrestsdk.configure({
 #Este valor es como la contraseña del token
 s = URLSafeTimedSerializer('decore')
 
-@app.route('/procesar_pago', methods=['POST'])
-def procesar_pago():
-    # Obtiene el monto del pago desde el formulario de la solicitud POST
-    total = request.form['total']
-
-    # Crea un pago en PayPal utilizando la biblioteca de PayPal
-    payment = paypalrestsdk.Payment({
-        "intent": "sale",
-        "payer": {
-            "payment_method": "paypal"
-        },
-        "transactions": [
-            {
-                "amount": {
-                    "total": total,
-                    "currency": app.config['PAYPAL_CURRENCY']
-                },
-                "description": "Pago por orden"
-            }
-        ],
-        "redirect_urls": {
-            "return_url": "http://localhost:5000/pago_exitoso",
-            "cancel_url": "http://localhost:5000/pago_cancelado"
-        }
-    })
-
-    # Intenta crear el pago y redirige al usuario a la página de pago de PayPal
-    if payment.create():
-        for link in payment.links:
-            if link.method == "REDIRECT":
-                return redirect(link.href)
-    else:
-        flash("Error al procesar el pago: {}".format(payment.error))
-        return redirect(url_for('carrito_compras'))
-
-@app.route('/pago_exitoso')
-def pago_exitoso():
-    # Renderiza una página de éxito después de que el usuario haya completado el pago
-    return render_template('pago_exitoso.html')
-
-@app.route('/pago_cancelado')
-def pago_cancelado():
-    # Renderiza una página de cancelación si el usuario ha cancelado el pago
-    return render_template('pago_cancelado.html')
-
 @app.route("/")
 def index():
     return render_template("index/login.jinja")
@@ -161,9 +116,6 @@ def send_correo():
         contraseña = request.form['contraseña']
         estado = 'Inactivo'
 
-        #encriptar la contraseña
-        #hashed_password = bcrypt.hashpw(contraseña.encode('utf-8'), bcrypt.gensalt())
-
         # Verificar si ya existe un usuario con el mismo correo electrónico
         with mysql.connect.cursor() as cursor:
             cursor.execute("SELECT Correo FROM cuenta WHERE Correo = %s", (email,))
@@ -186,8 +138,8 @@ def send_correo():
             return render_template("index/register.jinja")
 
         else:
+
             # Insertar el nuevo usuario en la tabla cuenta
-            
             contraseñaHash = hashlib.sha256(contraseña.encode('UTF-8')).hexdigest()
             cursor = mysql.connection.cursor()
             cursor.execute("INSERT INTO cuenta (Rol, Correo, Contraseña, estado) VALUES (5, %s, %s, %s)", (email, contraseñaHash, estado))
@@ -204,6 +156,7 @@ def send_correo():
             link = url_for('confirm', token=token, _external=True)
 
             body = 'Por favor, ingrese al siguiente link para confirmar la creación de su cuenta: '
+            #Este render template es para darle formato al correo
             message.html = render_template("index/email.jinja",body = body , user = email, link = link, boton = "confirmar")
             mail.send(message)
 
@@ -332,8 +285,10 @@ def before_request():
 
 def procesar_ordenes_pago():
     with app.app_context():
+
         #Eliminar orden pagar en caja
         with mysql.connect.cursor() as cursor:
+            #se toma el tiempo entre el dia de hoy y se le resta 24 horas antes
             fecha_limite = datetime.now() - timedelta(hours=24)
             fecha_limite = fecha_limite.strftime('%Y-%m-%d %H:%M:%S')
             cursor.execute("SELECT * FROM ordenpago WHERE Status = 'Pagar en caja' AND Fecha < %s", (fecha_limite,))
@@ -358,6 +313,7 @@ def procesar_ordenes_pago():
                     mysql.connection.commit()
         #Eliminar orden Pagado, recoger en caja
         with mysql.connect.cursor() as cursor:
+            #se toma el tiempo entre el dia de hoy y se le resta 24 horas antes
             fecha_limite_recoger_caja = datetime.now() - timedelta(hours=72)
             fecha_limite_recoger_caja = fecha_limite_recoger_caja.strftime('%Y-%m-%d %H:%M:%S')
             cursor.execute("SELECT * FROM ordenpago WHERE Status = 'Pagado, recoger en caja' AND Fecha < %s", (fecha_limite_recoger_caja,))
@@ -382,6 +338,7 @@ def procesar_ordenes_pago():
                     mysql.connection.commit()
         #Eliminar orden Entregada
         with mysql.connect.cursor() as cursor:
+            #se toma el tiempo entre el dia de hoy y se le resta 180 dias 
             fecha_limite_entregado = datetime.now() - timedelta(days=180)
             fecha_limite_entregado  = fecha_limite_entregado.strftime('%Y-%m-%d %H:%M:%S')
             cursor.execute("SELECT * FROM ordenpago WHERE Status = 'Entregado' AND Fecha < %s", (fecha_limite_entregado,))
@@ -394,10 +351,18 @@ def procesar_ordenes_pago():
                     cursor.execute("DELETE FROM ordenpago WHERE Id_Orden = %s", (orden_pago[0],))
                     mysql.connection.commit()
 
+#creamos un objeto APscheculer
 sched = APScheduler()
 
+#se crea la funcion que verificara el tiempo en que se hizo cada orden y actuar ante ello
+def run_scheduler():
+    procesar_ordenes_pago()
+    
+
 if __name__ == "__main__":
-    sched.add_job(id='run_scheduler', func=procesar_ordenes_pago, trigger='cron', day_of_week='*', hour=23, minute=59)
+    #se configura el job para que se ejecute cada dia a las 12 de la noche
+    sched.add_job(id='run_scheduler', func=run_scheduler, trigger='cron', day_of_week='*', hour=23, minute=59)
+
     sched.start()
 
     port = os.environ.get('PORT')
