@@ -191,7 +191,7 @@ def Admin_empleados_Delete(id):
 def PagosAdmin():
     _, tipo = asignarNombre()
     with mysql.connect.cursor() as cursor:
-        cursor.execute("SELECT OrdenPago.Id_Orden, usuarios.Nombre ,OrdenPago.Fecha, OrdenPago.Status, OrdenPago.Id_Usuario FROM OrdenPago INNER JOIN usuarios ON usuarios.Id_Usuario = OrdenPago.Id_Usuario ORDER BY Id_Orden ASC")
+        cursor.execute("SELECT ordenpago.Id_Orden, usuarios.Nombre ,ordenpago.Fecha, ordenpago.Status, ordenpago.Id_Usuario FROM ordenpago INNER JOIN usuarios ON usuarios.Id_Usuario = ordenpago.Id_Usuario ORDER BY Id_Orden ASC")
         resultado = cursor.fetchall()
     return render_template("empleados/OrdenesPago.jinja", resultados = resultado,tipo = tipo)
 
@@ -376,7 +376,7 @@ def numeroorden(id):
 def actualizaredad(id):
     with mysql.connect.cursor() as cursor:
         # Obtener la orden de pago con el Id_Orden más grande
-        cursor.execute(" SELECT usuarios.Edad, ordenpago.carrito FROM usuarios INNER JOIN ordenpago ON ORDENPAGO.Id_Usuario = usuarios.Id_Usuario WHERE ordenpago.Id_Usuario = %s ORDER BY ordenpago.Id_Orden DESC LIMIT 1", (id,))
+        cursor.execute(" SELECT usuarios.Edad, ordenpago.carrito FROM usuarios INNER JOIN ordenpago ON ordenpago.Id_Usuario = usuarios.Id_Usuario WHERE ordenpago.Id_Usuario = %s ORDER BY ordenpago.Id_Orden DESC LIMIT 1", (id,))
         result = cursor.fetchone()
 
         if result:
