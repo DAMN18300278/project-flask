@@ -8,13 +8,8 @@ from flask import jsonify
 from usuarios import usuarios
 from flask_apscheduler import APScheduler
 from datetime import datetime, timedelta
-import mediapipe as mp
+import os
 import paypalrestsdk
-import threading
-import schedule
-import time
-import cv2
-import math
 from flask_mysqldb import MySQL
 import hashlib
 from jinja2 import ext
@@ -365,6 +360,9 @@ def run_scheduler():
 if __name__ == "__main__":
     #se configura el job para que se ejecute cada dia a las 12 de la noche
     sched.add_job(id='run_scheduler', func=run_scheduler, trigger='cron', day_of_week='*', hour=23, minute=59)
+
     sched.start()
 
-    app.run(debug=True, host="0.0.0.0", port="3000", threaded=True)
+    port = os.environ.get('PORT')
+
+    app.run(debug=True, host="0.0.0.0", port=port, threaded=True)

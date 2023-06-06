@@ -3,6 +3,8 @@ $('#options').hide();
 $('#optionsColors').hide();
 $('#sideBarDiv').hide();
 $('#resultWays').hide();
+$('#optionsRecomended').hide();
+$('#divCarrito').hide();
 
 // Acceder al video y al botón de captura
 const video = document.getElementById('video');
@@ -49,11 +51,13 @@ const sidebar = document.getElementById('sidebar');
 const sidebarToggle = document.getElementById('sidebar-toggle');
 const sidebarExit = document.getElementById('sidebar-exit');
 const iconSidebar = document.getElementById('iconSidebar');
+const iconRecommended = document.getElementById('iconRecommended');
+const productosRecomendados = document.getElementById('productosRecomendados');
+const recommendedToggle = document.getElementById('recommendedToggle');
 
 sidebarToggle.addEventListener('click', function() {
   sidebar.style.right = sidebar.style.right === '0%' ? '-43%' : '0%';
   sidebarToggle.style.right = sidebarToggle.style.right === '43%' ? '0' : '43%';
-  sidebarExit.style.right = sidebarExit.style.right === 'calc(43% + 55px)' ? '55px' : 'calc(43% + 55px)';
   iconSidebar.style.rotate = iconSidebar.style.rotate === '180deg' ? '0deg' : '180deg';
 
   if($('#sidebar').hasClass('active')){
@@ -66,6 +70,11 @@ sidebarToggle.addEventListener('click', function() {
 
   $('#sidebar').toggleClass('active');
 });
+
+recommendedToggle.addEventListener('click', function () {
+  productosRecomendados.style.height = productosRecomendados.style.height === '8em' ? '0px' : '8em';
+  iconRecommended.style.rotate = iconRecommended.style.rotate === '180deg' ? '0deg' : '180deg';
+})
 
 // Capturar foto cuando se hace clic en el botón
 $('#capture-btn').on('click', function(){
@@ -149,7 +158,9 @@ $('#continuar').on('click', function(){
       $('#options').hide();
       $('#sideBarDiv').show();
       $('#optionsColors').show();
+      $('#optionsRecomended').show();
       $('.filter').first().click();
+      $('#divCarrito').show();
     }
   });
 
@@ -201,6 +212,33 @@ $(document).on('click', '.filter', function() {
   actualizarFrame();
 });
 
+function actualizarProductosSimilares(tipo){
+
+  $.ajax({
+    url: `/productsApiordenar/5&0&${ tipo }`,
+    type: 'GET',
+    dataType: 'json',
+    success: function (response) {
+      var inner = "";
+      response.Productos.forEach(element => {
+        var img = `/static/src/img${element.Id}_1.jpg`;
+        inner += `<div class="border border-1 position-relative mb-5 snap-section-vertical" style="max-width:7em; max-height:7em;" data-id="${element.Id}" data-colores="${ JSON.stringify(element.Colores).replaceAll('"', "'") }">
+                    <img src="${img}" style="width:7em; height:7em;">
+                    <div class="position-absolute border  bg-white py-1 px-2" style="bottom: 5%; left: 5%; overflow:hidden; max-width:90%">
+                        <p class="mb-0 text-start" style="font-size: 10px;letter-spacing:1px;white-space:break-spaces; color:black">${element.Nombre} <span style="color: rgb(15, 5, 5);">#${element.Id}</span></p>
+                        <p class="mb-0 text-start" style="font-size: 10px;letter-spacing:1px;font-weight: bold;">$${element['Precio u.']}</p>
+                    </div>
+                  </div>`
+      });
+
+      $('#productosRecomendados').empty().html(inner);
+    },
+    error: function (error) {
+    }
+  });
+
+}
+
 $(document).ready(function () {
 
   $('.productLabios').on('click', function() {
@@ -237,6 +275,8 @@ $(document).ready(function () {
 
     $('.filter-slider').empty().append(replace);
     $('.filter').first().trigger('click');
+
+    actualizarProductosSimilares($(this).data('tipo'));
     
     setTimeout(() => {
       $('#sidebar-toggle').trigger('click');
@@ -275,8 +315,10 @@ $(document).ready(function () {
       replace += `<div class="filter" data-color="${i}" style="background-color: #${element['Hex']};"></div>`
     }
 
-    $('.filter-slider').empty().append(replace);
+    $('.filter-slider').empty().html(replace);
     $('.filter').first().trigger('click');
+    
+    actualizarProductosSimilares($(this).data('tipo'));
     
     setTimeout(() => {
       $('#sidebar-toggle').trigger('click');
@@ -315,11 +357,24 @@ $(document).ready(function () {
       replace += `<div class="filter" data-color="${i}" style="background-color: #${element['Hex']};"></div>`
     }
 
-    $('.filter-slider').empty().append(replace);
+    $('.filter-slider').empty().html(replace);
     $('.filter').first().trigger('click');
+    
+    actualizarProductosSimilares($(this).data('tipo'));
 
     setTimeout(() => {
       $('#sidebar-toggle').trigger('click');
     }, 600);
-  })
+  });
+  
 })
+
+$(document).on('click', '.snap-section-vertical', function() {
+  var dataId = $(this).data('id');
+  
+  $('.productLabios, .productSombras, .productPestañas').filter(function() {
+    return $(this).data('id') === dataId;
+  }).each(function() {
+    $(this).trigger('click');
+  });
+});
