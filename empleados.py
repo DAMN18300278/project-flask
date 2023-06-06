@@ -245,7 +245,7 @@ def OrdenUsuario(id):
                 productos[i].extend(datos)
                 
                 i+=1
-             
+                
         cursor.execute("SELECT Nombre FROM Usuarios WHERE Id_Usuario = %s",(fetch[1],))    
         nombre = cursor.fetchone()[0]
 

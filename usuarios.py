@@ -257,7 +257,6 @@ def ordencarrito(id):
             
             carrito = fetch[0].split('|') 
             
-
             numero = len(carrito)
             productos = []
             i = 0
@@ -277,7 +276,6 @@ def ordencarrito(id):
 
                 productos[i].append(color[indice_color])
 
-                #print(color[int(productos[int(productos[i][2])])])
                 cursor.execute("SELECT Nombre,Precio FROM productos WHERE Id_Productos = %s", (productos[i][0],))
                 datos = cursor.fetchone()
                 

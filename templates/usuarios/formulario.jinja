@@ -58,6 +58,20 @@
                 
             <div class="overflow-scroll " style="height: 90%;">
                 <div class="col-md-6">
+                    {% if profileInfo is not defined %}
+                    <hr class="w-100">
+                    <div class="form-check">
+                        <input class="form-check-input" checked type="checkbox" id="Ninguna" name="alergias" value="Ninguna">
+                        <label class="form-check-label" for="Ninguna">Desconozco mis alergias</label>
+                    </div>
+                    {% endif %}
+                    {% if profileInfo is defined %}
+                    <hr class="w-100">
+                    <div class="form-check">
+                        <input class="form-check-input" {% if profileInfo is defined %}{% if 'Ninguna' in profileInfo[10] %}checked{% endif %}{% endif %} type="checkbox" id="Ninguna" name="alergias" value="Ninguna">
+                        <label class="form-check-label" for="Ninguna">Desconozco mis alergias</label>
+                    </div>
+                    {% endif %}
                     <hr class="w-100">
                     <div class="form-check">
                         <input class="form-check-input" {% if profileInfo is defined %}{% if 'propilparabeno' in profileInfo[10] %}checked{% endif %}{% endif %} type="checkbox" id="propilparabeno" name="alergias" value="propilparabeno">
@@ -324,7 +338,7 @@
                 <p class="display-4">Tipo de piel</p>
                 <div class="w-50 d-inline-block" style="font-size: larger;">
                     <div class="form-check" onclick="textoPiel('Normal')">
-                        <input class="form-check-input"  type="radio" name="tipoPiel" id="normal" value="1" required>
+                        <input class="form-check-input"  type="radio" name="tipoPiel" id="normal" value="1" required title="Por favor ingresa tu tipo de Piel es necesario para una mejor recopilacion de datos">
                         <label class="form-check-label" for="normal">Normal</label>
                     </div>
                     <div class="form-check" onclick="textoPiel('Seca')">
@@ -649,7 +663,7 @@
                         {% endif %}
                     </button>
                     {% if profileInfo is defined %}
-                        <input type="text" id="colorOjos" value="{{ profileInfo[3] }}" name="colorOjos" style="display: none;" required>
+                        <input type="text" id="colorOjos" value="{{ profileInfo[3] }}" name="colorOjos" style="display: none;" required title="Porfavor ingrese su color de ojos para una recopilaciond e datos mas completa">
                         <script>
                         $('#btnColorOjos').css('background-color', '#{{ coloresOjos[1] }}'); 
                         if($('#colorOjos').val() < 6 && $('#colorOjos').val() > 2){
@@ -659,7 +673,7 @@
                         }
                         </script>
                     {% else %}
-                        <input type="text" id="colorOjos" name="colorOjos" style="display: none;">
+                        <input type="text" id="colorOjos" name="colorOjos" style="display: none;" required title="Porfavor ingrese su color de ojos para una recopilaciond e datos mas completa">
                     {% endif %}
                 </div>
             </div>
