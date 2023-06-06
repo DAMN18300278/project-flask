@@ -15,9 +15,12 @@
 
 {% block content %}
 
+{% if starter != "" %}
+
 {% with producto=productos[0] %}
   {% include "usuarios/infoProducto.jinja" %}
 {% endwith %}
+{% endif %}
 
   <div id="modal-alerts" style="display: none;" class="modal fade p-5">
     <div class="modal-dialog">
@@ -240,6 +243,8 @@
     {% endif %}
   </div>
 
+{% if starter != "" %}
+
   <div id="divCarrito">
     <div class="position-absolute d-flex align-items-center p-2 m-5" id="carrito" style="border: 2px solid rgba(140, 140, 140, 0.586); background-color:rgba(251, 229, 255, 0.789); border-radius:50%; bottom:0; right:0; z-index:5">
         <lord-icon
@@ -255,6 +260,7 @@
         </div>
     </div>
   </div>
+{% endif %}
 
   {% if starter != "" %}
     <script>
