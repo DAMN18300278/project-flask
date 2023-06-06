@@ -28,6 +28,8 @@ app.config["MYSQL_PORT"] = 3306
 
 mysql = MySQL(app)
 
+app.config['data_mysql'] = mysql
+
 app.secret_key = "ab"
 app.register_blueprint(empleados)
 app.register_blueprint(usuarios)

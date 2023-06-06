@@ -1,6 +1,7 @@
 $('#options').hide();
 $('#options2').hide();
 $('#resultWays').hide();
+$('#sidebar-exit').hide();
 
 // Acceder al video y al botón de captura
 const video = document.getElementById('video');
@@ -122,15 +123,7 @@ $('#continuar').on('click', function(){
       $('#options').hide();
       $('#resultWays').show();
       $('#forma').text(`Forma del rostro: ${response.Forma}`);
-      $.ajax({
-        url: `/productsApiordenar/3?0`,
-        type: 'GET',
-        success: function (response) {
-          response.forEach(element => {
-            console.log(element);
-          });
-        }
-      })
+      $('#sidebar-exit').show();
     }
   });
 });
