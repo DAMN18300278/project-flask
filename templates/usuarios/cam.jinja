@@ -206,31 +206,34 @@
     </div>
 
     {% else %}
+    <a href="/usuarios" class="mt-5 btn btn-info px-4 position-absolute" id="sidebar-exit" style="color:black; text-decoration:none; z-index: 5; right: 5%; top: 0">
+      Salir
+    </a>
     <div id="resultWays" style="z-index: 5;">
-      <div class="position-absolute w-100 d-flex flex-column justify-content-start align-items-center" style="bottom: 10%; left: 0%; color:white">
+      <div class="position-absolute w-100 d-flex flex-column justify-content-start align-items-center" style="bottom: 1%; left: 0%; color:white">
         <h1 id="forma">Forma del rostro: </h1>
         <div class="d-flex align-items-center justify-content-center w-50 mb-3">
           <div class="filter" style="width: 40px; height:40px; background-color:rgb(158, 67, 177)"></div>
           <h2 class="mb-0">Aplicar contorno</h2>
         </div>
-        <div class="d-flex align-items-center justify-content-center w-50">
+        <div class="d-flex align-items-center justify-content-center w-50 mb-4">
           <div class="filter" style="width: 40px; height:40px; background-color:rgb(219, 219, 219)"></div>
           <h2 class="mb-0">Aplicar iluminador</h2>
         </div>
 
-        <div class="d-flex flex-column justify-content-start ">
-            <h3 class="text-start px-5">Le sugerimos los siguientes productos:</h3>
-            <div class="d-flex justify-content-start align-items-center w-100 overflow-scroll px-5 pb-5" id="recomendadosPiel">
+        <div class="d-flex flex-column justify-content-start w-100">
+            <h3 class="text-center px-5">Le sugerimos los siguientes productos:</h3>
+            <div class="d-flex justify-content-start align-items-center w-100 overflow-scroll px-5 pb-2" id="recomendadosPiel">
             {%if similares is defined%}
                 {% for producto in similares %}
                     {% if producto['Id']|string != idProductStarter|string %}
-                    <div class="border border-1 position-relative mx-auto mb-5 productLabios" style="max-width:8em; max-height:8em;" data-id="{{ producto['Id'] }}" data-colores="{{ producto['Colores'] }}" data-tipo="{{ producto['Tipo'] }}">
+                    <div class="border border-1 position-relative mx-3 productLabios" style="max-width:7.5em; max-height:7.5em;" data-id="{{ producto['Id'] }}" data-colores="{{ producto['Colores'] }}" data-tipo="{{ producto['Tipo'] }}">
 
                     {% set img = 'src/img' + producto['Id']|string + '_1.jpg' %}
-                    <img src="{{ url_for('static', filename = img) }}" style="width:8em; height:8em;">
+                    <img src="{{ url_for('static', filename = img) }}" style="width:7.5em; height:7.5em;">
                     <div class="position-absolute border  bg-white py-1 px-2" style="bottom: 5%; left: 5%; overflow:hidden; max-width:90%">
                         <p class="mb-0 text-start" style="font-size: 10px;letter-spacing:1px;white-space:break-spaces; color:black">{{ producto['Nombre'] }} <span style="color: rgb(15, 5, 5);">#{{ producto['Id'] }}</span></p>
-                        <p class="mb-0 text-start" style="font-size: 10px;letter-spacing:1px;font-weight: bold;">${{ producto['Precio u.'] }}</p>
+                        <p class="mb-0 text-start text-dark" style="font-size: 10px;letter-spacing:1px;font-weight: bold;">${{ producto['Precio u.'] }}</p>
                     </div>
                     </div>
                     {%endif%}

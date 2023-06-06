@@ -1,6 +1,6 @@
 import flask
 import requests
-from flask import session, render_template, redirect, jsonify, make_response, url_for, request, flash
+from flask import session, render_template, redirect, jsonify, make_response, url_for, request, flash, current_app
 from flask_mysqldb import MySQL
 from collections import OrderedDict
 import base64
@@ -543,6 +543,8 @@ def revisar_foto():
     imagen = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
 
     imagen_rgb = cv2.cvtColor(imagen, cv2.COLOR_BGR2RGB)
+    imagen_rgb.flags.writeable = False
+    imagen_rgb = np.uint8(imagen_rgb)
     results = face_mesh.process(imagen_rgb)
 
     # Verificar la orientación de los puntos clave relevantes
@@ -662,6 +664,7 @@ def procesar_imagen():
 
     # Procesar la imagen para poner el maquillaje
     imagen_rgb = cv2.cvtColor(imagen, cv2.COLOR_BGR2RGB)
+    imagen_rgb.flags.writeable = False
     results = face_mesh.process(imagen_rgb)
 
     if results.multi_face_landmarks:
@@ -701,6 +704,7 @@ def processShape():
 
     # Procesar la imagen para poner el maquillaje
     imagen_rgb = cv2.cvtColor(imagen, cv2.COLOR_BGR2RGB)
+    imagen_rgb.flags.writeable = False
     results = face_mesh.process(imagen_rgb)
 
     if results.multi_face_landmarks:
